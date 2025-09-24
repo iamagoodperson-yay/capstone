@@ -7,7 +7,6 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-import universalStyles from '../styles';
 
 const Dropdown = ({ title, values, base, changebase, width = 0.8 }) => {
   const windowWidth = Dimensions.get('window').width;
@@ -35,17 +34,14 @@ const Dropdown = ({ title, values, base, changebase, width = 0.8 }) => {
       </Text>
 
       <TouchableOpacity
-        style={[
-          universalStyles.inputSty,
-          {
+        style={{
             color: '#000000',
             width: windowWidth * width,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
             paddingHorizontal: 10,
-          },
-        ]}
+        }}
         onPress={() => setIsOpen(!isOpen)}
       >
         <Text style={{ color: '#000000', fontSize: 16 }}>
