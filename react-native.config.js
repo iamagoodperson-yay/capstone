@@ -1,3 +1,3 @@
 module.exports = {
-  assets: ['./node_modules/@react-native-vector-icons/fontawesome/fonts'],
+  // No need for manual font linking as @react-native-vector-icons/fontawesome handles this automatically
 };

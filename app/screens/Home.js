@@ -1,14 +1,13 @@
 import { View, Text, StyleSheet } from 'react-native';
+import Avatar from '../components/avatar';
 
-function Shop() {
+const Home = ({ avatarItems }) => {
     return (
         <View style={styles.container}>
-            <Text>Shop Screen</Text>
+            <Avatar size={200} avatarItems={avatarItems} />
         </View>
     );
 }
-
-export default Shop;
 
 const styles = StyleSheet.create({
     container: {
@@ -17,3 +16,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
+
+export default Home;

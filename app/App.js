@@ -1,17 +1,40 @@
-import * as React from 'react';
+import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FontAwesome from '@react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import Home from './Home';
-import Phrases from './Phrases';
-import Daily from './Daily';
-import Shop from './Shop';
-import Settings from './Settings';
+import Home from './screens/Home';
+import Phrases from './screens/Phrases';
+import Daily from './screens/Daily';
+import Shop from './screens/Shop';
+import Settings from './screens/Settings';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+const screen = (name, component, iconName) => {
+    return (
+        <Tab.Screen
+            name={name}
+            component={component}
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                    <FontAwesome name={iconName} color={color} size={size} />
+                ),
+            }}
+        />
+    );
+}
+
+const App = () => {
+
+    const [avatarItems, setAvatarItems] = useState({
+        hats: 0,
+        shirts: 0,
+        pants: 0,
+        shoes: 0,
+        accessories: 0,
+    });
+
     return (
         <NavigationContainer>
             <Tab.Navigator
@@ -29,52 +52,32 @@ export default function App() {
                         fontSize: 16,
                     },
             }}>
-                <Tab.Screen 
+                <Tab.Screen
                     name="Home"
-                    component={Home}
                     options={{
                         tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name="home" color={color} size={size} />
+                            <FontAwesome name={"home"} color={color} size={size} />
                         ),
                     }}
-                />
-                <Tab.Screen 
-                    name="Phrases"
-                    component={Phrases}
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name="comment" color={color} size={size} />
-                        ),
-                    }}
-                />
-                <Tab.Screen 
-                    name="Challenge"
-                    component={Daily}
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name="calendar" color={color} size={size} />
-                        ),
-                    }}
-                />
-                <Tab.Screen 
+                >
+                    {() => <Home avatarItems={avatarItems} />}
+                </Tab.Screen>
+                {screen("Phrases", Phrases, "comment")}
+                {screen("Challenge", Daily, "calendar")}
+                <Tab.Screen
                     name="Shop"
-                    component={Shop}
                     options={{
                         tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name="shopping-cart" color={color} size={size} />
+                            <FontAwesome name={"shopping-cart"} color={color} size={size} />
                         ),
                     }}
-                />
-                <Tab.Screen 
-                    name="Settings"
-                    component={Settings}
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name="cog" color={color} size={size} />
-                        ),
-                    }}
-                />
+                >
+                    {() => <Shop avatarItems={avatarItems} setAvatarItems={setAvatarItems} />}
+                </Tab.Screen>
+                {screen("Settings", Settings, "cog")}
             </Tab.Navigator>
         </NavigationContainer>
     );
 }
+
+export default App;

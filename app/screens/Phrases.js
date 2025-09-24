@@ -1,24 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from "react";
-import storyData from "../phrases.json";
+import { phrases } from "../data";
 
-const story = storyData;
+const story = phrases;
 
 export let selected = null;
 
 export function proceed(choice, setCurrentId) {
     if (choice.size == "sound_button") {
         // Play Sound
-        selected = choice.next;
-        return choice.next;
     }else{
         setCurrentId(choice.next);
     }
-
+    selected = choice.next;
+    return choice.next;
 }
 
-function Phrases() {
-    const [currentId, setCurrentId] = useState("categories");
+const Phrases = ()  => {
+    const [currentId, setCurrentId] = useState("categories");    
     const currentNode = story.find(node => node.id === currentId);
 
     if (!currentNode) {
@@ -53,54 +52,54 @@ function Phrases() {
     );
 }
 
-export default Phrases;
-
 const styles = StyleSheet.create({
-container: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    height: '100%',
-    width: '100%',
-    padding: 20,
-},
-normal_button: {
-    backgroundColor: '#d9d9d9',
-    fontSize: 24,
-    color: '#000000',
-    height: 93,
-    width: 330,
-    borderRadius: 0,
-    marginTop: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-},
-sound_button: {
-    backgroundColor: '#d9d9d9',
-    fontSize: 24,
-    color: '#000000',
-    height: 330,
-    width: 330,
-    borderRadius: 0,
-    marginTop: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-},
-back_button:{
-    backgroundColor: '#d9d9d9',
-    fontSize: 16,
-    color: '#000000',
-    height: 65,
-    width: 40,
-    borderRadius: 0,
-    marginTop: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-},
-header: {
-    fontSize: 50,
-    color: '#000000',
-    marginBottom: 24,
-},
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        height: '100%',
+        width: '100%',
+        padding: 20,
+    },
+    normal_button: {
+        backgroundColor: '#d9d9d9',
+        fontSize: 24,
+        color: '#000000',
+        height: 93,
+        width: 330,
+        borderRadius: 0,
+        marginTop: 22,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    sound_button: {
+        backgroundColor: '#d9d9d9',
+        fontSize: 24,
+        color: '#000000',
+        height: 168,
+        width: 330,
+        borderRadius: 0,
+        marginTop: 22,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    back_button:{
+        backgroundColor: '#d9d9d9',
+        fontSize: 24,
+        color: '#000000',
+        height: 40,
+        width: 65,
+        borderRadius: 0,
+        marginTop: 22,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    header: {
+        fontSize: 50,
+        color: '#000000',
+        marginBottom: 24,
+    },
 });
+
+export default Phrases;
