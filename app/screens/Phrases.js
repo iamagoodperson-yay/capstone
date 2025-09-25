@@ -74,7 +74,7 @@ const Phrases = ()  => {
                     key={idx}
                     style={[styles.button, styles[choice.size]]}
                     onPress={async () => await proceed(choice,setCurrentId)}>
-                    <Text>{choice.text}</Text>
+                    <Text style={styles.button_text}>{choice.text}</Text>
                 </TouchableOpacity>
             ))}
         </View>
@@ -101,9 +101,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    button_text:{
+        fontSize:24
+    },
     sound_button: {
         backgroundColor: '#d9d9d9',
-        fontSize: 24,
+        fontSize: 36,
         color: '#000000',
         height: 168,
         width: 330,
