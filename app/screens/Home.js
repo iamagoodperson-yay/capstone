@@ -1,22 +1,23 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Avatar from '../components/avatar';
+import Button from '../components/button';
 
 const Home = ({ avatarItems }) => {
     const phrases = [
-        { phrase: "Hello", image: "👋" },
-        { phrase: "I want to eat chicken rice", image: "🍚" },
-        { phrase: "Thank you", image: "🙏" },
-        { phrase: "Goodbye", image: "👋" },
+        { phrase: "Hello", image: require('../../assets/hello.png') },
+        { phrase: "I want to eat chicken rice", image: require('../../assets/chicken_rice.png') },
+        { phrase: "Thank you", image: require('../../assets/thank_you.png') },
+        { phrase: "Goodbye", image: require('../../assets/goodbye.png') },
     ]
 
     const renderItem = ({ item, index }) => (
         <TouchableOpacity
             key={index}
-            style={styles.dropdownItem}
-            onPress={() => handleSelect(item)}
+            style={styles.listContainer}
+            onPress={() => {}}
         >
-            <Text style={styles.dropdownItemImage}>{item.image} </Text>
-            <Text style={styles.dropdownItemText}>{item.phrase}</Text>
+            <Image style={styles.listImage} source={item.image} />
+            <Text style={styles.text}>{item.phrase}</Text>
         </TouchableOpacity>
     );
 
@@ -24,7 +25,7 @@ const Home = ({ avatarItems }) => {
         <View style={styles.container}>
             <Avatar size={200} avatarItems={avatarItems} />
             <Text style={styles.header}>Common phrases that you use</Text>
-            <View style={styles.dropdownList}>
+            <View style={styles.list}>
                 <FlatList
                     data={phrases}
                     renderItem={renderItem}
@@ -32,6 +33,15 @@ const Home = ({ avatarItems }) => {
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View>
+            <Button
+                title="See More..."
+                onPress={() => {}}
+                color="#2196F3"
+            />
+            <Button
+                title="Solve Daily Challenge"
+                onPress={() => {}}
+            />
         </View>
     );
 }
@@ -39,33 +49,42 @@ const Home = ({ avatarItems }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        gap: 10,
     },
     header: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginVertical: 10,
     },
-    dropdownList: {
+    list: {
         width: '90%',
-        marginTop: 20,
+        alignItems: 'center',
     },
-    row: {
-        justifyContent: 'space-between',
-    },
-    dropdownContainer: {
-        margin: 10,
+    listContainer: {
+        margin: '2.5%',
         padding: 20,
-        backgroundColor: '#D0D0D0',
-        alignContent: 'center',
+        backgroundColor: '#d9d9d9',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '45%',
+        height: 150,
+        borderRadius: 10,
     },
-    dropdownItemImage: {
-        height: 24,
+    listImage: {
+        height: 50,
         aspectRatio: 1,
     },
-    dropdownItemText: {
-        fontSize: 18,
+    text: {
+        fontSize: 20,
+    },
+    seeMore: {
+        width: '85%',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#d9d9d9',
+        borderRadius: 5,
     },
 });
 
