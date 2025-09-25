@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import { useState, useEffect } from "react";
 import { phrases } from "../data";
+import { buttonlayout } from './Settings';
+
 const story = phrases;
 
 export let selected = null;
-
 
 export async function proceed(choice, setCurrentId) {
     if (choice.size === "sound_button") {
@@ -27,6 +28,48 @@ export async function proceed(choice, setCurrentId) {
         console.log(choice.text, "used Not counted");
     }
     return choice.next;
+}
+
+const renderCell = ({choice,idx,buttonlayout}) => {
+    switch(buttonlayout) {
+        case 1:
+            return(
+                <TouchableOpacity
+                    key={idx}
+                    style={styles.normal_button}
+                    onPress={() => proceed(choice,setCurrentId)}
+                >
+                    <Image source={choice.png}
+                    style={styles.main_image} />
+                </TouchableOpacity> 
+            ) 
+        case 2:
+            return(
+                <TouchableOpacity
+                    key={idx}
+                    style={styles.normal_button}
+                    onPress={() => proceed(choice,setCurrentId)}
+                >
+                    <Image source={choice.png}
+                    style={styles.split_image} />
+                    <View style={styles.split_textdiv}>
+                        <Text style={styles.split_text}>{choice.text}</Text>
+                    </View>
+                </TouchableOpacity>  
+            )
+        case 3:
+            return(
+                <TouchableOpacity
+                    key={idx}
+                    style={styles.normal_button}
+                    onPress={() => proceed(choice)}
+                >
+                    <View style={styles.split_textdiv}>
+                        <Text style={styles.main_text}>{choice.text}</Text>
+                    </View>
+                </TouchableOpacity>  
+            )
+    }
 }
 
 const Phrases = ()  => {
@@ -69,13 +112,8 @@ const Phrases = ()  => {
 
             <Text style={styles.header}>{currentNode.text}</Text>
 
-            {currentNode.choices.map((choice, idx) => (
-                <TouchableOpacity
-                    key={idx}
-                    style={[styles.button, styles[choice.size]]}
-                    onPress={async () => await proceed(choice,setCurrentId)}>
-                    <Text style={styles.button_text}>{choice.text}</Text>
-                </TouchableOpacity>
+            {currentNode.choices.map((choice, idx,buttonlayout) => (
+                renderCell({choice, idx, buttonlayout})
             ))}
         </View>
     );
@@ -131,6 +169,27 @@ const styles = StyleSheet.create({
         color: '#000000',
         marginBottom: 24,
     },
+        split_image:{
+        height: 50,
+        width: 50,
+        marginRight:20,
+        marginLeft:20
+    },
+    split_text:{
+        fontSize:24
+    },
+    main_image: {
+        height:80,
+        width:80,
+    },
+    main_text:{
+        fontSize:42
+    },
+    split_textdiv: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 });
 
 export default Phrases;
