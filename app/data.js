@@ -33,6 +33,17 @@ export let phrases = [
         choices: [
             { text: "I want to order chicken rice", next: "chicken_rice", size: "sound_button" }
         ],
-        back: "order"
+        back: "order",
+        used: 0
+    },
+    {
+        id: "fishball_noodles",
+        text: "I want to order fishball noodles",
+        choices: [
+            { text: "I want to order fishball noodles", next: "fishball_noodles", size: "sound_button" }
+        ],
+        back: "order",
+        used: 0
     }
+    
 ]
