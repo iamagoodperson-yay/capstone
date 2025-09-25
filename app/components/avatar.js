@@ -1,37 +1,42 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 
-export default function Avatar({ avatarItems, size = 300 }) {
-
+export default function Avatar({ size = 300, avatarSelection, avatarItems }) {
     return (
-        <View style={[styles.avatar, {width: size, height: size, borderRadius: size / 2} ]}>
-            <Text style={styles.avatarText}>🙂</Text>
-            <Text style={styles.itemsText}>
-                Hat: {avatarItems.hats}{"\n"}
-                Shirt: {avatarItems.shirts}{"\n"}
-                Pant: {avatarItems.pants}{"\n"}
-                Shoe: {avatarItems.shoes}{"\n"}
-                Accessory: {avatarItems.accessories}
-            </Text>
+        <View style={[styles.avatarContainer, {width: size, height: size} ]}>
+            <Image
+                style={styles.avatarImage}
+                source={require('../../assets/avatar/avatar.png')}
+                resizeMode="contain"
+            />
+            {avatarSelection.hats !== 0 && avatarItems.hats && (
+                <View style={styles.hatContainer}>
+                    <Image
+                        style={{width: size * 0.3, height: size * 0.3}}
+                        source={avatarItems.hats.find(item => item.id === avatarSelection.hats)?.name}
+                        resizeMode="contain"
+                    />
+                </View>
+            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    avatar: {
-        overflow: 'hidden',
-        backgroundColor: '#d9d9d9',
+    avatarContainer: {
         justifyContent: 'center',
         alignItems: 'center',
     },
-    avatarText: {
-        fontSize: 100,
-        color: '#666',
+    avatarImage: {
+        position: 'absolute',
+        top: '20%',
+        width: '80%',
+        height: '80%',
     },
-    itemsText: {
-        fontSize: 12,
-        color: '#333',
-        textAlign: 'center',
-        marginTop: 10,
-    }
+    hatContainer: {
+        zIndex: 1,
+        position: 'absolute',
+        top: '10%',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
 });

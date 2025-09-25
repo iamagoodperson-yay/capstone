@@ -2,12 +2,12 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react
 import Avatar from '../components/avatar';
 import Button from '../components/button';
 
-const Home = ({ avatarItems }) => {
+const Home = ({ avatarSelection, avatarItems }) => {
     const phrases = [
-        { phrase: "Hello", image: require('../../assets/hello.png') },
-        { phrase: "I want to eat chicken rice", image: require('../../assets/chicken_rice.png') },
-        { phrase: "Thank you", image: require('../../assets/thank_you.png') },
-        { phrase: "Goodbye", image: require('../../assets/goodbye.png') },
+        { phrase: "Hello", image: require('../../assets/phrases/hello.png') },
+        { phrase: "I want to eat chicken rice", image: require('../../assets/phrases/chicken_rice.png') },
+        { phrase: "Thank you", image: require('../../assets/phrases/thank_you.png') },
+        { phrase: "Goodbye", image: require('../../assets/phrases/goodbye.png') },
     ]
 
     const renderItem = ({ item, index }) => (
@@ -23,7 +23,7 @@ const Home = ({ avatarItems }) => {
 
     return (
         <View style={styles.container}>
-            <Avatar size={200} avatarItems={avatarItems} />
+            <Avatar size={200} avatarSelection={avatarSelection} avatarItems={avatarItems}/>
             <Text style={styles.header}>Common phrases that you use</Text>
             <View style={styles.list}>
                 <FlatList
@@ -78,13 +78,6 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 20,
-    },
-    seeMore: {
-        width: '85%',
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#d9d9d9',
-        borderRadius: 5,
     },
 });
 

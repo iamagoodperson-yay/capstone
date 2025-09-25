@@ -12,13 +12,13 @@ function Settings() {
                 <View style={styles.flagcontainer}>
                     <TouchableOpacity onPress={() => setLanguage('english')}>
                         <Image
-                            source={require('../assets/flags/englishflag.png')}
+                            source={require('../../assets/settings/englishflag.png')}
                             style={language === 'english' ? styles.selectedFlag : styles.flag}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setLanguage('chinese')}>
                         <Image
-                            source={require('../assets/flags/chineseflag.png')}
+                            source={require('../../assets/settings/chineseflag.png')}
                             style={language === 'chinese' ? styles.selectedFlag : styles.flag}
                         />
                     </TouchableOpacity>
@@ -26,13 +26,13 @@ function Settings() {
                 <View style={styles.flagcontainer}>
                     <TouchableOpacity onPress={() => setLanguage('malay')}>
                         <Image
-                            source={require('../assets/flags/malaysianflag.png')}
+                            source={require('../../assets/settings/malaysianflag.png')}
                             style={language === 'malay' ? styles.selectedFlag : styles.flag}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setLanguage('indonesian')}>
                         <Image
-                            source={require('../assets/flags/indonesianflag.png')}
+                            source={require('../../assets/settings/indonesianflag.png')}
                             style={language === 'indonesian' ? styles.selectedFlag : styles.flag}
                         />
                     </TouchableOpacity>
@@ -43,14 +43,14 @@ function Settings() {
                 <TouchableOpacity onPress={() => setbuttonlayout('image')}
                     style={buttonlayout === 'image' ? styles.high_button : styles.normal_button}>
                     <Image
-                        source={require('../assets/phrases/food.png')}
+                        source={require('../../assets/phrases/food.png')}
                         style={styles.main_image}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setbuttonlayout('split')}
                     style={buttonlayout === 'split' ? styles.high_button : styles.normal_button}>
                     <Image
-                        source={require('../assets/phrases/food.png')}
+                        source={require('../../assets/phrases/food.png')}
                         style={styles.split_image}
                     />
                     <View style={styles.split_textdiv}>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         height:75,
         width:125,
         marginHorizontal:18,
-        borderColor: 'yellow',
+        borderColor: '#4CAF50',
         borderWidth: 5
     },
     normal_button: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
         marginTop: 22,
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: 'yellow',
+        borderColor: '#4CAF50',
         borderWidth: 5
     },
     split_image:{

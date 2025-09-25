@@ -1,54 +1,30 @@
 import { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Avatar from '../components/avatar';
 import Dropdown from '../components/dropdown'; 
 
-const selection = (selectedItem) => {
-    switch (selectedItem) {
-        case "Hats":
-            return [
-                { id: 0, name: "X", price: 0, unlocked: true, },
-                { id: 1, name: "🧢", price: 1, unlocked: false, },
-                { id: 2, name: "🧢", price: 1, unlocked: false, },
-                { id: 3, name: "🧢", price: 1, unlocked: false, },
-            ];
-        case "Shirts":
-            return [
-                { id: 0, name: "X", price: 0, unlocked: false, },
-                { id: 1, name: "👕", price: 2, unlocked: false, },
-                { id: 2, name: "👔", price: 3, unlocked: false, },
-                { id: 3, name: "👚", price: 2, unlocked: false, },
-            ];
-        case "Pants":
-            return [
-                { id: 0, name: "X", price: 0, unlocked: false, },
-                { id: 1, name: "👖", price: 2, unlocked: false, },
-                { id: 2, name: "🩳", price: 2, unlocked: false, },
-                { id: 3, name: "👗", price: 3, unlocked: false, },
-            ];
-        case "Shoes":
-            return [
-                { id: 0, name: "X", price: 0, unlocked: false, },
-                { id: 1, name: "👟", price: 2, unlocked: false, },
-                { id: 2, name: "👠", price: 3, unlocked: false, },
-                { id: 3, name: "🥾", price: 3, unlocked: false, },
-            ];
-        case "Accessories":
-            return [
-                { id: 0, name: "X", price: 0, unlocked: false, },
-                { id: 1, name: "🎒", price: 2, unlocked: false, },
-                { id: 2, name: "🕶️", price: 3, unlocked: false, },
-                { id: 3, name: "📿", price: 3, unlocked: false, },
-            ];
-    }
-};
-
-function Shop({ avatarItems, setAvatarItems }) {
+function Shop({ avatarSelection, setAvatarSelection, avatarItems, setAvatarItems }) {
     const [category, setCategory] = useState("Hats");
+
+    const renderItem = ({ item, index }) => (
+        <TouchableOpacity
+            key={index}
+            style={styles.itemContainer}
+            onPress={() => {
+                setAvatarSelection(prev => ({
+                    ...prev,
+                    [category.toLowerCase()]: item.id
+                }));
+            }}
+        >
+            <Image style={styles.itemImage} source={item.name} />
+            <Text style={styles.priceText}>${item.price}</Text>
+        </TouchableOpacity>
+    );
 
     return (
         <View style={styles.container}>
-            <Avatar avatarItems={avatarItems} />
+            <Avatar avatarSelection={avatarSelection} avatarItems={avatarItems} />
             <Dropdown
                 values={["Hats", "Shirts", "Pants", "Shoes", "Accessories"]}
                 base={category}
@@ -56,26 +32,12 @@ function Shop({ avatarItems, setAvatarItems }) {
             />
             <View style={styles.selectionContainer}>
                     <FlatList
-                        data={selection(category)}
+                        data={avatarItems[category.toLowerCase()]}
                         numColumns={3}
                         keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={styles.itemContainer}
-                                onPress={() => {
-                                    setAvatarItems(prev => ({
-                                        ...prev,
-                                        [category.toLowerCase()]: item.id
-                                    }));
-                                }}
-                            >
-                                <Text style={styles.itemText}>{item.name}</Text>
-                                <Text style={styles.priceText}>${item.price}</Text>
-                            </TouchableOpacity>
-                        )}
+                        renderItem={renderItem}
                         columnWrapperStyle={styles.row}
                         showsVerticalScrollIndicator={false}
-                        contentContainerStyle={styles.listContent}
                     />
             </View>
         </View>
@@ -85,15 +47,13 @@ function Shop({ avatarItems, setAvatarItems }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        display: 'flex', 
+        flexDirection: 'column',
         alignItems: 'center',
-        paddingVertical: 20,
+        gap: 20,
     },
     selectionContainer: {
         width: '90%',
-        marginTop: 20,
-    },
-    listContent: {
-        paddingBottom: 20,
     },
     row: {
         justifyContent: 'space-around',
@@ -110,10 +70,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         maxWidth: '30%',
     },
-    itemText: {
-        fontSize: 40,
-        fontWeight: '500',
-        marginBottom: 5,
+    itemImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
     },
     priceText: {
         fontSize: 16,

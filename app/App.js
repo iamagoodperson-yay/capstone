@@ -26,13 +26,50 @@ const screen = (name, component, iconName) => {
 }
 
 const App = () => {
-
-    const [avatarItems, setAvatarItems] = useState({
+    const [avatarSelection, setAvatarSelection] = useState({
         hats: 0,
         shirts: 0,
         pants: 0,
         shoes: 0,
         accessories: 0,
+    });
+
+    const [avatarItems, setAvatarItems] = useState({
+        hats:
+            [
+                { id: 0, name: require('../assets/avatar/none.png'), price: 0, unlocked: true, },
+                { id: 1, name: require('../assets/avatar/hats/hat1.png'), price: 1, unlocked: false, },
+                { id: 2, name: require('../assets/avatar/hats/hat2.png'), price: 1, unlocked: false, },
+                { id: 3, name: require('../assets/avatar/hats/hat3.png'), price: 1, unlocked: false, },
+            ],
+        // shirts:
+        //     [
+        //         { id: 0, name: "X", price: 0, unlocked: true, },
+        //         { id: 1, name: "👕", price: 2, unlocked: false, },
+        //         { id: 2, name: "👔", price: 3, unlocked: false, },
+        //         { id: 3, name: "👚", price: 2, unlocked: false, },
+        //     ],
+        // pants:
+        //     [
+        //         { id: 0, name: "X", price: 0, unlocked: true, },
+        //         { id: 1, name: "👖", price: 2, unlocked: false, },
+        //         { id: 2, name: "🩳", price: 2, unlocked: false, },
+        //         { id: 3, name: "👗", price: 3, unlocked: false, },
+        //     ],
+        // shoes:
+        //     [
+        //         { id: 0, name: "X", price: 0, unlocked: true, },
+        //         { id: 1, name: "👟", price: 2, unlocked: false, },
+        //         { id: 2, name: "👠", price: 3, unlocked: false, },
+        //         { id: 3, name: "🥾", price: 3, unlocked: false, },
+        //     ],
+        // accessories:
+        //     [
+        //         { id: 0, name: "X", price: 0, unlocked: true, },
+        //         { id: 1, name: "🎒", price: 2, unlocked: false, },
+        //         { id: 2, name: "🕶️", price: 3, unlocked: false, },
+        //         { id: 3, name: "📿", price: 3, unlocked: false, },
+        //     ],
     });
 
     return (
@@ -60,7 +97,10 @@ const App = () => {
                         ),
                     }}
                 >
-                    {() => <Home avatarItems={avatarItems} />}
+                    {() => <Home
+                        avatarSelection={avatarSelection}
+                        avatarItems={avatarItems}
+                    />}
                 </Tab.Screen>
                 {screen("Phrases", Phrases, "comment")}
                 {screen("Challenge", Daily, "calendar")}
@@ -72,7 +112,12 @@ const App = () => {
                         ),
                     }}
                 >
-                    {() => <Shop avatarItems={avatarItems} setAvatarItems={setAvatarItems} />}
+                    {() => <Shop 
+                        avatarSelection={avatarSelection}
+                        setAvatarSelection={setAvatarSelection}
+                        avatarItems={avatarItems}
+                        setAvatarItems={setAvatarItems}
+                    />}
                 </Tab.Screen>
                 {screen("Settings", Settings, "cog")}
             </Tab.Navigator>

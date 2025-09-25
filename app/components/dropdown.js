@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-const Dropdown = ({ title, values, base, changebase, width = 0.8 }) => {
+const Dropdown = ({ values, base, changebase }) => {
   const windowWidth = Dimensions.get('window').width;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,32 +28,31 @@ const Dropdown = ({ title, values, base, changebase, width = 0.8 }) => {
   );
 
   return (
-    <View style={{ flex: 1, width: windowWidth * 0.73 }}>
-      <Text style={{ fontSize: 16, color: '#000000', fontWeight: '500' }}>
-        {title}
-      </Text>
+    <View>
 
       <TouchableOpacity
         style={{
+            backgroundColor: '#D9D9D9',
             color: '#000000',
-            width: windowWidth * width,
+            width: '90%',
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            paddingHorizontal: 10,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
         }}
         onPress={() => setIsOpen(!isOpen)}
       >
-        <Text style={{ color: '#000000', fontSize: 16 }}>
+        <Text style={{ color: '#000000', fontSize: 24 }}>
           {base ? base.toString() : 'Select an option'}
         </Text>
-        <Text style={{ color: '#000000', fontSize: 12 }}>
+        <Text style={{ color: '#000000', fontSize: 18 }}>
           {isOpen ? '▲' : '▼'}
         </Text>
       </TouchableOpacity>
 
       {isOpen && values && (
-        <View style={[styles.dropdownList, { width: windowWidth * width }]}>
+        <View style={[styles.dropdownList, { width: '90%' }]}>
           <FlatList
             data={values}
             renderItem={renderItem}
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderTopWidth: 0,
     position: 'absolute',
-    top: 70,
+    top: 50,
     zIndex: 1000,
     elevation: 5,
     shadowColor: '#000',
