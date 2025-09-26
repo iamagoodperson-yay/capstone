@@ -11,7 +11,7 @@ export default function Avatar({ size = 300, avatarSelection, avatarItems }) {
             {avatarSelection.hats !== 0 && avatarItems.hats && (
                 <View style={styles.hatContainer}>
                     <Image
-                        style={{width: size * 0.3, height: size * 0.3}}
+                        style={{width: size * 0.35, height: size * 0.35}}
                         source={avatarItems.hats.find(item => item.id === avatarSelection.hats)?.name}
                         resizeMode="contain"
                     />
@@ -28,14 +28,14 @@ const styles = StyleSheet.create({
     },
     avatarImage: {
         position: 'absolute',
-        top: '20%',
-        width: '80%',
-        height: '80%',
+        top: '10%',
+        width: '90%',
+        height: '90%',
     },
     hatContainer: {
         zIndex: 1,
         position: 'absolute',
-        top: '10%',
+        top: '0%',
         justifyContent: 'flex-end',
         alignItems: 'center',
     },

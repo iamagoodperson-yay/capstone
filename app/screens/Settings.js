@@ -1,10 +1,7 @@
-import { View, Text, StyleSheet,Image,TouchableOpacity } from 'react-native';
+import React, { useState } from 'react'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
-import { useState } from 'react';
-
-export let [buttonlayout, setbuttonlayout] = useState(2);
-
-function Settings() {
+function Settings({ buttonLayout, setButtonLayout }) {
     const [language, setLanguage] = useState('english');
     return (
         <View style={styles.container}>
@@ -41,15 +38,15 @@ function Settings() {
             </View>
             <Text style={styles.subtext}>Button Layout</Text>
             <View style={styles.container}>
-                <TouchableOpacity onPress={() => setbuttonlayout(1)}
-                    style={buttonlayout === 1 ? styles.high_button : styles.normal_button}>
+                <TouchableOpacity onPress={() => setButtonLayout(1)}
+                    style={buttonLayout === 1 ? styles.high_button : styles.normal_button}>
                     <Image
                         source={require('../../assets/phrases/food.png')}
                         style={styles.main_image}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setbuttonlayout(2)}
-                    style={buttonlayout === 2 ? styles.high_button : styles.normal_button}>
+                <TouchableOpacity onPress={() => setButtonLayout(2)}
+                    style={buttonLayout === 2 ? styles.high_button : styles.normal_button}>
                     <Image
                         source={require('../../assets/phrases/food.png')}
                         style={styles.split_image}
@@ -58,8 +55,8 @@ function Settings() {
                         <Text style={styles.split_text}>Food</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setbuttonlayout(3)}
-                    style={buttonlayout === 3 ? styles.high_button : styles.normal_button}>
+                <TouchableOpacity onPress={() => setButtonLayout(3)}
+                    style={buttonLayout === 3 ? styles.high_button : styles.normal_button}>
                     <Text style={styles.main_text}>Food</Text>
                 </TouchableOpacity>
             </View>
@@ -119,6 +116,8 @@ const styles = StyleSheet.create({
         marginTop: 22,
         alignItems: 'center',
         justifyContent: 'center',
+        borderColor: 'transparent',
+        borderWidth: 5,
     },
     high_button: {
         height: 93,

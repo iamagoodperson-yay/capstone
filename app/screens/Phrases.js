@@ -1,8 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
-import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { phrases } from "../data";
-import { buttonlayout } from './Settings';
 
 const story = phrases;
 
@@ -30,50 +29,50 @@ export async function proceed(choice, setCurrentId) {
     return choice.next;
 }
 
-const renderCell = ({choice,idx,buttonlayout}) => {
-    switch(buttonlayout) {
-        case 1:
-            return(
-                <TouchableOpacity
-                    key={idx}
-                    style={styles.normal_button}
-                    onPress={() => proceed(choice,setCurrentId)}
-                >
-                    <Image source={choice.png}
-                    style={styles.main_image} />
-                </TouchableOpacity> 
-            ) 
-        case 2:
-            return(
-                <TouchableOpacity
-                    key={idx}
-                    style={styles.normal_button}
-                    onPress={() => proceed(choice,setCurrentId)}
-                >
-                    <Image source={choice.png}
-                    style={styles.split_image} />
-                    <View style={styles.split_textdiv}>
-                        <Text style={styles.split_text}>{choice.text}</Text>
-                    </View>
-                </TouchableOpacity>  
-            )
-        case 3:
-            return(
-                <TouchableOpacity
-                    key={idx}
-                    style={styles.normal_button}
-                    onPress={() => proceed(choice)}
-                >
-                    <View style={styles.split_textdiv}>
-                        <Text style={styles.main_text}>{choice.text}</Text>
-                    </View>
-                </TouchableOpacity>  
-            )
-    }
-}
-
-const Phrases = ()  => {
+const Phrases = ({ buttonLayout })  => {
     const [currentId, setCurrentId] = useState("categories");
+    
+    const renderCell = ({choice,idx,buttonlayout}) => {
+        switch(buttonlayout) {
+            case 1:
+                return(
+                    <TouchableOpacity
+                        key={idx}
+                        style={styles.normal_button}
+                        onPress={() => proceed(choice,setCurrentId)}
+                    >
+                        <Image source={choice.png}
+                        style={styles.main_image} />
+                    </TouchableOpacity> 
+                ) 
+            case 2:
+                return(
+                    <TouchableOpacity
+                        key={idx}
+                        style={styles.normal_button}
+                        onPress={() => proceed(choice,setCurrentId)}
+                    >
+                        <Image source={choice.png}
+                        style={styles.split_image} />
+                        <View style={styles.split_textdiv}>
+                            <Text style={styles.split_text}>{choice.text}</Text>
+                        </View>
+                    </TouchableOpacity>  
+                )
+            case 3:
+                return(
+                    <TouchableOpacity
+                        key={idx}
+                        style={styles.normal_button}
+                        onPress={() => proceed(choice, setCurrentId)}
+                    >
+                        <View style={styles.split_textdiv}>
+                            <Text style={styles.main_text}>{choice.text}</Text>
+                        </View>
+                    </TouchableOpacity>  
+                )
+        }
+    };
     // Load used counts from AsyncStorage on mount
     useEffect(() => {
         (async () => {
@@ -112,8 +111,8 @@ const Phrases = ()  => {
 
             <Text style={styles.header}>{currentNode.text}</Text>
 
-            {currentNode.choices.map((choice, idx,buttonlayout) => (
-                renderCell({choice, idx, buttonlayout})
+            {currentNode.choices.map((choice, idx) => (
+                renderCell({ choice, idx, buttonlayout: buttonLayout })
             ))}
         </View>
     );
@@ -136,6 +135,7 @@ const styles = StyleSheet.create({
         color:'#000000',
         borderRadius: 0,
         marginTop: 22,
+        flexDirection:'row',
         alignItems: 'center',
         justifyContent: 'center',
     },

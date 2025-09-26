@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -15,17 +16,19 @@ const screen = (name, component, iconName) => {
     return (
         <Tab.Screen
             name={name}
-            component={component}
             options={{
                 tabBarIcon: ({ color, size }) => (
                     <FontAwesome name={iconName} color={color} size={size} />
                 ),
             }}
-        />
+        >
+            {() => component}
+        </Tab.Screen>
     );
 }
 
 const App = () => {
+    const [buttonLayout, setButtonLayout] = useState(2);
     const [avatarSelection, setAvatarSelection] = useState({
         hats: 0,
         shirts: 0,
@@ -89,37 +92,26 @@ const App = () => {
                         fontSize: 16,
                     },
             }}>
-                <Tab.Screen
-                    name="Home"
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name={"home"} color={color} size={size} />
-                        ),
-                    }}
-                >
-                    {() => <Home
-                        avatarSelection={avatarSelection}
-                        avatarItems={avatarItems}
-                    />}
-                </Tab.Screen>
-                {screen("Phrases", Phrases, "comment")}
-                {screen("Challenge", Daily, "calendar")}
-                <Tab.Screen
-                    name="Shop"
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                            <FontAwesome name={"shopping-cart"} color={color} size={size} />
-                        ),
-                    }}
-                >
-                    {() => <Shop 
-                        avatarSelection={avatarSelection}
-                        setAvatarSelection={setAvatarSelection}
-                        avatarItems={avatarItems}
-                        setAvatarItems={setAvatarItems}
-                    />}
-                </Tab.Screen>
-                {screen("Settings", Settings, "cog")}
+                {screen("Home", <Home
+                    avatarSelection={avatarSelection}
+                    avatarItems={avatarItems}
+                />, "home")}
+                {screen("Phrases", <Phrases 
+                    buttonLayout={buttonLayout}
+                />, "comment")}
+                {screen("Challenge", <Daily
+                    buttonLayout={buttonLayout}
+                />, "calendar")}
+                {screen("Shop", <Shop
+                    avatarSelection={avatarSelection}
+                    setAvatarSelection={setAvatarSelection}
+                    avatarItems={avatarItems}
+                    setAvatarItems={setAvatarItems}
+                />, "shopping-cart")}
+                {screen("Settings", <Settings
+                    buttonLayout={buttonLayout}
+                    setButtonLayout={setButtonLayout}
+                />, "cog")}
             </Tab.Navigator>
         </NavigationContainer>
     );

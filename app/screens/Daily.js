@@ -12,14 +12,15 @@ const submit = () => {
     }
 }
 
-const Daily = () => {
-
+const Daily = ({ buttonLayout }) => {
     const [chall, setChall] = useState('Order Chicken Rice');
 
     return (
         <View style={styles.container}>
             <Text style={styles.challengeText}>Challenge: {chall}</Text>
-            <Phrases/>
+            <Phrases
+                buttonLayout={buttonLayout}
+            />
             <Button title="Submit Answer" onPress={submit} />
         </View>
     );
