@@ -38,7 +38,7 @@ const Phrases = ({ buttonLayout })  => {
                 return(
                     <TouchableOpacity
                         key={idx}
-                        style={styles.normal_button}
+                        style={choice.size === "sound_button" ? styles.sound_button : styles.normal_button}
                         onPress={() => proceed(choice,setCurrentId)}
                     >
                         <Image source={choice.png}
@@ -49,7 +49,7 @@ const Phrases = ({ buttonLayout })  => {
                 return(
                     <TouchableOpacity
                         key={idx}
-                        style={styles.normal_button}
+                        style={choice.size === "sound_button" ? styles.sound_button : styles.normal_button}
                         onPress={() => proceed(choice,setCurrentId)}
                     >
                         <Image source={choice.png}
@@ -63,7 +63,7 @@ const Phrases = ({ buttonLayout })  => {
                 return(
                     <TouchableOpacity
                         key={idx}
-                        style={styles.normal_button}
+                        style={choice.size === "sound_button" ? styles.sound_button : styles.normal_button}
                         onPress={() => proceed(choice, setCurrentId)}
                     >
                         <View style={styles.split_textdiv}>
@@ -105,7 +105,7 @@ const Phrases = ({ buttonLayout })  => {
                 <TouchableOpacity
                     style={styles.back_button}
                     onPress={() => setCurrentId(currentNode.back)}>
-                    <Text>&lt; Back</Text>
+                    <Text style={styles.back_text}>&lt; Back</Text>
                 </TouchableOpacity>
             )}
 
@@ -157,8 +157,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#d9d9d9',
         fontSize: 24,
         color: '#000000',
-        height: 40,
-        width: 65,
+        height: 50,
+        width: 85,
         borderRadius: 0,
         marginTop: 22,
         alignItems: 'center',
@@ -183,7 +183,10 @@ const styles = StyleSheet.create({
         width:80,
     },
     main_text:{
-        fontSize:42
+        fontSize:36
+    },
+    back_text:{
+        fontSize:18
     },
     split_textdiv: {
         flex: 1,
