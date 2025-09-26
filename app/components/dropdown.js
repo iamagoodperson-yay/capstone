@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 const Dropdown = ({ values, base, changebase }) => {
-  const windowWidth = Dimensions.get('window').width;
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = item => {

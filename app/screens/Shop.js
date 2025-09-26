@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, Image, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import Avatar from '../components/avatar';
 import Dropdown from '../components/dropdown'; 
 
-function Shop({ avatarSelection, setAvatarSelection, avatarItems, setAvatarItems }) {
+function Shop({ coins, setCoins, avatarSelection, setAvatarSelection, avatarItems, setAvatarItems }) {
     const [category, setCategory] = useState("Hats");
 
     const renderItem = ({ item, index }) => (
@@ -11,19 +11,49 @@ function Shop({ avatarSelection, setAvatarSelection, avatarItems, setAvatarItems
             key={index}
             style={styles.itemContainer}
             onPress={() => {
-                setAvatarSelection(prev => ({
-                    ...prev,
-                    [category.toLowerCase()]: item.id
-                }));
+                if (item.unlocked) {
+                    setAvatarSelection(prev => ({
+                        ...prev,
+                        [category.toLowerCase()]: item.id
+                    }));
+                } else {
+                    if (coins >= item.price) {
+                        setAvatarSelection(prev => ({
+                            ...prev,
+                            [category.toLowerCase()]: item.id
+                        }));
+                        setAvatarItems(prevItems => ({
+                            ...prevItems,
+                            [category.toLowerCase()]: prevItems[category.toLowerCase()].map(i =>
+                                i.id === item.id ? { ...i, unlocked: true } : i
+                            ),
+                        }));
+                        setCoins(prevCoins => prevCoins - item.price);
+                    } else {
+                        Alert.alert(
+                            'Insufficient Coins',
+                            `You need ${item.price} coins but only have ${coins}`,
+                        );
+                    }
+                }
             }}
         >
+            {!item.unlocked && (
+                <View style={styles.lockedOverlay}>
+                    <Image
+                        style={styles.lockIcon}
+                        source={require('../../assets/avatar/lock.png')}
+                    />
+                    <Text style={styles.priceText}>🪙 {item.price}</Text>
+                </View>
+            )}
             <Image style={styles.itemImage} source={item.name} />
-            <Text style={styles.priceText}>${item.price}</Text>
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
+            <Text style={styles.coinsText}>🪙: {coins}</Text>
             <Avatar avatarSelection={avatarSelection} avatarItems={avatarItems} />
             <Dropdown
                 values={["Hats", "Shirts", "Pants", "Shoes", "Accessories"]}
@@ -52,6 +82,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 20,
     },
+    coinsText: {
+        position: 'absolute',
+        top: 20,
+        left: "5%",
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+    },
     selectionContainer: {
         width: '90%',
     },
@@ -70,14 +108,33 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         maxWidth: '30%',
     },
+    lockedOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 10,
+    },
+    lockIcon: {
+        width: '50%',
+        height: '50%',
+        tintColor: 'white',
+    },
     itemImage: {
         width: '100%',
         height: '100%',
         resizeMode: 'contain',
     },
     priceText: {
-        fontSize: 16,
-        color: '#666',
+        position: 'absolute',
+        bottom: 0,
+        fontSize: 20,
+        color: '#fff',
     },
 });
 

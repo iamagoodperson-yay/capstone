@@ -1,27 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import React, { useState } from "react";
+import { View, Text, Alert, StyleSheet } from 'react-native';
 import Phrases from './Phrases';
 import { selected }from './Phrases';
 import Button from '../components/button';
 
-const submit = () => {
-    if (selected === "chicken_rice") {
-        alert('Correct Answer!');
-    } else {
-        alert('Wrong Answer!');
-    }
-}
-
-const Daily = ({ buttonLayout }) => {
+const Daily = ({ coins, setCoins, buttonLayout }) => {
     const [chall, setChall] = useState('Order Chicken Rice');
+
+    const submit = () => {
+        if (selected === "chicken_rice") {
+            setCoins(coins + 1);
+            Alert.alert('✅ Correct Answer!', 'You get your daily coin!\nTotal coins: ' + coins);
+        } else {
+            Alert.alert('Wrong Answer!', 'Try Again!');
+        }
+    }
 
     return (
         <View style={styles.container}>
+            <View />
             <Text style={styles.challengeText}>Challenge: {chall}</Text>
-            <Phrases
-                buttonLayout={buttonLayout}
-            />
+            <Phrases buttonLayout={buttonLayout} />
             <Button title="Submit Answer" onPress={submit} />
+            <View />
         </View>
     );
 }
@@ -31,13 +32,12 @@ const styles = StyleSheet.create({
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        gap: 20,
         justifyContent: 'center',
         alignItems: 'center',
+        gap: 20,
     },
     challengeText: {
         fontSize: 24,
-        marginVertical: 20,
     },
 });
 

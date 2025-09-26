@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -22,13 +21,14 @@ const screen = (name, component, iconName) => {
                 ),
             }}
         >
-            {() => component}
+            {() => (component)}
         </Tab.Screen>
     );
 }
 
 const App = () => {
     const [buttonLayout, setButtonLayout] = useState(2);
+    const [coins, setCoins] = useState(0);
     const [avatarSelection, setAvatarSelection] = useState({
         hats: 0,
         shirts: 0,
@@ -85,8 +85,7 @@ const App = () => {
                     },
                     headerTitleAlign: 'center',
                     tabBarStyle: {
-                        height: 100,
-                        paddingBottom: 10,
+                        height: 80,
                     },
                     tabBarLabelStyle: {
                         fontSize: 16,
@@ -96,13 +95,17 @@ const App = () => {
                     avatarSelection={avatarSelection}
                     avatarItems={avatarItems}
                 />, "home")}
-                {screen("Phrases", <Phrases 
+                {screen("Phrases", <Phrases
                     buttonLayout={buttonLayout}
                 />, "comment")}
                 {screen("Challenge", <Daily
                     buttonLayout={buttonLayout}
+                    coins={coins}
+                    setCoins={setCoins}
                 />, "calendar")}
-                {screen("Shop", <Shop
+                {screen("Shop", <Shop 
+                    coins={coins}
+                    setCoins={setCoins}
                     avatarSelection={avatarSelection}
                     setAvatarSelection={setAvatarSelection}
                     avatarItems={avatarItems}

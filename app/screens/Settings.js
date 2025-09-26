@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, StyleSheet,Image,TouchableOpacity } from 'react-native';
 
-function Settings({ buttonLayout, setButtonLayout }) {
+function Settings( buttonLayout, setButtonLayout ) {
     const [language, setLanguage] = useState('english');
     return (
         <View style={styles.container}>
@@ -116,8 +116,6 @@ const styles = StyleSheet.create({
         marginTop: 22,
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: 'transparent',
-        borderWidth: 5,
     },
     high_button: {
         height: 93,
