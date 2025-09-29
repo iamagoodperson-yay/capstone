@@ -9,8 +9,8 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
 
     const submit = () => {
         if (selected === "chicken_rice") {
+            Alert.alert('✅ Correct Answer!', 'You get your daily coin!\nTotal coins: ' + (coins + 1));
             setCoins(coins + 1);
-            Alert.alert('✅ Correct Answer!', 'You get your daily coin!\nTotal coins: ' + coins);
         } else {
             Alert.alert('Wrong Answer!', 'Try Again!');
         }

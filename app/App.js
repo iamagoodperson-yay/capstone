@@ -45,34 +45,26 @@ const App = () => {
                 { id: 2, name: require('../assets/avatar/hats/hat2.png'), price: 1, unlocked: false, },
                 { id: 3, name: require('../assets/avatar/hats/hat3.png'), price: 1, unlocked: false, },
             ],
-        // shirts:
-        //     [
-        //         { id: 0, name: "X", price: 0, unlocked: true, },
-        //         { id: 1, name: "👕", price: 2, unlocked: false, },
-        //         { id: 2, name: "👔", price: 3, unlocked: false, },
-        //         { id: 3, name: "👚", price: 2, unlocked: false, },
-        //     ],
-        // pants:
-        //     [
-        //         { id: 0, name: "X", price: 0, unlocked: true, },
-        //         { id: 1, name: "👖", price: 2, unlocked: false, },
-        //         { id: 2, name: "🩳", price: 2, unlocked: false, },
-        //         { id: 3, name: "👗", price: 3, unlocked: false, },
-        //     ],
-        // shoes:
-        //     [
-        //         { id: 0, name: "X", price: 0, unlocked: true, },
-        //         { id: 1, name: "👟", price: 2, unlocked: false, },
-        //         { id: 2, name: "👠", price: 3, unlocked: false, },
-        //         { id: 3, name: "🥾", price: 3, unlocked: false, },
-        //     ],
-        // accessories:
-        //     [
-        //         { id: 0, name: "X", price: 0, unlocked: true, },
-        //         { id: 1, name: "🎒", price: 2, unlocked: false, },
-        //         { id: 2, name: "🕶️", price: 3, unlocked: false, },
-        //         { id: 3, name: "📿", price: 3, unlocked: false, },
-        //     ],
+        shirts:
+            [
+                { id: 0, name: require('../assets/avatar/none.png'), price: 0, unlocked: true, },
+                // { id: 1, name: require('../assets/avatar/shirts/shirt1.png'), price: 2, unlocked: false, },
+            ],
+        pants:
+            [
+                { id: 0, name: require('../assets/avatar/none.png'), price: 0, unlocked: true, },
+                // { id: 1, name: require('../assets/avatar/pants/pant1.png'), price: 2, unlocked: false, },
+            ],
+        shoes:
+            [
+                { id: 0, name: require('../assets/avatar/none.png'), price: 0, unlocked: true, },
+                // { id: 1, name: require('../assets/avatar/shoes/shoe1.png'), price: 2, unlocked: false, },
+            ],
+        accessories:
+            [
+                { id: 0, name: require('../assets/avatar/none.png'), price: 0, unlocked: true, },
+                // { id: 1, name: require('../assets/avatar/accessories/accessory1.png'), price: 2, unlocked: false, },
+            ],
     });
 
     return (

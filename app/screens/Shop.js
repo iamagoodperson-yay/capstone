@@ -31,8 +31,8 @@ function Shop({ coins, setCoins, avatarSelection, setAvatarSelection, avatarItem
                         setCoins(prevCoins => prevCoins - item.price);
                     } else {
                         Alert.alert(
-                            'Insufficient Coins',
-                            `You need ${item.price} coins but only have ${coins}`,
+                            'Not enough 🪙',
+                            `You need to have ${item.price} 🪙 but only have ${coins} 🪙.`,
                         );
                     }
                 }
@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     lockIcon: {
-        width: '50%',
-        height: '50%',
+        width: '45%',
+        height: '45%',
         tintColor: 'white',
     },
     itemImage: {
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     priceText: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 3,
         fontSize: 20,
         color: '#fff',
     },

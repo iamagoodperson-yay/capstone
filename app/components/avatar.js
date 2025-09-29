@@ -1,6 +1,6 @@
 import { View, Image, StyleSheet } from 'react-native';
 
-export default function Avatar({ size = 300, avatarSelection, avatarItems }) {
+export default function Avatar({ size = 400, avatarSelection, avatarItems }) {
     return (
         <View style={[styles.avatarContainer, {width: size, height: size} ]}>
             <Image

@@ -1,8 +1,10 @@
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Avatar from '../components/avatar';
 import Button from '../components/button';
 
 const Home = ({ avatarSelection, avatarItems }) => {
+    const navigation = useNavigation();
     const phrases = [
         { phrase: "Hello", image: require('../../assets/phrases/hello.png') },
         { phrase: "I want to eat chicken rice", image: require('../../assets/phrases/chicken_rice.png') },
@@ -23,7 +25,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
 
     return (
         <View style={styles.container}>
-            <Avatar size={200} avatarSelection={avatarSelection} avatarItems={avatarItems}/>
+            <Avatar size={250} avatarSelection={avatarSelection} avatarItems={avatarItems}/>
             <Text style={styles.header}>Common phrases that you use</Text>
             <View style={styles.list}>
                 <FlatList
@@ -35,12 +37,16 @@ const Home = ({ avatarSelection, avatarItems }) => {
             </View>
             <Button
                 title="See More..."
-                onPress={() => {}}
+                onPress={() => {
+                    navigation.navigate('Phrases');
+                }}
                 color="#2196F3"
             />
             <Button
                 title="Solve Daily Challenge"
-                onPress={() => {}}
+                onPress={() => {
+                    navigation.navigate('Challenge');
+                }}
             />
         </View>
     );
@@ -50,7 +56,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
         alignItems: 'center',
         gap: 10,
     },

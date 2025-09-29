@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Cell from '../components/cell';
 import { phrases } from "../data";
 
 const story = phrases;
-
 export let selected = null;
 
 export async function proceed(choice, setCurrentId) {
@@ -31,48 +31,6 @@ export async function proceed(choice, setCurrentId) {
 
 const Phrases = ({ buttonLayout })  => {
     const [currentId, setCurrentId] = useState("categories");
-    
-    const renderCell = ({choice,idx,buttonlayout}) => {
-        switch(buttonlayout) {
-            case 1:
-                return(
-                    <TouchableOpacity
-                        key={idx}
-                        style={choice.size === "sound_button" ? styles.sound_button : styles.normal_button}
-                        onPress={() => proceed(choice,setCurrentId)}
-                    >
-                        <Image source={choice.png}
-                        style={styles.main_image} />
-                    </TouchableOpacity> 
-                ) 
-            case 2:
-                return(
-                    <TouchableOpacity
-                        key={idx}
-                        style={choice.size === "sound_button" ? styles.sound_button : styles.normal_button}
-                        onPress={() => proceed(choice,setCurrentId)}
-                    >
-                        <Image source={choice.png}
-                        style={styles.split_image} />
-                        <View style={styles.split_textdiv}>
-                            <Text style={styles.split_text}>{choice.text}</Text>
-                        </View>
-                    </TouchableOpacity>  
-                )
-            case 3:
-                return(
-                    <TouchableOpacity
-                        key={idx}
-                        style={choice.size === "sound_button" ? styles.sound_button : styles.normal_button}
-                        onPress={() => proceed(choice, setCurrentId)}
-                    >
-                        <View style={styles.split_textdiv}>
-                            <Text style={styles.main_text}>{choice.text}</Text>
-                        </View>
-                    </TouchableOpacity>  
-                )
-        }
-    };
     // Load used counts from AsyncStorage on mount
     useEffect(() => {
         (async () => {
@@ -112,7 +70,12 @@ const Phrases = ({ buttonLayout })  => {
             <Text style={styles.header}>{currentNode.text}</Text>
 
             {currentNode.choices.map((choice, idx) => (
-                renderCell({ choice, idx, buttonlayout: buttonLayout })
+                <Cell
+                    key={idx}
+                    choice={choice}
+                    buttonlayout={buttonLayout}
+                    onPress={() => proceed(choice, setCurrentId)}
+                />
             ))}
         </View>
     );
@@ -121,26 +84,13 @@ const Phrases = ({ buttonLayout })  => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
+        display: 'flex',
         alignItems: 'center',
         backgroundColor: '#ffffff',
         height: '100%',
         width: '100%',
         padding: 20,
-    },normal_button: {
-        height: 93,
-        width: 330,
-        backgroundColor: '#d9d9d9',
-        fontSize: 24,
-        color:'#000000',
-        borderRadius: 0,
-        marginTop: 22,
-        flexDirection:'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button_text:{
-        fontSize:24
+        gap: 20,
     },
     sound_button: {
         backgroundColor: '#d9d9d9',
@@ -153,7 +103,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    back_button:{
+    back_button: {
         backgroundColor: '#d9d9d9',
         fontSize: 24,
         color: '#000000',
@@ -169,30 +119,6 @@ const styles = StyleSheet.create({
         color: '#000000',
         marginBottom: 24,
     },
-        split_image:{
-        height: 50,
-        width: 50,
-        marginRight:20,
-        marginLeft:20
-    },
-    split_text:{
-        fontSize:24
-    },
-    main_image: {
-        height:80,
-        width:80,
-    },
-    main_text:{
-        fontSize:36
-    },
-    back_text:{
-        fontSize:18
-    },
-    split_textdiv: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
 });
 
 export default Phrases;
