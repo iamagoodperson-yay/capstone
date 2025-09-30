@@ -26,36 +26,34 @@ function Settings({ buttonLayout, setButtonLayout }) {
                 {renderFlag('indonesian', require('../../assets/settings/indonesianflag.png'))}
             </View>
             <Text style={styles.subtext}>Button Layout</Text>
-                <Cell
-                    choice={{
-                        size: buttonLayout == 1 ? "selected" : "normal_button",
-                        png: require('../../assets/phrases/food.png'),
-                    }}
-                    buttonlayout={1}
-                    onPress={() => setButtonLayout(1)}
-                />
-                <Cell
-                    choice={{
-                        size: buttonLayout == 2 ? "selected" : "normal_button",
-                        png: require('../../assets/phrases/food.png'),
-                        text: "Food",
-                    }}
-                    buttonlayout={2}
-                    onPress={() => setButtonLayout(2)}
-                />
-                <Cell
-                    choice={{
-                        size: buttonLayout == 3 ? "selected" : "normal_button",
-                        text: "Food",
-                    }}
-                    buttonlayout={3}
-                    onPress={() => setButtonLayout(3)}
-                />
+            <Cell
+                choice={{
+                    type: buttonLayout == 1 ? "selected" : "normal_button",
+                    image: require('../../assets/phrases/food.png'),
+                }}
+                buttonlayout={1}
+                onPress={() => setButtonLayout(1)}
+            />
+            <Cell
+                choice={{
+                    type: buttonLayout == 2 ? "selected" : "normal_button",
+                    image: require('../../assets/phrases/food.png'),
+                    text: "Food",
+                }}
+                buttonlayout={2}
+                onPress={() => setButtonLayout(2)}
+            />
+            <Cell
+                choice={{
+                    type: buttonLayout == 3 ? "selected" : "normal_button",
+                    text: "Food",
+                }}
+                buttonlayout={3}
+                onPress={() => setButtonLayout(3)}
+            />
         </View>
     );
 }
-
-export default Settings;
 
 const styles = StyleSheet.create({
     container: {
@@ -63,15 +61,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent:'center',
         alignItems:'center',
-        gap: 20,
     },
     subtext: {
         fontSize: 35,
         color: '#000000',
+        marginBottom: 20,
     },
     flagcontainer:{
         flexDirection: 'row',
         gap: 20,
+        marginBottom: 20,
     },
     flag: {
         height: 75,
@@ -85,3 +84,5 @@ const styles = StyleSheet.create({
         borderWidth: 5
     },
 });
+
+export default Settings;

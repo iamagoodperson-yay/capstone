@@ -8,8 +8,6 @@ const Button = ({ onPress, title, color="#4CAF50", width="85%" }) => {
     );
 };
 
-export default Button;
-
 const styles = StyleSheet.create({
     button: {
         padding: 10,
@@ -22,3 +20,4 @@ const styles = StyleSheet.create({
     },
 });
 
+export default Button;

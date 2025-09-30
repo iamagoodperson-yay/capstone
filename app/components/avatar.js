@@ -1,6 +1,6 @@
 import { View, Image, StyleSheet } from 'react-native';
 
-export default function Avatar({ size = 400, avatarSelection, avatarItems }) {
+const Avatar = ({ size = 400, avatarSelection, avatarItems }) => {
     return (
         <View style={[styles.avatarContainer, {width: size, height: size} ]}>
             <Image
@@ -40,3 +40,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
+
+export default Avatar;

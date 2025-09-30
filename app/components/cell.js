@@ -1,14 +1,15 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 
 const Cell = ({ choice, buttonlayout, onPress }) => {
+    const screenHeight = Dimensions.get('window').height;
     const renderContent = () => {
         switch (buttonlayout) {
             case 1:
-                return <Image source={choice.png} style={styles.image} />;
+                return <Image source={choice.image} style={styles.image} />;
             case 2:
                 return (
-                    <View style={styles.contentContainer}>
-                        <Image source={choice.png} style={[styles.image, { width: "20%" }]} />
+                    <View style={styles.horizontalContainer}>
+                        <Image source={choice.image} style={[styles.image, { width: "20%" }]} />
                         <View style={styles.textContainer}>
                             <Text style={[styles.text, {fontSize: 28}]}>{choice.text}</Text>
                         </View>
@@ -21,7 +22,7 @@ const Cell = ({ choice, buttonlayout, onPress }) => {
 
     return (
         <TouchableOpacity
-            style={[choice.size === "sound_button" ? styles.sound_button : styles.normal_button, choice.size === "selected" ? styles.selected_button : null]}
+            style={[styles.normal_button, {height: screenHeight * 0.125}, choice.type === "selected" ? styles.selected_button : null]}
             onPress={onPress}
         >
             {renderContent()}
@@ -29,36 +30,23 @@ const Cell = ({ choice, buttonlayout, onPress }) => {
     );
 };
 
-export default Cell;
-
 const styles = StyleSheet.create({
-    sound_button: {
-        fontSize: 36,
-        color: '#000000',
-        backgroundColor: '#d9d9d9',
-        height: '25%',
-        width: '80%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     normal_button: {
         fontSize: 24,
-        color: '#000000',
         backgroundColor: '#d9d9d9',
-        height: "15%",
-        width: "80%",
+        margin: 10,
+        width: '80%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'center',
         borderColor: 'transparent',
         borderWidth: 5,
     },
     selected_button: {
         borderColor: '#4CAF50',
-        borderWidth: 5,
     },
-    contentContainer: {
-        flex: 1,
+    horizontalContainer: {
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -77,3 +65,5 @@ const styles = StyleSheet.create({
         fontSize: 32,
     },
 });
+
+export default Cell;

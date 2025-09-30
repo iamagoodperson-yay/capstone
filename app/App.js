@@ -27,6 +27,7 @@ const screen = (name, component, iconName) => {
 }
 
 const App = () => {
+    const [selectedPhrase, setSelectedPhrase] = useState("");
     const [buttonLayout, setButtonLayout] = useState(2);
     const [coins, setCoins] = useState(0);
     const [avatarSelection, setAvatarSelection] = useState({
@@ -88,9 +89,12 @@ const App = () => {
                     avatarItems={avatarItems}
                 />, "home")}
                 {screen("Phrases", <Phrases
+                    setSelectedPhrase={setSelectedPhrase}
                     buttonLayout={buttonLayout}
                 />, "comment")}
                 {screen("Challenge", <Daily
+                    selectedPhrase={selectedPhrase}
+                    setSelectedPhrase={setSelectedPhrase}
                     buttonLayout={buttonLayout}
                     coins={coins}
                     setCoins={setCoins}
