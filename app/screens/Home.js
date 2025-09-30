@@ -2,7 +2,7 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react
 import { useNavigation } from '@react-navigation/native';
 import Avatar from '../components/avatar';
 import Button from '../components/button';
-import { phrases } from '../data';
+import { phrases } from '../context/PhrasesContext';
 
 const Home = ({ avatarSelection, avatarItems }) => {
     const navigation = useNavigation();

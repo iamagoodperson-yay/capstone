@@ -6,43 +6,77 @@ const initialPhrases = [
         id: "categories",
         text: "Categories",
         choices: [
-            { text: "Food", next: "food", size: "normal_button", image: require('../assets/phrases/food.png') },
-            { text: "Transport", next: "transport", size: "normal_button", image: require('../assets/phrases/food.png') },
-            { text: "Directions", next: "directions", size: "normal_button", image: require('../assets/phrases/food.png') },
-            { text: "Things", next: "things", size: "normal_button", image: require('../assets/phrases/food.png') }
+            { text: "Food", next: "food", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Directions", next: "directions", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Social", next: "social", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Emergency", next: "emergency", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Others", next: "others", size: "normal_button", image: require('../../assets/phrases/food.png') }
         ]
     },
     {
         id: "food",
         text: "Food",
         choices: [
-            { text: "Order", next: "order", size: "normal_button", image: require('../assets/phrases/chicken_rice.png') },
-            { text: "Describe", next: "describe", size: "normal_button", image: require('../assets/phrases/chicken_rice.png') }
-        ],
+            { text: "Hawker Centre", next: "hawker_centre", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Restaurant", next: "restaurant", size: "normal_button", image: require('../../assets/phrases/food.png') }
+        ]
     },
     {
-        id: "order",
-        text: "Order",
+        id: "hawker_centre",
+        text: "Food > Hawker Centre",
         choices: [
-            { text: "I want to order Chicken Rice", next: "chicken_rice", size: "normal_button", image: require('../assets/phrases/chicken_rice.png') },
-            { text: "I want to order fishball noodles", next: "fishball_noodles", size: "normal_button", image: require('../assets/phrases/chicken_rice.png') }
-        ],
+            { text: "Chicken Rice", next: "chicken_rice", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Fishball Noodles", next: "fishball_noodles", size: "normal_button", image: require('../../assets/phrases/food.png') }
+        ]
     },
     {
         id: "chicken_rice",
-        text: "I want to order Chicken Rice",
+        text: "Food > Hawker Centre > Chicken Rice",
         choices: [
-            { text: "I want to order chicken rice", next: "chicken_rice", size: "sound_button", image: require('../assets/phrases/chicken_rice.png') }
-        ],
-        used: 0
+            { text: "I want to eat Chicken Rice", next: "chicken_rice", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Payment?", next: "payment", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Type of Chicken", next: "type_of_chicken", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Takeaway?", next: "takeaway", size: "normal_button", image: require('../../assets/phrases/food.png') },
+            { text: "Add-on?", next: "chicken_rice_addon", size: "normal_button", image: require('../../assets/phrases/food.png') }
+        ]
     },
     {
-        id: "fishball_noodles",
-        text: "I want to order fishball noodles",
+        id: "payment",
+        text: "Payment",
         choices: [
-            { text: "I want to order fishball noodles", next: "fishball_noodles", size: "sound_button", image: require('../assets/phrases/chicken_rice.png') }
-        ],
-        used: 0
+            { text: "Pay Cash", next: "payment", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Tap Card", next: "payment", size: "sound_button", image: require('../../assets/phrases/food.png') }
+        ]
+    },
+    {
+        id: "type_of_chicken",
+        text: "Type of Chicken",
+        choices: [
+            { text: "Steamed", next: "type_of_chicken", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Roasted", next: "type_of_chicken", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Char Siu", next: "type_of_chicken", size: "sound_button", image: require('../../assets/phrases/food.png') }
+            
+        ]
+    },
+    {
+        id: "takeaway",
+        text: "Takeaway?",
+        choices: [
+            { text: "Takeaway", next: "takeaway", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Eat-In", next: "takeaway", size: "sound_button", image: require('../../assets/phrases/food.png') }
+            
+        ]
+    },
+    {
+        id: "chicken_rice_addon",
+        text: "Add-on?",
+        choices: [
+            { text: "Extra Chicken", next: "chicken_rice_addon", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Extra Rice", next: "chicken_rice_addon", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Extra Vegetables", next: "chicken_rice_addon", size: "sound_button", image: require('../../assets/phrases/food.png') },
+            { text: "Add Egg", next: "chicken_rice_addon", size: "sound_button", image: require('../../assets/phrases/food.png') }
+            
+        ]
     }
 ];
 
