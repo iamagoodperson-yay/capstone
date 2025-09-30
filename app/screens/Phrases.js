@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Cell from '../components/cell';
 import { usePhrasesContext } from '../context/PhrasesContext';
 
@@ -11,7 +11,8 @@ const Phrases = ({ buttonLayout }) => {
         navigateToChoice, 
         goBack, 
         canGoBack,
-        updatePhraseUsage
+        phrases,
+        getBreadcrumbs
     } = usePhrasesContext();
     
     const currentNode = getCurrentNode();
@@ -24,37 +25,53 @@ const Phrases = ({ buttonLayout }) => {
         );
     }
 
-    const handleChoicePress = async (choice) => {
-        if (choice.size === "sound_button") {
-            // Handle sound button - context handles AsyncStorage automatically
-            await updatePhraseUsage(choice.next);
-            console.log(choice.text, "used - count updated");
-            selected = choice.next;
-        } else {
-            navigateToChoice(choice);
-        }
+    // Convert choice IDs to choice objects with proper data
+    const choiceObjects = currentNode.choices.map(choiceId => {
+        const choiceNode = phrases.find(p => p.id === choiceId);
+        return {
+            id: choiceId,
+            text: choiceNode ? choiceNode.text : choiceId,
+            image: choiceNode ? choiceNode.image : null,
+            type: choiceNode ? choiceNode.type : 'select'
+        };
+    });
+
+    const handleChoicePress = (choiceObj) => {
+        navigateToChoice(choiceObj.id);
     };
+
+    const breadcrumbs = getBreadcrumbs();
+    const title = breadcrumbs.length > 1 ? breadcrumbs[1] : currentNode.text;
 
     return (
         <View style={styles.container}>
             {canGoBack && (
                 <TouchableOpacity
-                    style={styles.back_button}
+                    style={styles.backButton}
                     onPress={goBack}>
-                    <Text style={styles.back_text}>← Back</Text>
+                    <Text style={styles.backText}>&lt; Back</Text>
                 </TouchableOpacity>
             )}
 
-            <Text style={styles.header}>{currentNode.text}</Text>
+            <Text style={styles.header}>{title}</Text>
 
-            {currentNode.choices.map((choice, idx) => (
-                <Cell
-                    key={idx}
-                    choice={choice}
-                    buttonlayout={buttonLayout}
-                    onPress={() => handleChoicePress(choice)}
-                />
-            ))}
+            {breadcrumbs.length > 0 && 
+            <Text style={styles.breadcrumbText}>
+                {breadcrumbs.join(' > ')}
+            </Text>}
+
+            <FlatList style={styles.listView}
+                data={choiceObjects}
+                renderItem={({ item }) => (
+                    <Cell
+                        key={item.id}
+                        choice={item}
+                        buttonlayout={buttonLayout}
+                        onPress={() => handleChoicePress(item)}
+                    />
+                )}
+                keyExtractor={item => item.id}
+            />
         </View>
     );
 }
@@ -64,28 +81,34 @@ const styles = StyleSheet.create({
         flex: 1,
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#ffffff',
         height: '100%',
         width: '100%',
         padding: 20,
         gap: 20,
     },
-    back_button: {
-        backgroundColor: '#d9d9d9',
-        fontSize: 24,
-        color: '#000000',
-        height: 50,
-        width: 85,
-        borderRadius: 0,
-        marginTop: 22,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     header: {
-        fontSize: 50,
-        color: '#000000',
-        marginBottom: 24,
+        fontSize: 40,
+        fontWeight: '500',
     },
+    breadcrumbText: {
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    backButton: {
+        zIndex: 1,
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        backgroundColor: '#d9d9d9',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+    },
+    backText: {
+        fontSize: 24,
+    },
+    listView: {
+        width: '100%',
+    }
 });
 
 export default Phrases;

@@ -1,20 +1,37 @@
+import React from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Avatar from '../components/avatar';
 import Button from '../components/button';
-import { phrases } from '../data';
+import { usePhrasesContext } from '../context/PhrasesContext';
 
 const Home = ({ avatarSelection, avatarItems }) => {
     const navigation = useNavigation();
+    const { phrases } = usePhrasesContext();
+    
+    // Filter to only get phrases (final speakable phrases)
+    const validPhrases = phrases.filter(phrase => phrase.type === 'phrase');
+    
+    const filteredPhrases = validPhrases
+        .sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0))
+        .slice(0, 4);
 
     const renderItem = ({ item, index }) => (
         <TouchableOpacity
             key={index}
             style={styles.listContainer}
-            onPress={() => {}}
+            onPress={() => {
+                navigation.navigate('Phrases');
+            }}
         >
-            <Image style={styles.listImage} source={item.image} />
-            <Text style={styles.text}>{item.phrase}</Text>
+            <Image 
+                style={styles.listImage}
+                source={item.image || require('../../assets/phrases/food.png')} 
+            />
+            <Text style={styles.text}>{item.text}</Text>
+            {item.usageCount > 0 && (
+                <Text style={styles.usageText}>Used {item.usageCount} times</Text>
+            )}
         </TouchableOpacity>
     );
 
@@ -24,7 +41,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
             <Text style={styles.header}>Common phrases that you use</Text>
             <View style={styles.list}>
                 <FlatList
-                    data={phrases}
+                    data={filteredPhrases}
                     renderItem={renderItem}
                     numColumns={2}
                     keyExtractor={(item, index) => index.toString()}

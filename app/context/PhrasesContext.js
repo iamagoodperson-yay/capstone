@@ -3,46 +3,71 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialPhrases = [
     {
-        id: "categories",
-        text: "Categories",
-        choices: [
-            { text: "Food", next: "food", size: "normal_button", image: require('../../assets/phrases/food.png') },
-            { text: "Transport", next: "transport", size: "normal_button", image: require('../../assets/phrases/food.png') },
-            { text: "Directions", next: "directions", size: "normal_button", image: require('../../assets/phrases/food.png') },
-            { text: "Things", next: "things", size: "normal_button", image: require('../../assets/phrases/food.png') }
-        ]
+        id: 'categories',
+        type: 'select',
+        text: 'Categories',
+        choices: ['food', 'directions', 'social', 'emergency', 'others']
     },
     {
-        id: "food",
-        text: "Food",
-        choices: [
-            { text: "Order", next: "order", size: "normal_button", image: require('../../assets/phrases/chicken_rice.png') },
-            { text: "Describe", next: "describe", size: "normal_button", image: require('../../assets/phrases/chicken_rice.png') }
-        ],
+        id: 'food',
+        type: 'select',
+        text: 'Food',
+        image: require('../../assets/phrases/food.png'),
+        choices: ['hawker_centre', 'restaurant']
     },
     {
-        id: "order",
-        text: "Order",
-        choices: [
-            { text: "I want to order Chicken Rice", next: "chicken_rice", size: "normal_button", image: require('../../assets/phrases/chicken_rice.png') },
-            { text: "I want to order fishball noodles", next: "fishball_noodles", size: "normal_button", image: require('../../assets/phrases/chicken_rice.png') }
-        ],
+        id: 'hawker_centre',
+        type: 'select',
+        text: 'Hawker Centre',
+        image: require('../../assets/phrases/hawker_centre.png'),
+        choices: ['chicken_rice', 'fishball_noodles']
     },
     {
-        id: "chicken_rice",
-        text: "I want to order Chicken Rice",
-        choices: [
-            { text: "I want to order chicken rice", next: "chicken_rice", size: "sound_button", image: require('../../assets/phrases/chicken_rice.png') }
-        ],
-        used: 0
+        id: 'chicken_rice',
+        type: 'phrase',
+        text: 'I want to order Chicken Rice',
+        image: require('../../assets/phrases/chicken_rice.png'),
+        usageCount: 0,
+        choices: ['takeway', 'payment']
     },
     {
-        id: "fishball_noodles",
-        text: "I want to order fishball noodles",
-        choices: [
-            { text: "I want to order fishball noodles", next: "fishball_noodles", size: "sound_button", image: require('../../assets/phrases/chicken_rice.png') }
-        ],
-        used: 0
+        id: 'fishball_noodles',
+        type: 'phrase',
+        text: 'I want to order fishball noodles',
+        image: require('../../assets/phrases/fishball_noodles.png'),
+        usageCount: 0,
+        choices: ['takeway', 'payment']
+    },
+    {
+        id: 'payment',
+        type: 'select',
+        text: 'Payment',
+        image: require('../../assets/phrases/payment.png'),
+        choices: ['card', 'cash']
+    },
+    {
+        id: 'card',
+        type: 'phrase',
+        text: 'I will pay by card',
+        image: require('../../assets/phrases/card.png'),
+        usageCount: 0,
+        choices: []
+    },
+    {
+        id: 'cash',
+        type: 'phrase',
+        text: 'I will pay by cash',
+        image: require('../../assets/phrases/cash.png'),
+        usageCount: 0,
+        choices: []
+    },
+    {
+        id: 'takeway',
+        type: 'phrase',
+        text: 'For takeaway',
+        image: require('../../assets/phrases/food.png'),
+        usageCount: 0,
+        choices: []
     }
 ];
 
@@ -57,7 +82,7 @@ export const usePhrasesContext = () => {
 };
 
 export const PhrasesProvider = ({ children }) => {
-    const [currentId, setCurrentId] = useState("categories");
+    const [currentId, setCurrentId] = useState('categories');
     const [navigationStack, setNavigationStack] = useState([]);
     const [phrases, setPhrases] = useState([...initialPhrases]);
 
@@ -71,15 +96,15 @@ export const PhrasesProvider = ({ children }) => {
                     setPhrases(prevPhrases => 
                         prevPhrases.map(phrase => {
                             const savedPhrase = savedPhrases.find(saved => saved.id === phrase.id);
-                            return savedPhrase && typeof savedPhrase.used === "number"
-                                ? { ...phrase, used: savedPhrase.used }
+                            return savedPhrase && typeof savedPhrase.used === 'number'
+                                ? { ...phrase, usageCount: savedPhrase.used }
                                 : phrase;
                         })
                     );
-                    console.log("Loaded saved phrases data from AsyncStorage");
+                    console.log('Loaded saved phrases data from AsyncStorage');
                 }
             } catch (error) {
-                console.error("Error loading saved phrases data:", error);
+                console.error('Error loading saved phrases data:', error);
             }
         };
         
@@ -91,7 +116,7 @@ export const PhrasesProvider = ({ children }) => {
         try {
             await AsyncStorage.setItem('phraseUsedCounts', JSON.stringify(updatedPhrases));
         } catch (error) {
-            console.error("Error saving phrases data:", error);
+            console.error('Error saving phrases data:', error);
         }
     };
 
@@ -102,7 +127,7 @@ export const PhrasesProvider = ({ children }) => {
     const updatePhraseUsage = async (phraseId) => {
         const updatedPhrases = phrases.map(phrase => 
             phrase.id === phraseId 
-                ? { ...phrase, used: (phrase.used || 0) + 1 }
+                ? { ...phrase, usageCount: (phrase.usageCount || 0) + 1 }
                 : phrase
         );
         
@@ -110,19 +135,30 @@ export const PhrasesProvider = ({ children }) => {
         await savePhrases(updatedPhrases);
         
         const updatedPhrase = updatedPhrases.find(p => p.id === phraseId);
-        console.log(`Phrase "${phraseId}" used ${updatedPhrase?.used || 0} times`);
+        console.log(`Phrase "${phraseId}" used ${updatedPhrase?.usageCount || 0} times`);
     };
 
-    const navigateToChoice = (choice) => {
-        if (choice.next) {
-            const nextNode = phrases.find(node => node.id === choice.next);
-            if (nextNode && nextNode.choices && nextNode.choices.length > 0) {
-                // Navigate deeper - has more choices
+    const navigateToChoice = (choiceId) => {
+        const nextNode = phrases.find(node => node.id === choiceId);
+        if (nextNode) {
+            if (nextNode.type === 'select') {
+                // Navigate deeper - this is a selection screen
                 setNavigationStack(prev => [...prev, currentId]);
-                setCurrentId(choice.next);
-            } else {
-                // Final phrase - could handle speech/pronunciation here
-                console.log("Selected phrase:", choice.text);
+                setCurrentId(choiceId);
+            } else if (nextNode.type === 'phrase') {
+                // Update usage count for the phrase
+                updatePhraseUsage(choiceId);
+                console.log('Selected phrase:', nextNode.text);
+                
+                // Check if this phrase has choices to continue navigation
+                if (nextNode.choices && nextNode.choices.length > 0) {
+                    // Navigate deeper - this phrase has more options
+                    setNavigationStack(prev => [...prev, currentId]);
+                    setCurrentId(choiceId);
+                } else {
+                    // This is a final phrase with no further choices
+                    console.log('Final phrase reached:', nextNode.text);
+                }
             }
         }
     };
@@ -135,9 +171,26 @@ export const PhrasesProvider = ({ children }) => {
         }
     };
 
-    const resetToRoot = () => {
-        setCurrentId("categories");
-        setNavigationStack([]);
+    const getBreadcrumbs = () => {
+        const breadcrumbs = [];
+        
+        // Add all items from navigation stack
+        navigationStack.forEach(nodeId => {
+            const node = phrases.find(p => p.id === nodeId);
+            if (node) {
+                breadcrumbs.push(node.text);
+            }
+        });
+        
+        // Add current node if it's not the root
+        if (currentId !== 'categories') {
+            const currentNode = phrases.find(p => p.id === currentId);
+            if (currentNode) {
+                breadcrumbs.push(currentNode.text);
+            }
+        }
+        
+        return breadcrumbs;
     };
 
     const value = {
@@ -147,8 +200,8 @@ export const PhrasesProvider = ({ children }) => {
         getCurrentNode,
         navigateToChoice,
         goBack,
-        resetToRoot,
         updatePhraseUsage,
+        getBreadcrumbs,
         canGoBack: navigationStack.length > 0
     };
 
