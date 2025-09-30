@@ -8,6 +8,7 @@ import Phrases from './screens/Phrases';
 import Daily from './screens/Daily';
 import Shop from './screens/Shop';
 import Settings from './screens/Settings';
+import { PhrasesProvider } from './context/PhrasesContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -69,50 +70,52 @@ const App = () => {
     });
 
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={{
-                    headerTitleStyle: {
-                        fontSize: 36,
-                        fontWeight: 'bold',
-                    },
-                    headerTitleAlign: 'center',
-                    tabBarStyle: {
-                        height: 80,
-                    },
-                    tabBarLabelStyle: {
-                        fontSize: 16,
-                    },
-            }}>
-                {screen("Home", <Home
-                    avatarSelection={avatarSelection}
-                    avatarItems={avatarItems}
-                />, "home")}
-                {screen("Phrases", <Phrases
-                    setSelectedPhrase={setSelectedPhrase}
-                    buttonLayout={buttonLayout}
-                />, "comment")}
-                {screen("Challenge", <Daily
-                    selectedPhrase={selectedPhrase}
-                    setSelectedPhrase={setSelectedPhrase}
-                    buttonLayout={buttonLayout}
-                    coins={coins}
-                    setCoins={setCoins}
-                />, "calendar")}
-                {screen("Shop", <Shop 
-                    coins={coins}
-                    setCoins={setCoins}
-                    avatarSelection={avatarSelection}
-                    setAvatarSelection={setAvatarSelection}
-                    avatarItems={avatarItems}
-                    setAvatarItems={setAvatarItems}
-                />, "shopping-cart")}
-                {screen("Settings", <Settings
-                    buttonLayout={buttonLayout}
-                    setButtonLayout={setButtonLayout}
-                />, "cog")}
-            </Tab.Navigator>
-        </NavigationContainer>
+        <PhrasesProvider>
+            <NavigationContainer>
+                <Tab.Navigator
+                    screenOptions={{
+                        headerTitleStyle: {
+                            fontSize: 36,
+                            fontWeight: 'bold',
+                        },
+                        headerTitleAlign: 'center',
+                        tabBarStyle: {
+                            height: 80,
+                        },
+                        tabBarLabelStyle: {
+                            fontSize: 16,
+                        },
+                }}>
+                    {screen("Home", <Home
+                        avatarSelection={avatarSelection}
+                        avatarItems={avatarItems}
+                    />, "home")}
+                    {screen("Phrases", <Phrases
+                        setSelectedPhrase={setSelectedPhrase}
+                        buttonLayout={buttonLayout}
+                    />, "comment")}
+                    {screen("Challenge", <Daily
+                        selectedPhrase={selectedPhrase}
+                        setSelectedPhrase={setSelectedPhrase}
+                        buttonLayout={buttonLayout}
+                        coins={coins}
+                        setCoins={setCoins}
+                    />, "calendar")}
+                    {screen("Shop", <Shop 
+                        coins={coins}
+                        setCoins={setCoins}
+                        avatarSelection={avatarSelection}
+                        setAvatarSelection={setAvatarSelection}
+                        avatarItems={avatarItems}
+                        setAvatarItems={setAvatarItems}
+                    />, "shopping-cart")}
+                    {screen("Settings", <Settings
+                        buttonLayout={buttonLayout}
+                        setButtonLayout={setButtonLayout}
+                    />, "cog")}
+                </Tab.Navigator>
+            </NavigationContainer>
+        </PhrasesProvider>
     );
 }
 

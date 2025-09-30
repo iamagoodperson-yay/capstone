@@ -2,15 +2,10 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react
 import { useNavigation } from '@react-navigation/native';
 import Avatar from '../components/avatar';
 import Button from '../components/button';
+import { phrases } from '../data';
 
 const Home = ({ avatarSelection, avatarItems }) => {
     const navigation = useNavigation();
-    const phrases = [
-        { phrase: "Hello", image: require('../../assets/phrases/hello.png') },
-        { phrase: "I want to eat chicken rice", image: require('../../assets/phrases/chicken_rice.png') },
-        { phrase: "Thank you", image: require('../../assets/phrases/thank_you.png') },
-        { phrase: "Goodbye", image: require('../../assets/phrases/goodbye.png') },
-    ]
 
     const renderItem = ({ item, index }) => (
         <TouchableOpacity
