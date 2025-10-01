@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'rea
 
 const Cell = ({ content, buttonlayout, onPress, onLongPress, height }) => {
     const screenHeight = Dimensions.get('window').height;
+    const screenWidth = Dimensions.get('window').width;
     const renderContent = () => {
         switch (buttonlayout) {
             case 1:
@@ -22,7 +23,7 @@ const Cell = ({ content, buttonlayout, onPress, onLongPress, height }) => {
 
     return (
         <TouchableOpacity
-            style={[styles.normal_button, {height: screenHeight * height}, content.type === "selected" ? styles.selected_button : null]}
+            style={[styles.normal_button, {height: screenHeight * height, width: screenWidth * 0.80}, content.type === "selected" ? styles.selected_button : null]}
             onPress={onPress}
             onLongPress={() => {
                 console.log('Long press detected on:', content.text);
@@ -41,7 +42,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         backgroundColor: '#d9d9d9',
         margin: 10,
-        width: '80%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
     },
     image: {
         marginLeft: 20,
