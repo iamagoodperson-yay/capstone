@@ -29,9 +29,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
                 source={item.image || require('../../assets/phrases/food.png')} 
             />
             <Text style={styles.text}>{item.text}</Text>
-            {item.usageCount > 0 && (
-                <Text style={styles.usageText}>Used {item.usageCount} times</Text>
-            )}
+            <Text>{item.usageCount}</Text>
         </TouchableOpacity>
     );
 
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '45%',
         height: 150,
-        borderRadius: 10,
+        borderRadius: 20,
     },
     listImage: {
         height: 50,

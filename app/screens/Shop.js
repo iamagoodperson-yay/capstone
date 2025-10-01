@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#d0d0d0',
         margin: 5,
         padding: 15,
-        borderRadius: 10,
+        borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
         maxWidth: '30%',
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
+        borderRadius: 20,
     },
     lockIcon: {
         width: '45%',

@@ -27,29 +27,32 @@ function Settings({ buttonLayout, setButtonLayout }) {
             </View>
             <Text style={styles.subtext}>Button Layout</Text>
             <Cell
-                choice={{
+                content={{
                     type: buttonLayout == 1 ? "selected" : "normal_button",
                     image: require('../../assets/phrases/food.png'),
                 }}
                 buttonlayout={1}
                 onPress={() => setButtonLayout(1)}
+                height={0.125}
             />
             <Cell
-                choice={{
+                content={{
                     type: buttonLayout == 2 ? "selected" : "normal_button",
                     image: require('../../assets/phrases/food.png'),
                     text: "Food",
                 }}
                 buttonlayout={2}
                 onPress={() => setButtonLayout(2)}
+                height={0.125}
             />
             <Cell
-                choice={{
+                content={{
                     type: buttonLayout == 3 ? "selected" : "normal_button",
                     text: "Food",
                 }}
                 buttonlayout={3}
                 onPress={() => setButtonLayout(3)}
+                height={0.125}
             />
         </View>
     );

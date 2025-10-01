@@ -1,29 +1,35 @@
 import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 
-const Cell = ({ choice, buttonlayout, onPress }) => {
+const Cell = ({ content, buttonlayout, onPress, onLongPress, height }) => {
     const screenHeight = Dimensions.get('window').height;
     const renderContent = () => {
         switch (buttonlayout) {
             case 1:
-                return <Image source={choice.image} style={styles.image} />;
+                return <Image source={content.image} style={styles.image} />;
             case 2:
                 return (
                     <View style={styles.horizontalContainer}>
-                        <Image source={choice.image} style={[styles.image, { width: "20%" }]} />
+                        <Image source={content.image} style={[styles.image, { width: "20%" }]} />
                         <View style={styles.textContainer}>
-                            <Text style={[styles.text, {fontSize: 28}]}>{choice.text}</Text>
+                            <Text style={[styles.text, {fontSize: 28}]}>{content.text}</Text>
                         </View>
                     </View>
                 );
             case 3:
-                return <Text style={styles.text}>{choice.text}</Text>;
+                return <Text style={styles.text}>{content.text}</Text>;
         }
     };
 
     return (
         <TouchableOpacity
-            style={[styles.normal_button, {height: screenHeight * 0.125}, choice.type === "selected" ? styles.selected_button : null]}
+            style={[styles.normal_button, {height: screenHeight * height}, content.type === "selected" ? styles.selected_button : null]}
             onPress={onPress}
+            onLongPress={() => {
+                console.log('Long press detected on:', content.text);
+                onLongPress && onLongPress();
+            }}
+            delayLongPress={500}
+            activeOpacity={0.7}
         >
             {renderContent()}
         </TouchableOpacity>
@@ -42,6 +48,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderColor: 'transparent',
         borderWidth: 5,
+        borderRadius: 15,
     },
     selected_button: {
         borderColor: '#4CAF50',
@@ -53,15 +60,15 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
     },
     image: {
-        margin: '5%',
+        marginLeft: 20,
+        marginRight: 25,
         width: "25%",
         aspectRatio: 1,
     },
     text: {
-        textAlign: 'center',
         fontSize: 32,
     },
 });
