@@ -7,7 +7,7 @@ import { useRoute } from '@react-navigation/native';
 import Button from '../components/button';
 import Cell from '../components/cell';
 
-export let selected = null;
+export let selected = '';
 
 const Phrases = ({ buttonLayout, navigation }) => {
 
@@ -15,6 +15,7 @@ const Phrases = ({ buttonLayout, navigation }) => {
     const sent_id = route?.params?.sent_id ?? 'categories';
 
     const screenHeight = Dimensions.get('window').height;
+    const screenWidth = Dimensions.get('window').width;
     const {
         getCurrentNode, 
         navigateToChoice, 
@@ -57,7 +58,7 @@ const Phrases = ({ buttonLayout, navigation }) => {
 
     const handleAddPhrase = async () => {
         if (!newPhraseText.trim()) {
-            alert('Please enter phrase text');
+            Alert.alert('Please enter phrase text');
             return;
         }
 
@@ -74,10 +75,10 @@ const Phrases = ({ buttonLayout, navigation }) => {
             setNewPhraseText('');
             setSelectedImage(null);
             setAddModal(false);
-            alert('Phrase added successfully!');
+            Alert.alert('Phrase added successfully!');
         } catch (error) {
             console.error('Error adding phrase:', error);
-            alert('Error adding phrase: ' + error.message);
+            Alert.alert('Error adding phrase: ' + error.message);
         }
         setIsAdding(false);
     };
@@ -119,7 +120,7 @@ const Phrases = ({ buttonLayout, navigation }) => {
                 />
 
                 <TouchableOpacity
-                    style={[styles.phraseButton, { height: screenHeight * 0.15 }]}
+                    style={[styles.phraseButton, { height: screenHeight * 0.15, width: screenWidth * 0.8 }]}
                     onPress={() => { speak(item.text) }}
                     onLongPress={() => {delAlert(item)}}
                     delayLongPress={500}
