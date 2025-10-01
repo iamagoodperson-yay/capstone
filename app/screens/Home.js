@@ -21,7 +21,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
             key={index}
             style={styles.listContainer}
             onPress={() => {
-                navigation.navigate('Phrases');
+                navigation.navigate('Phrases',{sent_id:item.id});
             }}
         >
             <Image 
