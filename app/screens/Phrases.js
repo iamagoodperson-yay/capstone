@@ -3,12 +3,19 @@ import { View, Text, Image, TouchableOpacity, TextInput, FlatList, ScrollView, M
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
+import { useRoute } from '@react-navigation/native';
 import Button from '../components/button';
 import Cell from '../components/cell';
 
 export let selected = null;
 
-const Phrases = ({ buttonLayout }) => {
+const Phrases = ({ buttonLayout, navigation }) => {
+
+    const route = useRoute();
+    const sent_id = route?.params?.sent_id ?? 'categories';
+
+
+
     const screenHeight = Dimensions.get('window').height;
     const {
         getCurrentNode, 
@@ -20,6 +27,11 @@ const Phrases = ({ buttonLayout }) => {
         addPhrase,
         deletePhrase
     } = usePhrasesContext();
+    
+    React.useEffect(() => {
+        navigateToChoice(sent_id);
+    }, [sent_id]);
+
     const currentNode = getCurrentNode();
 
     const [addModal, setAddModal] = React.useState(false);
@@ -43,6 +55,7 @@ const Phrases = ({ buttonLayout }) => {
 
     const handleChoicePress = (choiceObj) => {
         navigateToChoice(choiceObj.id);
+        selected = choiceObj.id;
     };
 
     const handleAddPhrase = async () => {
