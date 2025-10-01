@@ -93,6 +93,7 @@ const App = () => {
                     {screen("Phrases", <Phrases
                         setSelectedPhrase={setSelectedPhrase}
                         buttonLayout={buttonLayout}
+                        sent_id='categories'
                     />, "comment")}
                     {screen("Challenge", <Daily
                         selectedPhrase={selectedPhrase}

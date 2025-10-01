@@ -113,6 +113,10 @@ export const PhrasesProvider = ({ children }) => {
     const [currentId, setCurrentId] = useState('categories');
     const [navigationStack, setNavigationStack] = useState([]);
     const [phrases, setPhrases] = useState([...initialPhrases]);
+    const setStackToId = (id) => {
+        setNavigationStack([]); // clear stack
+        setCurrentId(id);       // set current node
+    };
 
     // Load saved phrase usage data on mount
     useEffect(() => {
@@ -307,7 +311,8 @@ export const PhrasesProvider = ({ children }) => {
         getBreadcrumbs,
         addPhrase,
         deletePhrase,
-        canGoBack: navigationStack.length > 0
+        canGoBack: navigationStack.length > 0,
+        setStackToId
     };
 
     return (

@@ -14,8 +14,6 @@ const Phrases = ({ buttonLayout, navigation }) => {
     const route = useRoute();
     const sent_id = route?.params?.sent_id ?? 'categories';
 
-
-
     const screenHeight = Dimensions.get('window').height;
     const {
         getCurrentNode, 
@@ -25,23 +23,22 @@ const Phrases = ({ buttonLayout, navigation }) => {
         phrases,
         getBreadcrumbs,
         addPhrase,
-        deletePhrase
+        deletePhrase,
+        setStackToId
     } = usePhrasesContext();
-    
     React.useEffect(() => {
-        navigateToChoice(sent_id);
+        setStackToId(sent_id || 'categories');
     }, [sent_id]);
 
     const currentNode = getCurrentNode();
+
+    React.useEffect(() => { initTTS() }, []);
 
     const [addModal, setAddModal] = React.useState(false);
     const [newPhraseText, setNewPhraseText] = React.useState('');
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [isAdding, setIsAdding] = React.useState(false);
-    
-    React.useEffect(() => { initTTS() }, []);
 
-    // Convert choice IDs to choice objects with proper data
     const choiceObjects = currentNode.choices.map(choiceId => {
         const choiceNode = phrases.find(p => p.id === choiceId);
         return {
@@ -84,6 +81,8 @@ const Phrases = ({ buttonLayout, navigation }) => {
         }
         setIsAdding(false);
     };
+
+    
 
     const handleDeletePhrase = async (phraseId) => {
         console.log('Attempting to delete phrase:', phraseId);
