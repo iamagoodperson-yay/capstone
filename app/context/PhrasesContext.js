@@ -72,8 +72,29 @@ const initialPhrases = [
     {
         id: 'directions',
         type: 'select',
-        text: 'Nasi Lemak, Roti Prata, Eunos, Bedok',
-        image: require('../../assets/phrases/food.png'),
+        text: 'Directions',
+        image: require('../../assets/phrases/directions.png'),
+        choices: []
+    },
+    {
+        id: 'social',
+        type: 'select',
+        text: 'Social',
+        image: require('../../assets/phrases/social.png'),
+        choices: []
+    },
+    {
+        id: 'emergency',
+        type: 'select',
+        text: 'Emergency',
+        image: require('../../assets/phrases/emergency.png'),
+        choices: []
+    },
+    {
+        id: 'others',
+        type: 'select',
+        text: 'Others',
+        image: require('../../assets/phrases/others.png'),
         choices: []
     },
 ];
