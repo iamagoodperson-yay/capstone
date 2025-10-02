@@ -7,7 +7,7 @@ import { usePhrasesContext } from '../context/PhrasesContext';
 
 const Home = ({ avatarSelection, avatarItems }) => {
     const navigation = useNavigation();
-    const { phrases } = usePhrasesContext();
+    const { phrases, navigateToPhrase } = usePhrasesContext();
     
     // Filter to only get phrases (final speakable phrases)
     const validPhrases = phrases.filter(phrase => phrase.type === 'phrase');
@@ -21,7 +21,9 @@ const Home = ({ avatarSelection, avatarItems }) => {
             key={index}
             style={styles.listContainer}
             onPress={() => {
-                navigation.navigate('Phrases',{sent_id:item.id});
+                // Navigate to the specific phrase screen
+                navigateToPhrase(item.id);
+                navigation.navigate('Phrases');
             }}
         >
             <Image 
@@ -29,7 +31,6 @@ const Home = ({ avatarSelection, avatarItems }) => {
                 source={item.image || require('../../assets/phrases/food.png')} 
             />
             <Text style={styles.text}>{item.text}</Text>
-            <Text>{item.usageCount}</Text>
         </TouchableOpacity>
     );
 
@@ -48,6 +49,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
             <Button
                 title="See More..."
                 onPress={() => {
+                    navigateToPhrase('categories');
                     navigation.navigate('Phrases');
                 }}
                 color="#2196F3"
@@ -93,6 +95,11 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 20,
+    },
+    usageCount: {
+        fontSize: 14,
+        color: '#666',
+        marginTop: 5,
     },
 });
 

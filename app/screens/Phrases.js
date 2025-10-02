@@ -18,7 +18,8 @@ const Phrases = ({ buttonLayout, navigation }) => {
     const screenWidth = Dimensions.get('window').width;
     const {
         getCurrentNode, 
-        navigateToChoice, 
+        navigateToChoice,
+        updatePhraseUsage,
         goBack, 
         canGoBack,
         phrases,
@@ -121,7 +122,10 @@ const Phrases = ({ buttonLayout, navigation }) => {
 
                 <TouchableOpacity
                     style={[styles.phraseButton, { height: screenHeight * 0.15, width: screenWidth * 0.8 }]}
-                    onPress={() => { speak(item.text) }}
+                    onPress={() => {
+                        updatePhraseUsage(item.id);
+                        speak(item.text);
+                    }}
                     onLongPress={() => {delAlert(item)}}
                     delayLongPress={500}
                 >
