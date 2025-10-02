@@ -4,10 +4,29 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import { useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../components/button';
 import Cell from '../components/cell';
 
 export let selected = '';
+
+export const saveButtonImage = async (buttonId, imageUri) => {
+  try {
+    await AsyncStorage.setItem(`button_image_${buttonId}`, imageUri);
+  } catch (e) {
+    console.error("Error saving image", e);
+  }
+};
+
+export const loadButtonImage = async (buttonId) => {
+  try {
+    const uri = await AsyncStorage.getItem(`button_image_${buttonId}`);
+    return uri;
+  } catch (e) {
+    console.error("Error loading image", e);
+    return null;
+  }
+};
 
 const Phrases = ({ buttonLayout, navigation }) => {
 
@@ -28,6 +47,7 @@ const Phrases = ({ buttonLayout, navigation }) => {
         deletePhrase,
         setStackToId
     } = usePhrasesContext();
+
     React.useEffect(() => {
         setStackToId(sent_id || 'categories');
     }, [sent_id]);

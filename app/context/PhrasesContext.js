@@ -118,21 +118,20 @@ export const PhrasesProvider = ({ children }) => {
         setCurrentId(id);       // set current node
     };
 
-    // Load saved phrase usage data on mount
     useEffect(() => {
         const loadSavedData = async () => {
             try {
                 const stored = await AsyncStorage.getItem('phrases');
                 if (stored) {
                     const savedPhrases = JSON.parse(stored);
-                    setPhrases(prevPhrases => 
-                        prevPhrases.map(phrase => {
-                            const savedPhrase = savedPhrases.find(saved => saved.id === phrase.id);
-                            return savedPhrase && typeof savedPhrase.usageCount === 'number'
-                                ? { ...phrase, usageCount: savedPhrase.usageCount }
-                                : phrase;
-                        })
-                    );
+
+                    // Rehydrate image URIs into {uri: "..."}
+                    const hydrated = savedPhrases.map(p => ({
+                        ...p,
+                        image: typeof p.image === 'string' ? { uri: p.image } : p.image
+                    }));
+
+                    setPhrases(hydrated);
                     console.log('Loaded saved phrases data from AsyncStorage');
                 }
             } catch (error) {
@@ -143,15 +142,19 @@ export const PhrasesProvider = ({ children }) => {
         loadSavedData();
     }, []);
 
-    // Save phrases data to AsyncStorage
     const savePhrases = async (updatedPhrases) => {
         try {
-            await AsyncStorage.setItem('phrases', JSON.stringify(updatedPhrases));
+            const simplified = updatedPhrases.map(p => ({
+                ...p,
+                image: typeof p.image === 'object' && p.image?.uri
+                    ? p.image.uri   // just save string
+                    : p.image
+            }));
+            await AsyncStorage.setItem('phrases', JSON.stringify(simplified));
         } catch (error) {
             console.error('Error saving phrases data:', error);
         }
     };
-
     const getCurrentNode = () => {
         return phrases.find(node => node.id === currentId);
     };
@@ -200,22 +203,20 @@ export const PhrasesProvider = ({ children }) => {
 
     const addPhrase = async (newPhrase) => {
         try {
-            // Generate a unique ID if not provided
             const id = newPhrase.id || `phrase_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            
+
             const phraseToAdd = {
                 id,
                 type: newPhrase.type || 'phrase',
                 text: newPhrase.text,
-                image: newPhrase.image || require('../../assets/phrases/food.png'), // default image
+                image: newPhrase.image?.uri ? { uri: newPhrase.image.uri } : newPhrase.image || require('../../assets/phrases/food.png'),
                 usageCount: 0,
                 choices: newPhrase.choices || []
             };
 
             // Add to phrases array
-            const updatedPhrases = [...phrases, phraseToAdd];
-            setPhrases(updatedPhrases);
-            
+            let updatedPhrases = [...phrases, phraseToAdd];
+
             // Add this phrase as a choice to current node if it's a select type
             const currentNode = getCurrentNode();
             if (currentNode && currentNode.type === 'select') {
@@ -223,16 +224,16 @@ export const PhrasesProvider = ({ children }) => {
                     ...currentNode,
                     choices: [...currentNode.choices, id]
                 };
-                
-                const phrasesWithUpdatedCurrent = updatedPhrases.map(p => 
+
+                updatedPhrases = updatedPhrases.map(p => 
                     p.id === currentNode.id ? updatedCurrentNode : p
                 );
-                setPhrases(phrasesWithUpdatedCurrent);
-                await savePhrases(phrasesWithUpdatedCurrent);
-            } else {
-                await savePhrases(updatedPhrases);
             }
-            
+
+            // Save the updated list
+            setPhrases(updatedPhrases);
+            await savePhrases(updatedPhrases);
+
             console.log('Added phrase:', phraseToAdd);
             return id;
         } catch (error) {
@@ -240,7 +241,6 @@ export const PhrasesProvider = ({ children }) => {
             throw error;
         }
     };
-
     const deletePhrase = async (phraseId) => {
         try {
             // Don't allow deleting core phrases
