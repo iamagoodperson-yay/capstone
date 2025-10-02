@@ -8,11 +8,20 @@ const Avatar = ({ size = 400, avatarSelection, avatarItems }) => {
                 source={require('../../assets/avatar/avatar.png')}
                 resizeMode="contain"
             />
-            {avatarSelection.hats !== 0 && avatarItems.hats && (
+            {avatarSelection.hats !== 0 && (
                 <View style={styles.hatContainer}>
                     <Image
                         style={{width: size * 0.3, height: size * 0.3}}
                         source={avatarItems.hats.find(item => item.id === avatarSelection.hats)?.name}
+                        resizeMode="contain"
+                    />
+                </View>
+            )}
+            {avatarSelection.shirts !== 0 && (
+                <View style={styles.shirtContainer}>
+                    <Image
+                        style={{width: size * 0.3, height: size * 0.3}}
+                        source={avatarItems.shirts.find(item => item.id === avatarSelection.shirts)?.name}
                         resizeMode="contain"
                     />
                 </View>
@@ -35,7 +44,14 @@ const styles = StyleSheet.create({
     hatContainer: {
         zIndex: 1,
         position: 'absolute',
-        top: '10%',
+        top: '7%',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    shirtContainer: {
+        zIndex: 1,
+        position: 'absolute',
+        top: '50%',
         justifyContent: 'flex-end',
         alignItems: 'center',
     },

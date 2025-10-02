@@ -30,7 +30,7 @@ const screen = (name, component, iconName) => {
 const App = () => {
     const [selectedPhrase, setSelectedPhrase] = useState("");
     const [buttonLayout, setButtonLayout] = useState(2);
-    const [coins, setCoins] = useState(0);
+    const [coins, setCoins] = useState(100);
     const [avatarSelection, setAvatarSelection] = useState({
         hats: 0,
         shirts: 0,
@@ -50,7 +50,7 @@ const App = () => {
         shirts:
             [
                 { id: 0, name: require('../assets/avatar/none.png'), price: 0, unlocked: true, },
-                // { id: 1, name: require('../assets/avatar/shirts/shirt1.png'), price: 2, unlocked: false, },
+                { id: 1, name: require('../assets/avatar/shirts/shirt1.png'), price: 2, unlocked: false, },
             ],
         pants:
             [

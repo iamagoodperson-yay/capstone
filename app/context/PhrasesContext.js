@@ -118,14 +118,14 @@ export const PhrasesProvider = ({ children }) => {
     useEffect(() => {
         const loadSavedData = async () => {
             try {
-                const stored = await AsyncStorage.getItem('phraseUsedCounts');
+                const stored = await AsyncStorage.getItem('phrases');
                 if (stored) {
                     const savedPhrases = JSON.parse(stored);
                     setPhrases(prevPhrases => 
                         prevPhrases.map(phrase => {
                             const savedPhrase = savedPhrases.find(saved => saved.id === phrase.id);
-                            return savedPhrase && typeof savedPhrase.used === 'number'
-                                ? { ...phrase, usageCount: savedPhrase.used }
+                            return savedPhrase && typeof savedPhrase.usageCount === 'number'
+                                ? { ...phrase, usageCount: savedPhrase.usageCount }
                                 : phrase;
                         })
                     );
@@ -142,7 +142,7 @@ export const PhrasesProvider = ({ children }) => {
     // Save phrases data to AsyncStorage
     const savePhrases = async (updatedPhrases) => {
         try {
-            await AsyncStorage.setItem('phraseUsedCounts', JSON.stringify(updatedPhrases));
+            await AsyncStorage.setItem('phrases', JSON.stringify(updatedPhrases));
         } catch (error) {
             console.error('Error saving phrases data:', error);
         }
@@ -174,11 +174,6 @@ export const PhrasesProvider = ({ children }) => {
                 setNavigationStack(prev => [...prev, currentId]);
                 setCurrentId(choiceId);
             } else if (nextNode.type === 'phrase') {
-                // Update usage count for the phrase
-                updatePhraseUsage(choiceId);
-                console.log('Selected phrase:', nextNode.text);
-                
-                // Check if this phrase has choices to continue navigation
                 if (nextNode.choices && nextNode.choices.length > 0) {
                     // Navigate deeper - this phrase has more options
                     setNavigationStack(prev => [...prev, currentId]);
@@ -274,6 +269,50 @@ export const PhrasesProvider = ({ children }) => {
         }
     };
 
+    const navigateToPhrase = (phraseId) => {
+        const targetPhrase = phrases.find(node => node.id === phraseId);
+        if (targetPhrase) {
+            // Build parent map
+            const parentMap = new Map();
+            phrases.forEach(phrase => {
+                if (phrase.choices && phrase.choices.length > 0) {
+                    phrase.choices.forEach(childId => {
+                        parentMap.set(childId, phrase.id);
+                    });
+                }
+            });
+            
+            // Build path by traversing up the parent chain
+            const buildPathToPhrase = (targetId) => {
+                if (targetId === 'categories') return [];
+                
+                const path = [];
+                let currentId = targetId;
+                
+                // Walk up the parent chain
+                while (currentId && currentId !== 'categories') {
+                    const parentId = parentMap.get(currentId);
+                    if (parentId) {
+                        path.unshift(parentId); // Add to front of array
+                        currentId = parentId;
+                    } else {
+                        // No parent found, this is an orphan node
+                        break;
+                    }
+                }
+                
+                return path;
+            };
+            
+            const path = buildPathToPhrase(phraseId);
+            // Clear current navigation and set new path
+            setNavigationStack([...path]);
+            setCurrentId(phraseId);
+            // Update usage count since user selected this phrase
+            updatePhraseUsage(phraseId);
+        }
+    };
+
     const getBreadcrumbs = () => {
         const breadcrumbs = [];
         
@@ -302,6 +341,7 @@ export const PhrasesProvider = ({ children }) => {
         phrases,
         getCurrentNode,
         navigateToChoice,
+        navigateToPhrase,
         goBack,
         updatePhraseUsage,
         getBreadcrumbs,
