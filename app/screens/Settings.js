@@ -78,6 +78,11 @@ function Settings({ buttonLayout, setButtonLayout }) {
             </Text>
             <Image source={require('../../assets/settings/tutorial4.png')} style={styles.main_image}/>
             <Image source={require('../../assets/settings/tutorial5.png')} style={styles.main_image}/>
+            <Text style={styles.small_text}>
+                To add your own phrases, navigate to the Phrases tab and select the "Add Phrase" button at the bottom of the screen. You can then input your desired phrase and keep it for easy access.
+            </Text>
+            <Image source={require('../../assets/settings/tutorial6.png')} style={styles.main_image}/>
+            <Image source={require('../../assets/settings/tutorial7.png')} style={styles.main_image}/>
         </View>
 
         </ScrollView>
@@ -113,7 +118,8 @@ const styles = StyleSheet.create({
     },
     selectedFlag: {
         borderColor: '#4CAF50',
-        borderWidth: 5
+        borderWidth: 5,
+        opacity:1
     },
     scrollView: {
         flex: 1,
@@ -122,20 +128,6 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 32,
-    },
-    normal_button: {
-        fontSize: 24,
-        backgroundColor: '#d9d9d9',
-        margin: 10,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-        borderColor: 'transparent',
-        borderWidth: 5,
-        borderRadius: 15,
-        width:330,
-        height:93
     },
     small_text: {
         fontSize: 20,
