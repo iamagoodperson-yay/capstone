@@ -3,38 +3,22 @@ import { View, Text, Image, TouchableOpacity, TextInput, FlatList, ScrollView, M
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
-import { useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../components/button';
 import Cell from '../components/cell';
 
 export let selected = '';
 
-export const saveButtonImage = async (buttonId, imageUri) => {
-  try {
-    await AsyncStorage.setItem(`button_image_${buttonId}`, imageUri);
-  } catch (e) {
-    console.error("Error saving image", e);
-  }
-};
-
-export const loadButtonImage = async (buttonId) => {
-  try {
-    const uri = await AsyncStorage.getItem(`button_image_${buttonId}`);
-    return uri;
-  } catch (e) {
-    console.error("Error loading image", e);
-    return null;
-  }
-};
-
-const Phrases = ({ buttonLayout, navigation }) => {
-
-    const route = useRoute();
-    const sent_id = route?.params?.sent_id ?? 'categories';
-
+const Phrases = ({ buttonLayout, hideAddButton }) => {
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
+
+    const [addModal, setAddModal] = React.useState(false);
+    const [newPhraseText, setNewPhraseText] = React.useState('');
+    const [selectedImage, setSelectedImage] = React.useState(null);
+    const [isAdding, setIsAdding] = React.useState(false);
+    
+    React.useEffect(() => { initTTS() }, []);
+
     const {
         getCurrentNode, 
         navigateToChoice,
@@ -45,21 +29,8 @@ const Phrases = ({ buttonLayout, navigation }) => {
         getBreadcrumbs,
         addPhrase,
         deletePhrase,
-        setStackToId
     } = usePhrasesContext();
-
-    React.useEffect(() => {
-        setStackToId(sent_id || 'categories');
-    }, [sent_id]);
-
     const currentNode = getCurrentNode();
-
-    React.useEffect(() => { initTTS() }, []);
-
-    const [addModal, setAddModal] = React.useState(false);
-    const [newPhraseText, setNewPhraseText] = React.useState('');
-    const [selectedImage, setSelectedImage] = React.useState(null);
-    const [isAdding, setIsAdding] = React.useState(false);
 
     const choiceObjects = currentNode.choices.map(choiceId => {
         const choiceNode = phrases.find(p => p.id === choiceId);
@@ -103,8 +74,6 @@ const Phrases = ({ buttonLayout, navigation }) => {
         }
         setIsAdding(false);
     };
-
-    
 
     const handleDeletePhrase = async (phraseId) => {
         console.log('Attempting to delete phrase:', phraseId);
@@ -199,12 +168,14 @@ const Phrases = ({ buttonLayout, navigation }) => {
                 />
             </ScrollView>
 
-            <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => setAddModal(true)}
-            >
-                <Text style={styles.addText}>+</Text>
-            </TouchableOpacity>
+            {!hideAddButton && (
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => setAddModal(true)}
+                >
+                    <Text style={styles.addText}>+</Text>
+                </TouchableOpacity>
+            )}
 
             <Modal
                 animationType="slide"
@@ -213,66 +184,77 @@ const Phrases = ({ buttonLayout, navigation }) => {
             >
                 <View style={styles.container}>
                     <Text style={styles.header}>Add</Text>
-                    <TextInput
-                        placeholder="Add phrase text"
-                        style={styles.phraseInput}
-                        value={newPhraseText}
-                        onChangeText={setNewPhraseText}
-                    />
-                    {selectedImage && (
-                        <View style={styles.imagePreview}>
-                            <Text style={styles.imagePreviewText}>Image selected ✓</Text>
-                            <TouchableOpacity onPress={() => setSelectedImage(null)}>
-                                <Text style={styles.removeImageText}>Remove</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    <View style={styles.horizontalContainer}>
-                        <Button 
-                            title="Select Image" 
-                            width="0.4"
-                            color="#2196F3"
-                            onPress={() => {
-                                const options = {
-                                    mediaType: 'photo',
-                                    quality: 0.8,
-                                    maxWidth: 500,
-                                    maxHeight: 500,
-                                    selectionLimit: 1,
-                                    includeBase64: false,
-                                };
-                                
-                                launchImageLibrary(options, (response) => {
-                                    if (response.assets && response.assets[0]) {
-                                        setSelectedImage({ uri: response.assets[0].uri });
-                                        console.log('Selected image:', response.assets[0]);
-                                    }
-                                });
-                            }}
-                        />
-                        <Button 
-                            title="Take Photo" 
-                            width="0.4" 
-                            color="#2196F3"
-                            onPress={() => {
-                                const options = {
-                                    mediaType: 'photo',
-                                    quality: 0.8,
-                                    maxWidth: 500,
-                                    maxHeight: 500,
-                                };
-                                launchCamera(options, (response) => {
-                                    if (response.didCancel || response.error) {
-                                        return;
-                                    }
-                                    setSelectedImage({ uri: response.assets[0].uri });
-                                    console.log('Camera photo:', response.assets[0]);
-                                });
-                            }} 
+
+                    <View style={{width: '95%'}}>
+                        <Text style={styles.phraseInputTitle}>Add phrase or category text</Text>
+                        <TextInput
+                            style={styles.phraseInput}
+                            value={newPhraseText}
+                            onChangeText={setNewPhraseText}
                         />
                     </View>
+
+                    {selectedImage ? (
+                        <View style={styles.imgPreviewContainer}>
+                            <Image source={selectedImage} style={styles.imagePreview} />
+                            <Button title="Remove Image" width="0.4" color="#DC3545" onPress={() => setSelectedImage(null)} />
+                        </View>
+                    ) : (
+                        <View style={styles.horizontalContainer}>
+                            <Button 
+                                title="Select Image" 
+                                width="0.4"
+                                color="#2196F3"
+                                onPress={() => {
+                                    const options = {
+                                        mediaType: 'photo',
+                                        quality: 0.8,
+                                        maxWidth: 500,
+                                        maxHeight: 500,
+                                        selectionLimit: 1,
+                                        includeBase64: false,
+                                    };
+                                    
+                                    launchImageLibrary(options, (response) => {
+                                        if (response.assets && response.assets[0]) {
+                                            setSelectedImage({ uri: response.assets[0].uri });
+                                            console.log('Selected image:', response.assets[0]);
+                                        }
+                                    });
+                                }}
+                            />
+                            <Button 
+                                title="Take Photo" 
+                                width="0.4" 
+                                color="#2196F3"
+                                onPress={() => {
+                                    const options = {
+                                        mediaType: 'photo',
+                                        quality: 0.8,
+                                        maxWidth: 500,
+                                        maxHeight: 500,
+                                    };
+                                    launchCamera(options, (response) => {
+                                        if (response.didCancel || response.error) {
+                                            return;
+                                        }
+                                        if (response.assets && response.assets[0]) {
+                                            setSelectedImage({ uri: response.assets[0].uri });
+                                            console.log('Camera photo:', response.assets[0]);
+                                        }
+                                    });
+                                }} 
+                            />
+                        </View>
+                    )}
+
                     <View style={styles.horizontalContainer}>
-                        <Button title="Close" width="0.4" color="#DC3545" onPress={() => setAddModal(false)} />
+                        <Button
+                            title="Close"
+                            width="0.4"
+                            color="#DC3545"
+                            onPress={() => setAddModal(false)}
+                        />
                         <Button 
                             title={isAdding ? "Adding..." : "Add"} 
                             width="0.4" 
@@ -366,34 +348,35 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     horizontalContainer: {
-        width: '100%',
+        width: '95%',
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+    },
+    phraseInputTitle: {
+        fontSize: 20,
+        marginBottom: 5,
     },
     phraseInput: {
         fontSize: 20,
         borderColor: 'gray',
         borderWidth: 1,
-        width: '100%',
         borderRadius: 10,
         padding: 10,
     },
-    imagePreview: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    imgPreviewContainer: {
+        justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#e8f5e8',
-        borderRadius: 8,
-        width: '100%',
+        gap: 10,
+        width: '95%',
+        backgroundColor: '#d9d9d9',
+        paddingVertical: 20,
+        borderRadius: 10,
+        marginVertical: 10,
     },
-    imagePreviewText: {
-        color: '#2e7d32',
-        fontWeight: 'bold',
-    },
-    removeImageText: {
-        color: '#d32f2f',
-        textDecorationLine: 'underline',
+    imagePreview: {
+        width: 200,
+        height: 200,
+        resizeMode: 'cover',
     },
 });
 

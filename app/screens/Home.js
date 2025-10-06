@@ -21,8 +21,8 @@ const Home = ({ avatarSelection, avatarItems }) => {
             key={index}
             style={styles.listContainer}
             onPress={() => {
-                // Navigate to the specific phrase screen
-                navigation.navigate('Phrases',{sent_id:item.id});
+                navigateToPhrase(item.id);
+                navigation.navigate('Phrases');
             }}
         >
             <Image 

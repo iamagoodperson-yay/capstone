@@ -113,10 +113,6 @@ export const PhrasesProvider = ({ children }) => {
     const [currentId, setCurrentId] = useState('categories');
     const [navigationStack, setNavigationStack] = useState([]);
     const [phrases, setPhrases] = useState([...initialPhrases]);
-    const setStackToId = (id) => {
-        setNavigationStack([]); // clear stack
-        setCurrentId(id);       // set current node
-    };
 
     useEffect(() => {
         const loadSavedData = async () => {
@@ -352,7 +348,6 @@ export const PhrasesProvider = ({ children }) => {
         addPhrase,
         deletePhrase,
         canGoBack: navigationStack.length > 0,
-        setStackToId
     };
 
     return (

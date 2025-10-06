@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         flex: 1,
         aspectRatio: 1,
-        backgroundColor: '#d0d0d0',
+        backgroundColor: '#d9d9d9',
         margin: 5,
         padding: 15,
         borderRadius: 20,

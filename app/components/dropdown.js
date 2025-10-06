@@ -31,7 +31,7 @@ const Dropdown = ({ values, base, changebase }) => {
 
       <TouchableOpacity
         style={{
-            backgroundColor: '#D9D9D9',
+            backgroundColor: '#d9d9d9',
             color: '#000000',
             width: '90%',
             flexDirection: 'row',
