@@ -199,7 +199,7 @@ export const PhrasesProvider = ({ children }) => {
 
     const addPhrase = async (newPhrase) => {
         try {
-            const id = newPhrase.id || `phrase_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const id = newPhrase.id || `phrase_${Date.now()}_${Math.random().toString(36)}`;
 
             const phraseToAdd = {
                 id,

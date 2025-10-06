@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, FlatList, ScrollView, Modal, Dimensions, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Switch, FlatList, ScrollView, Modal, Dimensions, StyleSheet, Alert } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
@@ -8,12 +8,13 @@ import Cell from '../components/cell';
 
 export let selected = '';
 
-const Phrases = ({ buttonLayout, hideAddButton }) => {
+const Phrases = ({ buttonLayout, daily }) => {
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
 
     const [addModal, setAddModal] = React.useState(false);
     const [newPhraseText, setNewPhraseText] = React.useState('');
+    const [isPhrase, setIsPhrase] = React.useState(true);
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [isAdding, setIsAdding] = React.useState(false);
     
@@ -59,15 +60,16 @@ const Phrases = ({ buttonLayout, hideAddButton }) => {
             await addPhrase({
                 text: newPhraseText.trim(),
                 image: selectedImage || require('../../assets/phrases/food.png'),
-                type: 'phrase',
+                type: isPhrase ? 'phrase' : 'select',
                 choices: []
             });
+            Alert.alert(`${isPhrase ? 'Phrase' : 'Category'} added successfully!`);
             
             // Reset form
             setNewPhraseText('');
             setSelectedImage(null);
             setAddModal(false);
-            Alert.alert('Phrase added successfully!');
+            setIsPhrase(true);
         } catch (error) {
             console.error('Error adding phrase:', error);
             Alert.alert('Error adding phrase: ' + error.message);
@@ -115,7 +117,10 @@ const Phrases = ({ buttonLayout, hideAddButton }) => {
                         updatePhraseUsage(item.id);
                         speak(item.text);
                     }}
-                    onLongPress={() => {delAlert(item)}}
+                    onLongPress={() => {
+                        if (daily) return;
+                        delAlert(item);
+                    }}
                     delayLongPress={500}
                 >
                     <View style={styles.textContainer}>
@@ -168,7 +173,7 @@ const Phrases = ({ buttonLayout, hideAddButton }) => {
                 />
             </ScrollView>
 
-            {!hideAddButton && (
+            {!daily && (
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={() => setAddModal(true)}
@@ -186,12 +191,24 @@ const Phrases = ({ buttonLayout, hideAddButton }) => {
                     <Text style={styles.header}>Add</Text>
 
                     <View style={{width: '95%'}}>
-                        <Text style={styles.phraseInputTitle}>Add phrase or category text</Text>
+                        <Text style={styles.inputTitle}>Add {isPhrase ? 'phrase' : 'category'} text</Text>
                         <TextInput
-                            style={styles.phraseInput}
+                            style={styles.addTextInput}
                             value={newPhraseText}
                             onChangeText={setNewPhraseText}
                         />
+                    </View>
+
+                    <View style={{width: '95%'}}>
+                        <Text style={styles.inputTitle}>Add phrase or category</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
+                            <Switch
+                                style={styles.addSwitch}
+                                value={isPhrase}
+                                onValueChange={setIsPhrase}
+                            />
+                            <Text style={styles.inputTitle}>{isPhrase ? 'Phrase' : 'Category'}</Text>
+                        </View>
                     </View>
 
                     {selectedImage ? (
@@ -352,16 +369,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    phraseInputTitle: {
+    inputTitle: {
         fontSize: 20,
         marginBottom: 5,
     },
-    phraseInput: {
+    addTextInput: {
         fontSize: 20,
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 10,
         padding: 10,
+    },
+    addSwitch: {
+        marginVertical: 5,
+        transform: [
+            { scaleX: 1.75 },
+            { scaleY: 1.75 },
+        ],
     },
     imgPreviewContainer: {
         justifyContent: 'center',

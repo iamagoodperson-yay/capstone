@@ -20,7 +20,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
         <View style={styles.container}>
             <View />
             <Text style={styles.challengeText}>Challenge: {chall}</Text>
-            <Phrases buttonLayout={buttonLayout} sent_id='categories' hideAddButton={true} />
+            <Phrases buttonLayout={buttonLayout} daily={true} />
             <Button title="Submit Answer" onPress={submit} />
             <View />
         </View>
