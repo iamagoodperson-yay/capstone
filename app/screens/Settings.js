@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Cell from '../components/cell';
 
 function Settings({ buttonLayout, setButtonLayout }) {
     const [language, setLanguage] = useState('english');
+    const navigation = useNavigation();
 
     const renderFlag = (lang, imgSrc) => (
         <TouchableOpacity onPress={() => setLanguage(lang)}>
@@ -15,6 +17,8 @@ function Settings({ buttonLayout, setButtonLayout }) {
     );
 
     return (
+        <ScrollView style = {styles.scrollView}>
+
         <View style={styles.container}>
             <Text style={styles.subtext}>Languages</Text>
             <View style={styles.flagcontainer}>
@@ -55,6 +59,28 @@ function Settings({ buttonLayout, setButtonLayout }) {
                 height={0.125}
             />
         </View>
+        <View style = {styles.container}>
+            <Text style={styles.subtext}> User's Manual</Text>
+            <Text style={styles.small_text}>
+                The buttons in the Phrases Tab allow you to choose between different scenarios, such as ordering food or asking for directions.
+            </Text>
+            <Image source={require('../../assets/settings/tutorial1.png')} style={styles.main_image}/>
+            <Text style={styles.small_text}>
+                Buttons with a loudspeaker icon will read out the phrase when pressed.
+            </Text>
+            <Image source={require('../../assets/settings/tutorial2.png')} style={styles.main_image}/>
+            <Text style={styles.small_text}>
+                The Daily Challenge resets daily, and requires the user to accomplish a certain task using the Phrases, such as ordering food.
+            </Text>
+            <Image source={require('../../assets/settings/tutorial3.png')} style={styles.main_image}/>
+            <Text style={styles.small_text}>
+                Successfully completing the Daily Challenge awards you coins, allowing you to purchase cosmetics for your avatar.
+            </Text>
+            <Image source={require('../../assets/settings/tutorial4.png')} style={styles.main_image}/>
+            <Image source={require('../../assets/settings/tutorial5.png')} style={styles.main_image}/>
+        </View>
+
+        </ScrollView>
     );
 }
 
@@ -64,6 +90,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent:'center',
         alignItems:'center',
+        textAlign: 'center',
+        margin: 20,
+
     },
     subtext: {
         fontSize: 35,
@@ -72,8 +101,8 @@ const styles = StyleSheet.create({
     },
     flagcontainer:{
         flexDirection: 'row',
-        gap: 20,
-        marginBottom: 20,
+        gap: 10,
+        marginBottom: 10,
     },
     flag: {
         height: 75,
@@ -85,6 +114,41 @@ const styles = StyleSheet.create({
     selectedFlag: {
         borderColor: '#4CAF50',
         borderWidth: 5
+    },
+    scrollView: {
+        flex: 1,
+        width: '100%',
+        backgroundColor: '#fff',
+    },
+    text: {
+        fontSize: 32,
+    },
+    normal_button: {
+        fontSize: 24,
+        backgroundColor: '#d9d9d9',
+        margin: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderColor: 'transparent',
+        borderWidth: 5,
+        borderRadius: 15,
+        width:330,
+        height:93
+    },
+    small_text: {
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    main_image: {
+        height: 200,
+        width: 300,
+        resizeMode: 'contain',
+        marginBottom: 20,
+        marginTop: 20,
+        borderWidth: 2,
+        borderColor: 'black',
     },
 });
 
