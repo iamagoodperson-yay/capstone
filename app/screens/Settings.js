@@ -74,14 +74,8 @@ function Settings({ buttonLayout, setButtonLayout, caregiverNumber, setCaregiver
                 <TextInput
                     value={caregiverNumber}
                     onChangeText={setCaregiverNumber}
-                    placeholder="Enter your caregiver's number..."
                     keyboardType="phone-pad"
-                    style={{
-                        borderWidth: 1,
-                        borderColor: 'gray',
-                        padding: 10,
-                        marginBottom: 20,
-                    }}
+                    style={styles.text_input}
                 />
             </View>
         {/*
@@ -238,6 +232,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderWidth: 2,
         borderColor: 'black',
+    },
+    text_input: {
+        fontSize: 20,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
     },
 });
 
