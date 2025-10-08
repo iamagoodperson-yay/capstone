@@ -33,8 +33,9 @@ const screen = (name, component, icon) => {
 }
 
 const App = () => {
-    const [selectedPhrase, setSelectedPhrase] = useState("");
+    const [selectedPhrase, setSelectedPhrase] = useState('');
     const [buttonLayout, setButtonLayout] = useState(2);
+    const [caregiverNumber, setCaregiverNumber] = useState('');
     const [coins, setCoins] = useState(100);
     const [avatarSelection, setAvatarSelection] = useState({
         hats: 0,
@@ -95,14 +96,13 @@ const App = () => {
                     {screen("Phrases", <Phrases
                         setSelectedPhrase={setSelectedPhrase}
                         buttonLayout={buttonLayout}
-                        sent_id='categories'
+                        caregiverNumber={caregiverNumber}
                     />, faComment)}
                     {screen("Challenge", <Daily
                         selectedPhrase={selectedPhrase}
                         setSelectedPhrase={setSelectedPhrase}
                         buttonLayout={buttonLayout}
                         coins={coins}
-                        setCoins={setCoins}
                     />, faCalendar)}
                     {screen("Shop", <Shop 
                         coins={coins}
@@ -115,6 +115,8 @@ const App = () => {
                     {screen("Settings", <Settings
                         buttonLayout={buttonLayout}
                         setButtonLayout={setButtonLayout}
+                        caregiverNumber={caregiverNumber}
+                        setCaregiverNumber={setCaregiverNumber}
                     />, faCog)}
                 </Tab.Navigator>
             </NavigationContainer>

@@ -9,7 +9,7 @@ import Cell from '../components/cell';
 
 export let selected = '';
 
-const Phrases = ({ buttonLayout, daily }) => {
+const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     const insets = useSafeAreaInsets();
 
     const [addModal, setAddModal] = useState(false);
@@ -29,7 +29,6 @@ const Phrases = ({ buttonLayout, daily }) => {
     goBack,
     canGoBack,
     getBreadcrumbs,
-    caregiverNumber,
   } = usePhrasesContext();
   const current = getCurrent();
   const breadcrumbs = getBreadcrumbs().join(' > ');
@@ -41,7 +40,13 @@ const Phrases = ({ buttonLayout, daily }) => {
                 key={index.toString()}
                 content={item}
                 buttonlayout={buttonLayout}
-                onPress={() => navigateToChoice(item)}
+                onPress={() => {
+                    if (item.text === 'Emergency') {
+                        Linking.openURL(`tel:${caregiverNumber}`);
+                    } else {
+                        navigateToChoice(item);
+                    }
+                }}
             />
         ))
     );

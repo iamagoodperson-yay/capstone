@@ -163,7 +163,6 @@ export const PhrasesProvider = ({ children }) => {
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [caregiverNumber, setcaregiverNumber] = useState('Default Number');
 
   const getCurrentCategory = () => {
     console.log(navigationStack);
@@ -277,11 +276,11 @@ export const PhrasesProvider = ({ children }) => {
     goBack,
     canGoBack: navigationStack.length > 0,
     getBreadcrumbs,
-    caregiverNumber,
-    setcaregiverNumber,
   };
 
   return (
-    <PhrasesContext.Provider value={value}>{children}</PhrasesContext.Provider>
+    <PhrasesContext.Provider value={value}>
+        {children}
+    </PhrasesContext.Provider>
   );
 };
