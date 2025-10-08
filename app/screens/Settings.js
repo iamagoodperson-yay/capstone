@@ -6,13 +6,16 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Cell from '../components/cell';
+import { usePhrasesContext } from '../context/PhrasesContext';
 
 function Settings({ buttonLayout, setButtonLayout }) {
   const [language, setLanguage] = useState('english');
   const navigation = useNavigation();
+  const { caregiverNumber, setcaregiverNumber } = usePhrasesContext();
 
   const renderFlag = (lang, imgSrc) => (
     <TouchableOpacity onPress={() => setLanguage(lang)}>
@@ -74,6 +77,21 @@ function Settings({ buttonLayout, setButtonLayout }) {
           onPress={() => setButtonLayout(3)}
         />
       </View>
+      <View style={styles.container}>
+        <Text style={styles.subheader}>Enter Caregiver's Number</Text>
+        <TextInput
+          value={caregiverNumber}
+          onChangeText={setcaregiverNumber}
+          placeholder="Enter your caregiver's number..."
+          style={{
+            borderWidth: 1,
+            borderColor: 'gray',
+            padding: 10,
+            marginBottom: 20,
+          }}
+        />
+      </View>
+      {/*
       <View style={styles.container}>
         <Text style={styles.subtext}> User's Manual</Text>
         <Text style={styles.subheader}>Phrases</Text>
@@ -166,6 +184,7 @@ function Settings({ buttonLayout, setButtonLayout }) {
           style={styles.main_image}
         />
       </View>
+      */}
     </ScrollView>
   );
 }
