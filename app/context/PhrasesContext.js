@@ -259,7 +259,6 @@ export const PhrasesProvider = ({ children }) => {
     };
 
     const value = {
-        categoriesState,
         inProcess,
         getCurrent,
         navigateToChoice,

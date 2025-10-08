@@ -17,7 +17,7 @@ const Cell = ({ content, buttonlayout, onPress, onLongPress, height = 0.125 }) =
                     </View>
                 );
             case 3:
-                return <Text style={styles.text}>{content.text}</Text>;
+                return <Text style={[styles.text, content.type === "next" ? styles.next_text : null]}>{content.text}</Text>;
             case 4:
                 return (
                     <View style={styles.horizontalContainer}>
@@ -32,14 +32,13 @@ const Cell = ({ content, buttonlayout, onPress, onLongPress, height = 0.125 }) =
 
     return (
         <TouchableOpacity
-            style={[styles.normal_button, {height: screenHeight * height, width: screenWidth * 0.80}, content.type === "selected" ? styles.selected_button : null]}
+            style={[styles.normal_button, {height: screenHeight * height, width: screenWidth * 0.80}, content.type === "selected" ? styles.selected_button : content.type === "next" ? styles.next_button : null]}
             onPress={onPress}
             onLongPress={() => {
                 console.log('Long press detected on:', content.text);
                 onLongPress && onLongPress();
             }}
             delayLongPress={500}
-            activeOpacity={0.7}
         >
             {renderContent()}
         </TouchableOpacity>
@@ -62,6 +61,12 @@ const styles = StyleSheet.create({
     selected_button: {
         borderColor: '#4CAF50',
     },
+    next_button: {
+        backgroundColor: '#4CAF50',
+    },
+    next_text: {
+        color: '#FFFFFF',
+    },
     horizontalContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -72,8 +77,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        marginLeft: 20,
-        marginRight: 25,
+        marginHorizontal: 20,
         width: "25%",
         aspectRatio: 1,
     },
