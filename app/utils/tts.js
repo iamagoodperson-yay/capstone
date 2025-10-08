@@ -1,6 +1,9 @@
 import Tts from 'react-native-tts';
 import { Platform } from 'react-native';
 
+// Track speaking state manually since isSpeaking() doesn't exist
+let isSpeaking = false;
+
 // Lightweight TTS helper with diagnostics.
 export async function initTTS() {
     if (!Tts) return;
@@ -36,6 +39,23 @@ export async function initTTS() {
                 console.log('[TTS] set fallback voice en-us-x-iob-local');
             }
         }
+
+        // Set up event listeners to track speaking state
+        Tts.addEventListener('tts-start', () => {
+            isSpeaking = true;
+            console.log('[TTS] Started speaking');
+        });
+
+        Tts.addEventListener('tts-finish', () => {
+            isSpeaking = false;
+            console.log('[TTS] Finished speaking');
+        });
+
+        Tts.addEventListener('tts-cancel', () => {
+            isSpeaking = false;
+            console.log('[TTS] Cancelled speaking');
+        });
+
     } catch (e) {
         console.warn('[TTS] init failed', e);
     }
@@ -44,6 +64,12 @@ export async function initTTS() {
 export function speak(text) {
     if (!Tts || !text) return;
     try {
+        // Check if TTS is currently speaking, if so, discard this request
+        if (isSpeaking) {
+            console.log('[TTS] Already speaking, discarding request:', text);
+            return;
+        }
+
         // On some iOS react-native-tts builds calling stop() with no args
         // causes a native bridge error (JS undefined -> ObjC BOOL). Avoid
         // calling stop() on iOS to prevent the error. On Android it's safe.

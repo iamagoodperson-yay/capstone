@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 
-const Cell = ({ content, buttonlayout, onPress, onLongPress, height }) => {
+const Cell = ({ content, buttonlayout, onPress, onLongPress, height = 0.125 }) => {
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
     const renderContent = () => {
@@ -18,6 +18,15 @@ const Cell = ({ content, buttonlayout, onPress, onLongPress, height }) => {
                 );
             case 3:
                 return <Text style={styles.text}>{content.text}</Text>;
+            case 4:
+                return (
+                    <View style={styles.horizontalContainer}>
+                        <View style={styles.textContainer}>
+                            <Text style={[styles.text, {fontSize: 28}]}>{content.text}</Text>
+                        </View>
+                        <Image source={content.image} style={[styles.image, { width: "20%" }]} />
+                    </View>
+                );
         }
     };
 

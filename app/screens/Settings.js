@@ -55,7 +55,6 @@ function Settings({ buttonLayout, setButtonLayout }) {
           }}
           buttonlayout={1}
           onPress={() => setButtonLayout(1)}
-          height={0.125}
         />
         <Cell
           content={{
@@ -65,7 +64,6 @@ function Settings({ buttonLayout, setButtonLayout }) {
           }}
           buttonlayout={2}
           onPress={() => setButtonLayout(2)}
-          height={0.125}
         />
         <Cell
           content={{
@@ -74,7 +72,6 @@ function Settings({ buttonLayout, setButtonLayout }) {
           }}
           buttonlayout={3}
           onPress={() => setButtonLayout(3)}
-          height={0.125}
         />
       </View>
       <View style={styles.container}>

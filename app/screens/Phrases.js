@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { View, Text, Image, TouchableOpacity, TextInput, Switch, FlatList, ScrollView, Modal, Dimensions, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Switch, FlatList, ScrollView, Modal, Dimensions, StyleSheet, Alert, Touchable } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
@@ -12,395 +12,91 @@ export let selected = '';
 const Phrases = ({ buttonLayout, daily }) => {
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
+    const insets = useSafeAreaInsets();
 
     const [addModal, setAddModal] = React.useState(false);
     const [newPhraseText, setNewPhraseText] = React.useState('');
     const [isPhrase, setIsPhrase] = React.useState(true);
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [isAdding, setIsAdding] = React.useState(false);
-    
-    const insets = useSafeAreaInsets();
-
+        
     React.useEffect(() => { initTTS() }, []);
 
     const {
-        getCurrentNode, 
+        inProcess,
+        getCurrent,
         navigateToChoice,
-        updatePhraseUsage,
-        goBack, 
+        selectPhrase,
+        getSpeechText,
+        goBack,
         canGoBack,
-        phrases,
         getBreadcrumbs,
-        addPhrase,
-        deletePhrase,
     } = usePhrasesContext();
-    const currentNode = getCurrentNode();
+    const current = getCurrent();
+    const breadcrumbs = getBreadcrumbs().join(' > ');
+    const speechText = getSpeechText();
 
-    const choiceObjects = currentNode.choices.map(choiceId => {
-        const choiceNode = phrases.find(p => p.id === choiceId);
-        return {
-            id: choiceId,
-            text: choiceNode ? choiceNode.text : choiceId,
-            image: choiceNode ? choiceNode.image : null,
-            type: choiceNode ? choiceNode.type : 'select',
-            terminator: choiceNode && choiceNode.choices.length === 0
-        };
-    });
-
-    const handleChoicePress = (choiceObj) => {
-        navigateToChoice(choiceObj.id);
-        selected = choiceObj.id;
-    };
-
-    const handleAddPhrase = async () => {
-        if (!newPhraseText.trim()) {
-            Alert.alert('Please enter phrase text');
-            return;
-        }
-
-        setIsAdding(true);
-        try {
-            await addPhrase({
-                text: newPhraseText.trim(),
-                image: selectedImage || require('../../assets/phrases/food.png'),
-                type: isPhrase ? 'phrase' : 'select',
-                choices: []
-            });
-            Alert.alert(`${isPhrase ? 'Phrase' : 'Category'} added successfully!`);
-            
-            // Reset form
-            setNewPhraseText('');
-            setSelectedImage(null);
-            setAddModal(false);
-            setIsPhrase(true);
-        } catch (error) {
-            console.error('Error adding phrase:', error);
-            Alert.alert('Error adding phrase: ' + error.message);
-        }
-        setIsAdding(false);
-    };
-
-    const handleDeletePhrase = async (phraseId) => {
-        console.log('Attempting to delete phrase:', phraseId);
-        try {
-            await deletePhrase(phraseId);
-            console.log('Phrase deleted successfully:', phraseId);
-            Alert.alert('Success', 'Phrase deleted successfully!');
-        } catch (error) {
-            console.error('Error deleting phrase:', error);
-            Alert.alert('Error', 'Error deleting phrase: ' + error.message);
-        }
-    };
-
-    const delAlert = (item) => {
-        Alert.alert(
-            'Delete Phrase',
-            `Are you sure you want to delete "${item.text}"?`,
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Delete', style: 'destructive', onPress: () => handleDeletePhrase(item.id) }
-            ]
-        );
-    }
-
-    const breadcrumbs = getBreadcrumbs();
-    const title = breadcrumbs.length > 1 ? breadcrumbs[1] : currentNode.text;
-
-    const phrase = (item) => {
-        return(
-            <View style={{alignItems: 'center'}}>
-                <Image
-                    source={item.image}
-                    style={{ height: screenHeight * 0.25, aspectRatio: 1 }}
+    const renderChoices = () => (
+        <FlatList
+            data={current.choices}
+            renderItem={({ item }) => (
+                <Cell
+                    content={item}
+                    buttonlayout={buttonLayout}
+                    onPress={() => navigateToChoice(item)}
                 />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+        />
+    );
 
-                <TouchableOpacity
-                    style={[styles.phraseButton, { height: screenHeight * 0.15, width: screenWidth * 0.8 }]}
-                    onPress={() => {
-                        updatePhraseUsage(item.id);
-                        speak(item.text);
-                    }}
-                    onLongPress={() => {
-                        if (daily) return;
-                        delAlert(item);
-                    }}
-                    delayLongPress={500}
-                >
-                    <View style={styles.textContainer}>
-                        <Text style={styles.phraseButtonText}>{item.text}</Text>
-                    </View>
-                    <Image source={require('../../assets/phrases/speaker.png')} style={styles.phraseButtonImage} />
-                </TouchableOpacity>
-            </View>
-        );
-    }
+    const renderProcess = () => (
+        <>
+            <Cell
+                content={{text: speechText, image: require('../../assets/phrases/speaker.png')}}
+                buttonlayout={4}
+                onPress={() => speak(speechText)}
+                height={0.20}
+            />
+            <FlatList
+                data={current.choices}
+                renderItem={({ item }) => (
+                    <Cell
+                        content={item}
+                        buttonlayout={buttonLayout}
+                        onPress={() => selectPhrase(item)}
+                    />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+            <Cell
+                content={{text: 'Next'}}
+                buttonlayout={3}
+                onPress={() => {
+                    try {
+                        navigateToChoice(null)
+                    } catch (error) {
+                        Alert.alert('Error', error.message);
+                    }
+                }}
+            />
+        </>
+    );
 
     return (
-        <>
-            <ScrollView 
-                style={styles.scrollView}
-                contentContainerStyle={styles.container}
-            >
-                {canGoBack && (
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={goBack}
-                    >
-                        <Text style={styles.backText}>&lt; Back</Text>
-                    </TouchableOpacity>
-                )}
-
-                {!daily && (
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={() => setAddModal(true)}
-                    >
-                        <Text style={styles.addText}>+</Text>
-                    </TouchableOpacity>
-                )}
-
-                <Text style={styles.header}>{title}</Text>
-
-                {breadcrumbs.length > 0 && 
-                <Text style={styles.breadcrumbText}>
-                    {breadcrumbs.join(' > ')}
-                </Text>}
-
-                {currentNode.type === 'phrase' && phrase(currentNode)}
-
-                <FlatList style={styles.listView}
-                    data={choiceObjects}
-                    renderItem={({ item }) => (
-                        item.terminator && item.type === 'phrase' ? phrase(item) : <Cell
-                            key={item.id}
-                            content={item}
-                            buttonlayout={buttonLayout}
-                            onPress={() => handleChoicePress(item)}
-                            onLongPress={() => delAlert(item)}
-                            height={currentNode.type === 'select' ? 0.125 : 0.1}
-                        />
-                    )}
-                    keyExtractor={item => item.id}
-                    scrollEnabled={false}
-                />
-            </ScrollView>
-
-            <Modal
-                animationType="slide"
-                visible={addModal}
-                onRequestClose={() => setAddModal(false)}
-            >
-                <SafeAreaView style={[styles.container, { paddingTop: insets.top }] }>
-                    <Text style={styles.header}>Add</Text>
-
-                    <View style={{width: '95%'}}>
-                        <Text style={styles.inputTitle}>Add {isPhrase ? 'phrase' : 'category'} text</Text>
-                        <TextInput
-                            style={styles.addTextInput}
-                            value={newPhraseText}
-                            onChangeText={setNewPhraseText}
-                        />
-                    </View>
-
-                    <View style={{width: '95%'}}>
-                        <Text style={styles.inputTitle}>Add phrase or category</Text>
-                        <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-                            <Switch
-                                style={styles.addSwitch}
-                                value={isPhrase}
-                                onValueChange={setIsPhrase}
-                            />
-                            <Text style={styles.inputTitle}>{isPhrase ? 'Phrase' : 'Category'}</Text>
-                        </View>
-                    </View>
-
-                    {selectedImage ? (
-                        <View style={styles.imgPreviewContainer}>
-                            <Image source={selectedImage} style={styles.imagePreview} />
-                            <Button title="Remove Image" width="0.4" color="#DC3545" onPress={() => setSelectedImage(null)} />
-                        </View>
-                    ) : (
-                        <View style={styles.horizontalContainer}>
-                            <Button 
-                                title="Select Image" 
-                                width="0.4"
-                                color="#2196F3"
-                                onPress={() => {
-                                    const options = {
-                                        mediaType: 'photo',
-                                        quality: 0.8,
-                                        maxWidth: 500,
-                                        maxHeight: 500,
-                                        selectionLimit: 1,
-                                        includeBase64: false,
-                                    };
-                                    
-                                    launchImageLibrary(options, (response) => {
-                                        if (response.assets && response.assets[0]) {
-                                            setSelectedImage({ uri: response.assets[0].uri });
-                                            console.log('Selected image:', response.assets[0]);
-                                        }
-                                    });
-                                }}
-                            />
-                            <Button 
-                                title="Take Photo" 
-                                width="0.4" 
-                                color="#2196F3"
-                                onPress={() => {
-                                    const options = {
-                                        mediaType: 'photo',
-                                        quality: 0.8,
-                                        maxWidth: 500,
-                                        maxHeight: 500,
-                                    };
-                                    launchCamera(options, (response) => {
-                                        if (response.didCancel || response.error) {
-                                            return;
-                                        }
-                                        if (response.assets && response.assets[0]) {
-                                            setSelectedImage({ uri: response.assets[0].uri });
-                                            console.log('Camera photo:', response.assets[0]);
-                                        }
-                                    });
-                                }} 
-                            />
-                        </View>
-                    )}
-
-                    <View style={styles.horizontalContainer}>
-                        <Button
-                            title="Close"
-                            width="0.4"
-                            color="#DC3545"
-                            onPress={() => setAddModal(false)}
-                        />
-                        <Button 
-                            title={isAdding ? "Adding..." : "Add"} 
-                            width="0.4" 
-                            onPress={handleAddPhrase}
-                            disabled={isAdding}
-                        />
-                    </View>
-                </SafeAreaView>
-            </Modal>
+        <>  
+            {canGoBack && (
+                <TouchableOpacity
+                    onPress={() => {goBack()}}
+                >
+                    <Text>&lt; Back</Text>
+                </TouchableOpacity>
+            )}
+            <Text>{current.text}</Text>
+            <Text>{breadcrumbs}</Text>
+            {inProcess ? renderProcess() : renderChoices()}
         </>
     );
 }
-
-
-
-const styles = StyleSheet.create({
-    scrollView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: '#fff',
-    },
-    container: {
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingTop: 20,
-        gap: 20,
-    },
-    header: {
-        fontSize: 40,
-        fontWeight: '500',
-    },
-    breadcrumbText: {
-        fontSize: 20,
-        textAlign: 'center',
-    },
-    backButton: {
-        zIndex: 1,
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        backgroundColor: '#d9d9d9',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 20,
-    },
-    backText: {
-        fontSize: 24,
-    },
-    listView: {
-        width: '100%',
-    },
-    phraseButton: {
-        backgroundColor: '#d9d9d9',
-        margin: 10,
-        width: '80%',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-        borderRadius: 20,
-    },
-    textContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 25,
-    },
-    phraseButtonText: {
-        fontSize: 24,
-    },
-    phraseButtonImage: {
-        margin: 25,
-        width: '20%',
-        aspectRatio: 1,
-    },
-    addButton: {
-        zIndex: 1,
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        backgroundColor: '#4CAF50',
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 25,
-    },
-    addText: {
-        color: '#fff',
-        fontSize: 32,
-        fontWeight: '500',
-    },
-    horizontalContainer: {
-        width: '95%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    inputTitle: {
-        fontSize: 20,
-        marginBottom: 5,
-    },
-    addTextInput: {
-        fontSize: 20,
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: 10,
-    },
-    addSwitch: {
-        marginVertical: 5,
-    },
-    imgPreviewContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 10,
-        width: '95%',
-        backgroundColor: '#d9d9d9',
-        paddingVertical: 20,
-        borderRadius: 10,
-        marginVertical: 10,
-    },
-    imagePreview: {
-        width: 200,
-        height: 200,
-        resizeMode: 'cover',
-    },
-});
 
 export default Phrases;

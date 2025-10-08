@@ -7,14 +7,14 @@ import { usePhrasesContext } from '../context/PhrasesContext';
 
 const Home = ({ avatarSelection, avatarItems }) => {
     const navigation = useNavigation();
-    const { phrases, navigateToPhrase } = usePhrasesContext();
+    // const { phrases, navigateToPhrase } = usePhrasesContext();
     
-    // Filter to only get phrases (final speakable phrases)
-    const validPhrases = phrases.filter(phrase => phrase.type === 'phrase');
+    // // Filter to only get phrases (final speakable phrases)
+    // const validPhrases = phrases.filter(phrase => phrase.type === 'phrase');
     
-    const filteredPhrases = validPhrases
-        .sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0))
-        .slice(0, 4);
+    // const filteredPhrases = validPhrases
+    //     .sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0))
+    //     .slice(0, 4);
 
     return (
         <ScrollView
@@ -26,7 +26,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
 
             <View style={styles.list}>
                 <View style={styles.grid}>
-                    {filteredPhrases.map((item, index) => (
+                    {/* {filteredPhrases.map((item, index) => (
                         <TouchableOpacity
                             key={index.toString()}
                             style={styles.listContainer}
@@ -41,7 +41,7 @@ const Home = ({ avatarSelection, avatarItems }) => {
                             />
                             <Text style={styles.text}>{item.text}</Text>
                         </TouchableOpacity>
-                    ))}
+                    ))} */}
                 </View>
             </View>
 
