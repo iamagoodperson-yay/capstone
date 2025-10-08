@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, Switch, ScrollView, Modal, Dimensions, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Switch, ScrollView, Modal, Dimensions, StyleSheet, Alert, Linking, Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
@@ -20,19 +20,20 @@ const Phrases = ({ buttonLayout, daily }) => {
         
     useEffect(() => { initTTS() }, []);
 
-    const {
-        inProcess,
-        getCurrent,
-        navigateToChoice,
-        selectPhrase,
-        getSpeechText,
-        goBack,
-        canGoBack,
-        getBreadcrumbs,
-    } = usePhrasesContext();
-    const current = getCurrent();
-    const breadcrumbs = getBreadcrumbs().join(' > ');
-    const speechText = getSpeechText();
+  const {
+    inProcess,
+    getCurrent,
+    navigateToChoice,
+    selectPhrase,
+    getSpeechText,
+    goBack,
+    canGoBack,
+    getBreadcrumbs,
+    caregiverNumber,
+  } = usePhrasesContext();
+  const current = getCurrent();
+  const breadcrumbs = getBreadcrumbs().join(' > ');
+  const speechText = getSpeechText();
 
     const renderChoices = () => (
         current.choices.map((item, index) => (
