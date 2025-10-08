@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHome, faComment, faCalendar, faShoppingCart, faCog } from '@fortawesome/free-solid-svg-icons';
 
 import Home from './screens/Home';
 import Phrases from './screens/Phrases';
@@ -12,13 +13,17 @@ import { PhrasesProvider } from './context/PhrasesContext';
 
 const Tab = createBottomTabNavigator();
 
-const screen = (name, component, iconName) => {
+const screen = (name, component, icon) => {
     return (
         <Tab.Screen
             name={name}
             options={{
                 tabBarIcon: ({ color, size }) => (
-                    <FontAwesome name={iconName} color={color} size={size} />
+                    <FontAwesomeIcon 
+                        icon={icon} 
+                        color={color} 
+                        size={size} 
+                    />
                 ),
             }}
         >
@@ -75,33 +80,30 @@ const App = () => {
                 <Tab.Navigator
                     screenOptions={{
                         headerTitleStyle: {
-                            fontSize: 36,
+                            fontSize: 24,
                             fontWeight: 'bold',
                         },
                         headerTitleAlign: 'center',
-                        tabBarStyle: {
-                            height: 80,
-                        },
                         tabBarLabelStyle: {
-                            fontSize: 16,
+                            fontSize: 14,
                         },
                 }}>
                     {screen("Home", <Home
                         avatarSelection={avatarSelection}
                         avatarItems={avatarItems}
-                    />, "home")}
+                    />, faHome)}
                     {screen("Phrases", <Phrases
                         setSelectedPhrase={setSelectedPhrase}
                         buttonLayout={buttonLayout}
                         sent_id='categories'
-                    />, "comment")}
+                    />, faComment)}
                     {screen("Challenge", <Daily
                         selectedPhrase={selectedPhrase}
                         setSelectedPhrase={setSelectedPhrase}
                         buttonLayout={buttonLayout}
                         coins={coins}
                         setCoins={setCoins}
-                    />, "calendar")}
+                    />, faCalendar)}
                     {screen("Shop", <Shop 
                         coins={coins}
                         setCoins={setCoins}
@@ -109,11 +111,11 @@ const App = () => {
                         setAvatarSelection={setAvatarSelection}
                         avatarItems={avatarItems}
                         setAvatarItems={setAvatarItems}
-                    />, "shopping-cart")}
+                    />, faShoppingCart)}
                     {screen("Settings", <Settings
                         buttonLayout={buttonLayout}
                         setButtonLayout={setButtonLayout}
-                    />, "cog")}
+                    />, faCog)}
                 </Tab.Navigator>
             </NavigationContainer>
         </PhrasesProvider>

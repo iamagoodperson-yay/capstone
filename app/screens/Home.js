@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Avatar from '../components/avatar';
 import Button from '../components/button';
@@ -16,35 +16,35 @@ const Home = ({ avatarSelection, avatarItems }) => {
         .sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0))
         .slice(0, 4);
 
-    const renderItem = ({ item, index }) => (
-        <TouchableOpacity
-            key={index}
-            style={styles.listContainer}
-            onPress={() => {
-                navigateToPhrase(item.id);
-                navigation.navigate('Phrases');
-            }}
-        >
-            <Image 
-                style={styles.listImage}
-                source={item.image || require('../../assets/phrases/food.png')} 
-            />
-            <Text style={styles.text}>{item.text}</Text>
-        </TouchableOpacity>
-    );
-
     return (
-        <View style={styles.container}>
+        <ScrollView
+            style={styles.ScrollView}
+            contentContainerStyle={styles.container}
+        >
             <Avatar size={250} avatarSelection={avatarSelection} avatarItems={avatarItems}/>
             <Text style={styles.header}>Common phrases that you use</Text>
+
             <View style={styles.list}>
-                <FlatList
-                    data={filteredPhrases}
-                    renderItem={renderItem}
-                    numColumns={2}
-                    keyExtractor={(item, index) => index.toString()}
-                />
+                <View style={styles.grid}>
+                    {filteredPhrases.map((item, index) => (
+                        <TouchableOpacity
+                            key={index.toString()}
+                            style={styles.listContainer}
+                            onPress={() => {
+                                navigateToPhrase(item.id);
+                                navigation.navigate('Phrases');
+                            }}
+                        >
+                            <Image 
+                                style={styles.listImage}
+                                source={item.image || require('../../assets/phrases/food.png')} 
+                            />
+                            <Text style={styles.text}>{item.text}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
+
             <Button
                 title="See More..."
                 onPress={() => {
@@ -59,16 +59,19 @@ const Home = ({ avatarSelection, avatarItems }) => {
                     navigation.navigate('Challenge');
                 }}
             />
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    ScrollView: {
         flex: 1,
+    },
+    container: {
         flexDirection: 'column',
         alignItems: 'center',
         gap: 10,
+        paddingBottom: 40,
     },
     header: {
         fontSize: 20,
@@ -77,6 +80,12 @@ const styles = StyleSheet.create({
     list: {
         width: '90%',
         alignItems: 'center',
+    },
+    grid: {
+        width: '100%',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
     },
     listContainer: {
         margin: '2.5%',

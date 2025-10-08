@@ -61,14 +61,14 @@ function Shop({ coins, setCoins, avatarSelection, setAvatarSelection, avatarItem
                 changebase={setCategory}
             />
             <View style={styles.selectionContainer}>
-                    <FlatList
-                        data={avatarItems[category.toLowerCase()]}
-                        numColumns={3}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={renderItem}
-                        columnWrapperStyle={styles.row}
-                        showsVerticalScrollIndicator={false}
-                    />
+                <FlatList
+                    data={avatarItems[category.toLowerCase()]}
+                    numColumns={3}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                    columnWrapperStyle={styles.row}
+                    showsVerticalScrollIndicator={false}
+                />
             </View>
         </View>
     );

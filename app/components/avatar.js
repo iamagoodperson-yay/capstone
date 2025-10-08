@@ -1,6 +1,6 @@
 import { View, Image, StyleSheet } from 'react-native';
 
-const Avatar = ({ size = 400, avatarSelection, avatarItems }) => {
+const Avatar = ({ size = 300, avatarSelection, avatarItems }) => {
     return (
         <View style={[styles.avatarContainer, {width: size, height: size} ]}>
             <Image

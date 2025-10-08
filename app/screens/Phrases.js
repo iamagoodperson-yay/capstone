@@ -1,4 +1,5 @@
 import React from 'react';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, Text, Image, TouchableOpacity, TextInput, Switch, FlatList, ScrollView, Modal, Dimensions, StyleSheet, Alert } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
@@ -18,6 +19,8 @@ const Phrases = ({ buttonLayout, daily }) => {
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [isAdding, setIsAdding] = React.useState(false);
     
+    const insets = useSafeAreaInsets();
+
     React.useEffect(() => { initTTS() }, []);
 
     const {
@@ -147,6 +150,15 @@ const Phrases = ({ buttonLayout, daily }) => {
                     </TouchableOpacity>
                 )}
 
+                {!daily && (
+                    <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => setAddModal(true)}
+                    >
+                        <Text style={styles.addText}>+</Text>
+                    </TouchableOpacity>
+                )}
+
                 <Text style={styles.header}>{title}</Text>
 
                 {breadcrumbs.length > 0 && 
@@ -173,21 +185,12 @@ const Phrases = ({ buttonLayout, daily }) => {
                 />
             </ScrollView>
 
-            {!daily && (
-                <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={() => setAddModal(true)}
-                >
-                    <Text style={styles.addText}>+</Text>
-                </TouchableOpacity>
-            )}
-
             <Modal
                 animationType="slide"
                 visible={addModal}
                 onRequestClose={() => setAddModal(false)}
             >
-                <View style={styles.container}>
+                <SafeAreaView style={[styles.container, { paddingTop: insets.top }] }>
                     <Text style={styles.header}>Add</Text>
 
                     <View style={{width: '95%'}}>
@@ -279,7 +282,7 @@ const Phrases = ({ buttonLayout, daily }) => {
                             disabled={isAdding}
                         />
                     </View>
-                </View>
+                </SafeAreaView>
             </Modal>
         </>
     );
@@ -348,9 +351,9 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
     },
     addButton: {
-        zIndex: 100,
+        zIndex: 1,
         position: 'absolute',
-        bottom: 20,
+        top: 20,
         right: 20,
         backgroundColor: '#4CAF50',
         width: 50,
@@ -382,10 +385,6 @@ const styles = StyleSheet.create({
     },
     addSwitch: {
         marginVertical: 5,
-        transform: [
-            { scaleX: 1.75 },
-            { scaleY: 1.75 },
-        ],
     },
     imgPreviewContainer: {
         justifyContent: 'center',
