@@ -179,9 +179,16 @@ export const PhrasesProvider = ({ children }) => {
   };
 
   const addPhrase = (parent, newItem) => {
+    if (!parent) return;
+    if (newItem.type === 'category') {
+      newItem.choices = newItem.choices || [];
+    } else {
+      newItem.choices = undefined;
+    }
     if (!parent.choices) parent.choices = [];
-    parent.choices = [...parent.choices, newItem];
-    setCategoriesState({ ...categoriesState });
+    parent.choices.push(newItem);
+
+    setCategoriesState(prev => ({ ...prev }));
   };
   const deletePhrase = (parent, itemText) => {
     if (!parent.choices) return;

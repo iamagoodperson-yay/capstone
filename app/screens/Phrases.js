@@ -8,11 +8,9 @@ import {
   Switch,
   ScrollView,
   Modal,
-  Dimensions,
   StyleSheet,
   Alert,
   Linking,
-  Platform,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -35,10 +33,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
 
-  useEffect(() => {
-    initTTS();
-  }, []);
-
   const {
     inProcess,
     getCurrent,
@@ -51,10 +45,16 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     addPhrase,
     deletePhrase,
   } = usePhrasesContext();
+
   const current = getCurrent();
   const breadcrumbs = getBreadcrumbs().join(' > ');
   const speechText = getSpeechText();
-  const handleAddPhrase = async () => {
+
+  useEffect(() => {
+    initTTS();
+  }, []);
+
+  const handleAddPhrase = () => {
     if (!newPhraseText.trim()) {
       Alert.alert('Error', 'Please enter some text.');
       return;
@@ -63,23 +63,23 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     setIsAdding(true);
 
     try {
+      const type = isPhrase ? 'phrase' : 'category';
       const newItem = {
         text: newPhraseText.trim(),
         type: isPhrase ? 'phrase' : 'category',
-        image: selectedImage ? selectedImage : null,
-        choices: isPhrase ? [] : [], // categories can hold children
+        image: selectedImage || null,
+        choices: isPhrase ? undefined : [],
       };
 
-      // Add to context
-      await addPhrase(current, newItem);
+      addPhrase(current, newItem);
 
-      // Reset
+      // Reset modal state
       setNewPhraseText('');
       setSelectedImage(null);
       setIsPhrase(true);
       setAddModal(false);
     } catch (err) {
-      Alert.alert('Error', err.message || 'Failed to add phrase.');
+      Alert.alert('Error', err.message || 'Failed to add phrase/category.');
     } finally {
       setIsAdding(false);
     }
@@ -92,9 +92,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         content={item}
         buttonlayout={buttonLayout}
         onPress={() => {
-          if (item.text === 'Emergency') {
-            Linking.openURL(`tel:${caregiverNumber}`);
+          if (item.type === 'phrase') {
+            // Leaf node → speak
+            speak(item.text);
           } else {
+            // Category → navigate into folder
             navigateToChoice(item);
           }
         }}
@@ -158,12 +160,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       >
         <View style={styles.topBar}>
           {canGoBack ? (
-            <TouchableOpacity
-              style={styles.backBtn}
-              onPress={() => {
-                goBack();
-              }}
-            >
+            <TouchableOpacity style={styles.backBtn} onPress={goBack}>
               <Text style={styles.backText}>&lt;</Text>
             </TouchableOpacity>
           ) : (
@@ -175,14 +172,13 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           ) : (
             <TouchableOpacity
               style={styles.addBtn}
-              onPress={() => {
-                setAddModal(true);
-              }}
+              onPress={() => setAddModal(true)}
             >
               <Text style={styles.addText}>+</Text>
             </TouchableOpacity>
           )}
         </View>
+
         {canGoBack && <Text style={styles.breadcrumbText}>{breadcrumbs}</Text>}
         {inProcess ? renderProcess() : renderChoices()}
       </ScrollView>
@@ -241,21 +237,19 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 width="0.4"
                 color="#2196F3"
                 onPress={() => {
-                  const options = {
-                    mediaType: 'photo',
-                    quality: 0.8,
-                    maxWidth: 500,
-                    maxHeight: 500,
-                    selectionLimit: 1,
-                    includeBase64: false,
-                  };
-
-                  launchImageLibrary(options, response => {
-                    if (response.assets && response.assets[0]) {
-                      setSelectedImage({ uri: response.assets[0].uri });
-                      console.log('Selected image:', response.assets[0]);
-                    }
-                  });
+                  launchImageLibrary(
+                    {
+                      mediaType: 'photo',
+                      quality: 0.8,
+                      maxWidth: 500,
+                      maxHeight: 500,
+                    },
+                    response => {
+                      if (response.assets && response.assets[0]) {
+                        setSelectedImage({ uri: response.assets[0].uri });
+                      }
+                    },
+                  );
                 }}
               />
               <Button
@@ -263,21 +257,19 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 width="0.4"
                 color="#2196F3"
                 onPress={() => {
-                  const options = {
-                    mediaType: 'photo',
-                    quality: 0.8,
-                    maxWidth: 500,
-                    maxHeight: 500,
-                  };
-                  launchCamera(options, response => {
-                    if (response.didCancel || response.error) {
-                      return;
-                    }
-                    if (response.assets && response.assets[0]) {
-                      setSelectedImage({ uri: response.assets[0].uri });
-                      console.log('Camera photo:', response.assets[0]);
-                    }
-                  });
+                  launchCamera(
+                    {
+                      mediaType: 'photo',
+                      quality: 0.8,
+                      maxWidth: 500,
+                      maxHeight: 500,
+                    },
+                    response => {
+                      if (response.assets && response.assets[0]) {
+                        setSelectedImage({ uri: response.assets[0].uri });
+                      }
+                    },
+                  );
                 }}
               />
             </View>
@@ -304,13 +296,8 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  container: {
-    alignItems: 'center',
-    paddingTop: 20,
-  },
+  scrollView: { flex: 1 },
+  container: { alignItems: 'center', paddingTop: 20 },
   topBar: {
     zIndex: 1,
     flexDirection: 'row',
@@ -326,9 +313,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
   },
-  backText: {
-    fontSize: 30,
-  },
+  backText: { fontSize: 30 },
   addBtn: {
     backgroundColor: '#4CAF50',
     height: 50,
@@ -337,32 +322,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
   },
-  addText: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: '500',
-  },
-  header: {
-    fontSize: 40,
-    fontWeight: '500',
-  },
-  breadcrumbText: {
-    fontSize: 20,
-  },
-  modalContainer: {
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    gap: 20,
-  },
+  addText: { color: '#fff', fontSize: 30, fontWeight: '500' },
+  header: { fontSize: 40, fontWeight: '500' },
+  breadcrumbText: { fontSize: 20 },
+  modalContainer: { alignItems: 'center', paddingHorizontal: 20, gap: 20 },
   horizontalContainer: {
     width: '95%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  inputTitle: {
-    fontSize: 20,
-    marginBottom: 5,
-  },
+  inputTitle: { fontSize: 20, marginBottom: 5 },
   addTextInput: {
     fontSize: 20,
     borderColor: 'gray',
@@ -370,9 +339,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
-  addSwitch: {
-    marginVertical: 5,
-  },
+  addSwitch: { marginVertical: 5 },
   imgPreviewContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -383,11 +350,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 10,
   },
-  imagePreview: {
-    width: 200,
-    height: 200,
-    resizeMode: 'cover',
-  },
+  imagePreview: { width: 200, height: 200, resizeMode: 'cover' },
 });
 
 export default Phrases;
