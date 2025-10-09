@@ -178,6 +178,16 @@ export const PhrasesProvider = ({ children }) => {
     return current;
   };
 
+  const addPhrase = (parent, newItem) => {
+    if (!parent.choices) parent.choices = [];
+    parent.choices = [...parent.choices, newItem];
+    setCategoriesState({ ...categoriesState });
+  };
+  const deletePhrase = (parent, itemText) => {
+    if (!parent.choices) return;
+    parent.choices = parent.choices.filter(choice => choice.text !== itemText);
+    setCategoriesState({ ...categoriesState });
+  };
   const getCurrentTask = () => {
     return processesState.find(p => p.id === tasks[tasks.length - 1].id);
   };
@@ -276,11 +286,11 @@ export const PhrasesProvider = ({ children }) => {
     goBack,
     canGoBack: navigationStack.length > 0,
     getBreadcrumbs,
+    addPhrase,
+    deletePhrase,
   };
 
   return (
-    <PhrasesContext.Provider value={value}>
-        {children}
-    </PhrasesContext.Provider>
+    <PhrasesContext.Provider value={value}>{children}</PhrasesContext.Provider>
   );
 };
