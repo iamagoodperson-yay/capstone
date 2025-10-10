@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,7 @@ import {
   Switch,
   ScrollView,
   Modal,
-  StyleSheet,
   Alert,
-  Linking,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -22,17 +20,8 @@ import { usePhrasesContext } from '../context/PhrasesContext';
 import Button from '../components/button';
 import Cell from '../components/cell';
 
-export let selected = '';
-
-const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
+const Phrases = ({ buttonLayout, daily }) => {
   const insets = useSafeAreaInsets();
-
-  const [addModal, setAddModal] = useState(false);
-  const [newPhraseText, setNewPhraseText] = useState('');
-  const [isPhrase, setIsPhrase] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isAdding, setIsAdding] = useState(false);
-
   const {
     inProcess,
     getCurrent,
@@ -50,39 +39,34 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   const breadcrumbs = getBreadcrumbs().join(' > ');
   const speechText = getSpeechText();
 
+  const [addModal, setAddModal] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isPhrase, setIsPhrase] = useState(true);
+  const [newPhraseText, setNewPhraseText] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
     initTTS();
   }, []);
 
   const handleAddPhrase = () => {
-    if (!newPhraseText.trim()) {
-      Alert.alert('Error', 'Please enter some text.');
-      return;
-    }
+    if (!newPhraseText.trim())
+      return Alert.alert('Error', 'Please enter some text.');
 
     setIsAdding(true);
+    const newItem = {
+      text: newPhraseText.trim(),
+      type: isPhrase ? 'phrase' : 'category',
+      image: selectedImage || null,
+      choices: isPhrase ? undefined : [],
+    };
+    addPhrase(current, newItem);
 
-    try {
-      const type = isPhrase ? 'phrase' : 'category';
-      const newItem = {
-        text: newPhraseText.trim(),
-        type: isPhrase ? 'phrase' : 'category',
-        image: selectedImage || null,
-        choices: isPhrase ? undefined : [],
-      };
-
-      addPhrase(current, newItem);
-
-      // Reset modal state
-      setNewPhraseText('');
-      setSelectedImage(null);
-      setIsPhrase(true);
-      setAddModal(false);
-    } catch (err) {
-      Alert.alert('Error', err.message || 'Failed to add phrase/category.');
-    } finally {
-      setIsAdding(false);
-    }
+    setNewPhraseText('');
+    setSelectedImage(null);
+    setIsPhrase(true);
+    setAddModal(false);
+    setIsAdding(false);
   };
 
   const renderChoices = () =>
@@ -91,28 +75,18 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         key={index.toString()}
         content={item}
         buttonlayout={buttonLayout}
-        onPress={() => {
-          if (item.type === 'phrase') {
-            // Leaf node → speak
-            speak(item.text);
-          } else {
-            // Category → navigate into folder
-            navigateToChoice(item);
-          }
-        }}
+        onPress={() =>
+          item.type === 'phrase' ? speak(item.text) : navigateToChoice(item)
+        }
         onLongPress={() => {
-          Alert.alert(
-            'Delete',
-            `Are you sure you want to delete "${item.text}"?`,
-            [
-              { text: 'Cancel', style: 'cancel' },
-              {
-                text: 'Delete',
-                style: 'destructive',
-                onPress: () => deletePhrase(current, item.text),
-              },
-            ],
-          );
+          Alert.alert('Delete', `Delete "${item.text}"?`, [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Delete',
+              style: 'destructive',
+              onPress: () => deletePhrase(current, item.text),
+            },
+          ]);
         }}
         delayLongPress={500}
       />
@@ -144,8 +118,8 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         onPress={() => {
           try {
             navigateToChoice(null);
-          } catch (error) {
-            Alert.alert('Error', error.message);
+          } catch (err) {
+            Alert.alert('Error', err.message);
           }
         }}
       />
@@ -155,127 +129,114 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   return (
     <>
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.container}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ alignItems: 'center', paddingTop: 20 }}
       >
-        <View style={styles.topBar}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '95%',
+          }}
+        >
           {canGoBack ? (
-            <TouchableOpacity style={styles.backBtn} onPress={goBack}>
-              <Text style={styles.backText}>&lt;</Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#d9d9d9',
+                height: 50,
+                width: 50,
+                borderRadius: 25,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={goBack}
+            >
+              <Text style={{ fontSize: 30 }}>&lt;</Text>
             </TouchableOpacity>
           ) : (
             <View style={{ width: 50 }} />
           )}
-          <Text style={styles.header}>{current.text}</Text>
+          <Text style={{ fontSize: 40, fontWeight: '500' }}>
+            {current.text}
+          </Text>
           {daily ? (
             <View style={{ width: 50 }} />
           ) : (
             <TouchableOpacity
-              style={styles.addBtn}
+              style={{
+                backgroundColor: '#4CAF50',
+                height: 50,
+                width: 50,
+                borderRadius: 25,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
               onPress={() => setAddModal(true)}
             >
-              <Text style={styles.addText}>+</Text>
+              <Text style={{ color: '#fff', fontSize: 30, fontWeight: '500' }}>
+                +
+              </Text>
             </TouchableOpacity>
           )}
         </View>
-
-        {canGoBack && <Text style={styles.breadcrumbText}>{breadcrumbs}</Text>}
+        {canGoBack && <Text style={{ fontSize: 20 }}>{breadcrumbs}</Text>}
         {inProcess ? renderProcess() : renderChoices()}
       </ScrollView>
 
       <Modal
-        animationType="slide"
         visible={addModal}
+        animationType="slide"
         onRequestClose={() => setAddModal(false)}
       >
         <SafeAreaView
-          style={[styles.modalContainer, { paddingTop: insets.top }]}
+          style={{
+            alignItems: 'center',
+            paddingHorizontal: 20,
+            paddingTop: insets.top,
+            gap: 20,
+          }}
         >
-          <Text style={styles.header}>Add</Text>
+          <Text style={{ fontSize: 40, fontWeight: '500' }}>Add</Text>
 
           <View style={{ width: '95%' }}>
-            <Text style={styles.inputTitle}>
+            <Text style={{ fontSize: 20, marginBottom: 5 }}>
               Add {isPhrase ? 'phrase' : 'category'} text
             </Text>
             <TextInput
-              style={styles.addTextInput}
+              style={{
+                fontSize: 20,
+                borderWidth: 1,
+                borderColor: 'gray',
+                borderRadius: 10,
+                padding: 10,
+              }}
               value={newPhraseText}
               onChangeText={setNewPhraseText}
             />
           </View>
 
           <View style={{ width: '95%' }}>
-            <Text style={styles.inputTitle}>Add phrase or category</Text>
+            <Text style={{ fontSize: 20, marginBottom: 5 }}>
+              Add phrase or category
+            </Text>
             <View
               style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}
             >
-              <Switch
-                style={styles.addSwitch}
-                value={isPhrase}
-                onValueChange={setIsPhrase}
-              />
-              <Text style={styles.inputTitle}>
+              <Switch value={isPhrase} onValueChange={setIsPhrase} />
+              <Text style={{ fontSize: 20 }}>
                 {isPhrase ? 'Phrase' : 'Category'}
               </Text>
             </View>
           </View>
 
-          {selectedImage ? (
-            <View style={styles.imgPreviewContainer}>
-              <Image source={selectedImage} style={styles.imagePreview} />
-              <Button
-                title="Remove Image"
-                width="0.4"
-                color="#DC3545"
-                onPress={() => setSelectedImage(null)}
-              />
-            </View>
-          ) : (
-            <View style={styles.horizontalContainer}>
-              <Button
-                title="Select Image"
-                width="0.4"
-                color="#2196F3"
-                onPress={() => {
-                  launchImageLibrary(
-                    {
-                      mediaType: 'photo',
-                      quality: 0.8,
-                      maxWidth: 500,
-                      maxHeight: 500,
-                    },
-                    response => {
-                      if (response.assets && response.assets[0]) {
-                        setSelectedImage({ uri: response.assets[0].uri });
-                      }
-                    },
-                  );
-                }}
-              />
-              <Button
-                title="Take Photo"
-                width="0.4"
-                color="#2196F3"
-                onPress={() => {
-                  launchCamera(
-                    {
-                      mediaType: 'photo',
-                      quality: 0.8,
-                      maxWidth: 500,
-                      maxHeight: 500,
-                    },
-                    response => {
-                      if (response.assets && response.assets[0]) {
-                        setSelectedImage({ uri: response.assets[0].uri });
-                      }
-                    },
-                  );
-                }}
-              />
-            </View>
-          )}
-
-          <View style={styles.horizontalContainer}>
+          <View
+            style={{
+              width: '95%',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
             <Button
               title="Close"
               width="0.4"
@@ -294,63 +255,5 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: { flex: 1 },
-  container: { alignItems: 'center', paddingTop: 20 },
-  topBar: {
-    zIndex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '95%',
-  },
-  backBtn: {
-    backgroundColor: '#d9d9d9',
-    height: 50,
-    width: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-  },
-  backText: { fontSize: 30 },
-  addBtn: {
-    backgroundColor: '#4CAF50',
-    height: 50,
-    width: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-  },
-  addText: { color: '#fff', fontSize: 30, fontWeight: '500' },
-  header: { fontSize: 40, fontWeight: '500' },
-  breadcrumbText: { fontSize: 20 },
-  modalContainer: { alignItems: 'center', paddingHorizontal: 20, gap: 20 },
-  horizontalContainer: {
-    width: '95%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  inputTitle: { fontSize: 20, marginBottom: 5 },
-  addTextInput: {
-    fontSize: 20,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-  },
-  addSwitch: { marginVertical: 5 },
-  imgPreviewContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
-    width: '95%',
-    backgroundColor: '#d9d9d9',
-    paddingVertical: 20,
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  imagePreview: { width: 200, height: 200, resizeMode: 'cover' },
-});
 
 export default Phrases;

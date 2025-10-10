@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState } from 'react';
 
 const categories = {
   text: 'Categories',
@@ -13,21 +12,11 @@ const categories = {
           image: require('../../assets/phrases/hawker_centre.png'),
           id: 'hawker_centre',
         },
-        // {
-        //     text: 'Restaurant',
-        //     image: require('../../assets/phrases/restaurant.png'),
-        //     id: 'restaurant',
-        // },
       ],
     },
     {
       text: 'Directions',
       image: require('../../assets/phrases/directions.png'),
-      choices: [],
-    },
-    {
-      text: 'Social',
-      image: require('../../assets/phrases/social.png'),
       choices: [],
     },
     {
@@ -75,14 +64,8 @@ const processes = [
         text: 'Extra chicken',
         image: require('../../assets/phrases/food.png'),
       },
-      {
-        text: 'Extra rice',
-        image: require('../../assets/phrases/food.png'),
-      },
-      {
-        text: 'Add egg',
-        image: require('../../assets/phrases/food.png'),
-      },
+      { text: 'Extra rice', image: require('../../assets/phrases/food.png') },
+      { text: 'Add egg', image: require('../../assets/phrases/food.png') },
     ],
   },
   {
@@ -93,18 +76,12 @@ const processes = [
     diverge: false,
     next: 'where_eat',
     choices: [
-      {
-        text: 'Add prawn',
-        image: require('../../assets/phrases/food.png'),
-      },
+      { text: 'Add prawn', image: require('../../assets/phrases/food.png') },
       {
         text: 'Add fish cake',
         image: require('../../assets/phrases/food.png'),
       },
-      {
-        text: 'Add egg',
-        image: require('../../assets/phrases/food.png'),
-      },
+      { text: 'Add egg', image: require('../../assets/phrases/food.png') },
     ],
   },
   {
@@ -115,14 +92,8 @@ const processes = [
     diverge: false,
     next: 'payment',
     choices: [
-      {
-        text: 'Eat here',
-        image: require('../../assets/phrases/food.png'),
-      },
-      {
-        text: 'Takeaway',
-        image: require('../../assets/phrases/takeaway.png'),
-      },
+      { text: 'Eat here', image: require('../../assets/phrases/food.png') },
+      { text: 'Takeaway', image: require('../../assets/phrases/takeaway.png') },
     ],
   },
   {
@@ -133,14 +104,8 @@ const processes = [
     diverge: false,
     next: 'end',
     choices: [
-      {
-        text: 'Cash',
-        image: require('../../assets/phrases/cash.png'),
-      },
-      {
-        text: 'Card',
-        image: require('../../assets/phrases/card.png'),
-      },
+      { text: 'Cash', image: require('../../assets/phrases/cash.png') },
+      { text: 'Card', image: require('../../assets/phrases/card.png') },
     ],
   },
 ];
@@ -149,9 +114,8 @@ const PhrasesContext = createContext();
 
 export const usePhrasesContext = () => {
   const context = useContext(PhrasesContext);
-  if (!context) {
-    throw new Error('usePhrasesContext must be used within a PhrasesProvider');
-  }
+  if (!context)
+    throw new Error('usePhrasesContext must be used within PhrasesProvider');
   return context;
 };
 
@@ -159,16 +123,15 @@ export const PhrasesProvider = ({ children }) => {
   const [categoriesState, setCategoriesState] = useState(categories);
   const [navigationStack, setNavigationStack] = useState([]);
 
-  const [processesState, setProcessesState] = useState(processes);
+  const [processesState] = useState(processes);
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [currentSelections, setCurrentSelections] = useState([]);
+  const [allSelections, setAllSelections] = useState([]); // Stores groups of phrases
 
   const getCurrentCategory = () => {
-    console.log(navigationStack);
-    if (navigationStack.length === 0) {
-      return categoriesState;
-    }
+    if (navigationStack.length === 0) return categoriesState;
 
     let current = categoriesState;
     for (const item of navigationStack) {
@@ -180,36 +143,53 @@ export const PhrasesProvider = ({ children }) => {
 
   const addPhrase = (parent, newItem) => {
     if (!parent) return;
-    if (newItem.type === 'category') {
-      newItem.choices = newItem.choices || [];
-    } else {
-      newItem.choices = undefined;
-    }
-    if (!parent.choices) parent.choices = [];
-    parent.choices.push(newItem);
+    if (newItem.type === 'category') newItem.choices = newItem.choices || [];
+    else newItem.choices = undefined;
 
-    setCategoriesState(prev => ({ ...prev }));
+    parent.choices = parent.choices || [];
+    parent.choices.push(newItem);
+    setCategoriesState({ ...categoriesState });
   };
+
   const deletePhrase = (parent, itemText) => {
-    if (!parent.choices) return;
+    if (!parent?.choices) return;
     parent.choices = parent.choices.filter(choice => choice.text !== itemText);
     setCategoriesState({ ...categoriesState });
   };
-  const getCurrentTask = () => {
-    return processesState.find(p => p.id === tasks[tasks.length - 1].id);
-  };
 
-  const getCurrent = () => {
-    return inProcess ? getCurrentTask() : getCurrentCategory();
-  };
+  const getCurrentTask = () =>
+    processesState.find(p => p.id === tasks[tasks.length - 1]?.id);
+
+  const selectChoice = choice =>
+    setCurrentSelections(prev => [...prev, choice]);
+
+  const goBackChoice = () => setCurrentSelections(prev => prev.slice(0, -1));
+
+  const getCurrent = () =>
+    inProcess ? getCurrentTask() : getCurrentCategory();
 
   const navigateToChoice = choice => {
     if (inProcess) {
       const currentTask = getCurrentTask();
+      if (!currentTask) return;
+
+      // merge selected into currentSelections
+      if (selected.length > 0)
+        setCurrentSelections(prev => [...prev, ...selected]);
+
       if (currentTask.next === 'end') {
+        // Save currentSelections as a group if not empty
+        if (currentSelections.length > 0 || selected.length > 0) {
+          const group = [...currentSelections, ...selected];
+          setAllSelections(prev => [group, ...prev]);
+        }
+
+        // reset everything
         setNavigationStack([]);
         setInProcess(false);
         setTasks([]);
+        setSelected([]);
+        setCurrentSelections([]);
       } else if (currentTask.diverge) {
         if (selected.length === 0)
           throw new Error('Please choose something to continue');
@@ -224,24 +204,22 @@ export const PhrasesProvider = ({ children }) => {
         ]);
       }
       setSelected([]);
-    } else {
-      if (choice.id) {
-        // starting process
-        setTasks([processesState.find(p => p.id === choice.id)]);
-        setInProcess(true);
-      }
-      setNavigationStack(prev => [...prev, choice.text]);
+    } else if (choice?.id) {
+      setTasks([processesState.find(p => p.id === choice.id)]);
+      setInProcess(true);
+      setCurrentSelections([]);
     }
+
+    if (choice?.text) setNavigationStack(prev => [...prev, choice.text]);
   };
 
   const selectPhrase = item => {
     const currentTask = getCurrentTask();
+    if (!currentTask) return;
+
     if (currentTask.multiSelect) {
-      if (!selected.includes(item)) {
-        setSelected(prev => [...prev, item]);
-      } else {
-        setSelected(prev => prev.filter(p => p !== item));
-      }
+      if (!selected.includes(item)) setSelected(prev => [...prev, item]);
+      else setSelected(prev => prev.filter(p => p !== item));
     } else {
       setSelected([item]);
     }
@@ -250,13 +228,14 @@ export const PhrasesProvider = ({ children }) => {
   const getSpeechText = () => {
     if (!inProcess) return '';
     const currentTask = getCurrentTask();
-    let speech = currentTask.speech === '' ? '' : currentTask.speech + '\n';
+    if (!currentTask) return '';
+
+    let speech = currentTask.speech ? currentTask.speech + '\n' : '';
     if (selected.length === 0) return speech + '...';
-    if (currentTask.multiSelect) {
-      speech += '' + selected.map(s => s.text).join(',\n');
-    } else {
-      speech += '' + selected[0].text;
-    }
+
+    speech += currentTask.multiSelect
+      ? selected.map(s => s.text).join(', ')
+      : selected[0].text;
     return speech;
   };
 
@@ -266,21 +245,17 @@ export const PhrasesProvider = ({ children }) => {
         setNavigationStack(prev => prev.slice(0, -1));
         setInProcess(false);
         setTasks([]);
-      } else {
-        setTasks(prev => prev.slice(0, -1));
-      }
+      } else setTasks(prev => prev.slice(0, -1));
       setSelected([]);
     } else if (navigationStack.length > 0) {
       setNavigationStack(prev => prev.slice(0, -1));
     }
   };
 
-  const getBreadcrumbs = () => {
-    const crumbs = ['Categories'];
-    navigationStack.forEach(item => {
-      crumbs.push(item);
-    });
-    return crumbs;
+  const getBreadcrumbs = () => ['Categories', ...navigationStack];
+
+  const deleteGroup = index => {
+    setAllSelections(prev => prev.filter((_, i) => i !== index));
   };
 
   const value = {
@@ -295,6 +270,8 @@ export const PhrasesProvider = ({ children }) => {
     getBreadcrumbs,
     addPhrase,
     deletePhrase,
+    allSelections,
+    deleteGroup,
   };
 
   return (
