@@ -50,8 +50,10 @@ const Phrases = ({ buttonLayout, daily }) => {
   }, []);
 
   const handleAddPhrase = () => {
-    if (!newPhraseText.trim())
-      return Alert.alert('Error', 'Please enter some text.');
+    if (!newPhraseText.trim()) {
+      Alert.alert('Error', 'Please enter some text.');
+      return;
+    }
 
     setIsAdding(true);
     const newItem = {
@@ -60,6 +62,7 @@ const Phrases = ({ buttonLayout, daily }) => {
       image: selectedImage || null,
       choices: isPhrase ? undefined : [],
     };
+
     addPhrase(current, newItem);
 
     setNewPhraseText('');
@@ -70,14 +73,15 @@ const Phrases = ({ buttonLayout, daily }) => {
   };
 
   const renderChoices = () =>
-    current.choices.map((item, index) => (
+    current.choices?.map((item, index) => (
       <Cell
         key={index.toString()}
         content={item}
         buttonlayout={buttonLayout}
-        onPress={() =>
-          item.type === 'phrase' ? speak(item.text) : navigateToChoice(item)
-        }
+        onPress={() => {
+          if (item.type === 'phrase') speak(item.text);
+          else navigateToChoice(item);
+        }}
         onLongPress={() => {
           Alert.alert('Delete', `Delete "${item.text}"?`, [
             { text: 'Cancel', style: 'cancel' },
@@ -103,7 +107,7 @@ const Phrases = ({ buttonLayout, daily }) => {
         onPress={() => speak(speechText)}
         height={0.2}
       />
-      {current.choices.map((item, index) => (
+      {current.choices?.map((item, index) => (
         <Cell
           key={index.toString()}
           content={item}
@@ -180,6 +184,7 @@ const Phrases = ({ buttonLayout, daily }) => {
             </TouchableOpacity>
           )}
         </View>
+
         {canGoBack && <Text style={{ fontSize: 20 }}>{breadcrumbs}</Text>}
         {inProcess ? renderProcess() : renderChoices()}
       </ScrollView>
@@ -229,6 +234,79 @@ const Phrases = ({ buttonLayout, daily }) => {
               </Text>
             </View>
           </View>
+
+          {selectedImage ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10,
+                width: '95%',
+                backgroundColor: '#d9d9d9',
+                paddingVertical: 20,
+                borderRadius: 10,
+                marginVertical: 10,
+              }}
+            >
+              <Image
+                source={selectedImage}
+                style={{ width: 200, height: 200, resizeMode: 'cover' }}
+              />
+              <Button
+                title="Remove Image"
+                width="0.4"
+                color="#DC3545"
+                onPress={() => setSelectedImage(null)}
+              />
+            </View>
+          ) : (
+            <View
+              style={{
+                width: '95%',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Button
+                title="Select Image"
+                width="0.4"
+                color="#2196F3"
+                onPress={() => {
+                  launchImageLibrary(
+                    {
+                      mediaType: 'photo',
+                      quality: 0.8,
+                      maxWidth: 500,
+                      maxHeight: 500,
+                    },
+                    response => {
+                      if (response.assets && response.assets[0])
+                        setSelectedImage({ uri: response.assets[0].uri });
+                    },
+                  );
+                }}
+              />
+              <Button
+                title="Take Photo"
+                width="0.4"
+                color="#2196F3"
+                onPress={() => {
+                  launchCamera(
+                    {
+                      mediaType: 'photo',
+                      quality: 0.8,
+                      maxWidth: 500,
+                      maxHeight: 500,
+                    },
+                    response => {
+                      if (response.assets && response.assets[0])
+                        setSelectedImage({ uri: response.assets[0].uri });
+                    },
+                  );
+                }}
+              />
+            </View>
+          )}
 
           <View
             style={{

@@ -15,7 +15,6 @@ const Home = ({ avatarSelection, avatarItems }) => {
   const navigation = useNavigation();
   const { allSelections, deleteGroup, navigateToChoice } = usePhrasesContext();
 
-  // Placeholder delete handler
   const handleDeleteGroup = index => {
     if (deleteGroup) deleteGroup(index);
   };
@@ -30,29 +29,23 @@ const Home = ({ avatarSelection, avatarItems }) => {
 
       <Text style={styles.header}>Last Saved Phrases:</Text>
 
-      {allSelections.length > 0 && (
-        <View style={styles.historyContainer}>
-          {allSelections.map((group, index) => (
-            <TouchableOpacity
-              key={index.toString()}
-              style={styles.historyButton}
-              onLongPress={() => handleDeleteGroup(index)}
-            >
-              <Text style={styles.historyText}>
-                {group.map(item => item.text).join(', ')}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      <Button
+        title="View Recent History"
+        onPress={() => navigation.navigate('History')}
+        color="#2196F3"
+      />
 
       <Button
         title="See More..."
         onPress={() => {
-          navigateToChoice({ text: 'Categories' }); // omit id if starting at root
+          navigateToChoice({ text: 'Categories' });
           navigation.navigate('Phrases');
         }}
         color="#2196F3"
+      />
+      <Button
+        title="Solve Daily Challenge"
+        onPress={() => navigation.navigate('Challenge')}
       />
     </ScrollView>
   );
@@ -70,35 +63,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
-  grid: {
-    width: '95%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginVertical: 10,
-  },
-  groupRectangle: {
-    width: '48%',
-    backgroundColor: '#d9d9d9',
-    borderRadius: 15,
-    padding: 10,
-  },
-  groupText: {
-    fontSize: 16,
-    marginVertical: 2,
-  },
   historyContainer: {
     width: '95%',
     gap: 10,
     marginVertical: 20,
   },
   historyButton: {
-    width: '100%', // almost full width
-    paddingVertical: 20, // make it taller
+    width: '100%',
+    paddingVertical: 20,
     backgroundColor: '#d9d9d9',
     borderRadius: 15,
     justifyContent: 'center',
-    alignItems: 'center', // center text horizontally & vertically
+    alignItems: 'center',
   },
   historyText: {
     fontSize: 18,

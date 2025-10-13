@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { speak } from '../utils/tts';
 
 const categories = {
   text: 'Categories',
@@ -55,7 +56,7 @@ const processes = [
   {
     id: 'chicken_rice_add_on',
     text: 'Add-on',
-    speech: 'Add on:',
+    speech: 'Add on',
     multiSelect: true,
     diverge: false,
     next: 'where_eat',
@@ -71,7 +72,7 @@ const processes = [
   {
     id: 'laksa_add_on',
     text: 'Add-on',
-    speech: 'Add on:',
+    speech: 'Add on',
     multiSelect: true,
     diverge: false,
     next: 'where_eat',
@@ -87,19 +88,34 @@ const processes = [
   {
     id: 'where_eat',
     text: 'Place to eat',
+    speech: 'Eat',
+    multiSelect: false,
+    diverge: false,
+    next: 'spicy',
+    choices: [
+      { text: 'Here', image: require('../../assets/phrases/food.png') },
+      { text: 'Takeaway', image: require('../../assets/phrases/takeaway.png') },
+    ],
+  },
+  {
+    id: 'spicy',
+    text: 'Spice Level',
     speech: '',
     multiSelect: false,
     diverge: false,
     next: 'payment',
     choices: [
-      { text: 'Eat here', image: require('../../assets/phrases/food.png') },
-      { text: 'Takeaway', image: require('../../assets/phrases/takeaway.png') },
+      { text: 'Spicy', image: require('../../assets/phrases/food.png') },
+      {
+        text: 'Non-Spicy',
+        image: require('../../assets/phrases/food.png'),
+      },
     ],
   },
   {
     id: 'payment',
     text: 'Payment',
-    speech: 'Pay by:',
+    speech: 'Pay by',
     multiSelect: false,
     diverge: false,
     next: 'end',
@@ -115,24 +131,23 @@ const PhrasesContext = createContext();
 export const usePhrasesContext = () => {
   const context = useContext(PhrasesContext);
   if (!context)
-    throw new Error('usePhrasesContext must be used within PhrasesProvider');
+    throw new Error('usePhrasesContext must be used within a PhrasesProvider');
   return context;
 };
 
 export const PhrasesProvider = ({ children }) => {
   const [categoriesState, setCategoriesState] = useState(categories);
   const [navigationStack, setNavigationStack] = useState([]);
-
   const [processesState] = useState(processes);
+
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [selected, setSelected] = useState([]);
   const [currentSelections, setCurrentSelections] = useState([]);
-  const [allSelections, setAllSelections] = useState([]); // Stores groups of phrases
+  const [allSelections, setAllSelections] = useState([]); // stores grouped phrase selections
 
   const getCurrentCategory = () => {
     if (navigationStack.length === 0) return categoriesState;
-
     let current = categoriesState;
     for (const item of navigationStack) {
       current = current.choices?.find(choice => choice.text === item);
@@ -143,9 +158,8 @@ export const PhrasesProvider = ({ children }) => {
 
   const addPhrase = (parent, newItem) => {
     if (!parent) return;
-    if (newItem.type === 'category') newItem.choices = newItem.choices || [];
-    else newItem.choices = undefined;
-
+    newItem.choices =
+      newItem.type === 'category' ? newItem.choices || [] : undefined;
     parent.choices = parent.choices || [];
     parent.choices.push(newItem);
     setCategoriesState({ ...categoriesState });
@@ -158,33 +172,96 @@ export const PhrasesProvider = ({ children }) => {
   };
 
   const getCurrentTask = () =>
-    processesState.find(p => p.id === tasks[tasks.length - 1]?.id);
+    tasks.length
+      ? processesState.find(p => p.id === tasks[tasks.length - 1].id)
+      : null;
 
-  const selectChoice = choice =>
-    setCurrentSelections(prev => [...prev, choice]);
+  // ⬇️ Fix: combine speech + selection in one natural TTS output
+  const getSpeechText = () => {
+    if (!inProcess) return '';
+    const currentTask = getCurrentTask();
+    if (!currentTask) return '';
 
-  const goBackChoice = () => setCurrentSelections(prev => prev.slice(0, -1));
+    const base = currentTask.speech ? currentTask.speech.trim() : '';
+    if (!selected.length) return base ? base + ' ...' : '...';
 
-  const getCurrent = () =>
-    inProcess ? getCurrentTask() : getCurrentCategory();
+    const selections = currentTask.multiSelect
+      ? selected.map(s => s.text).join(', ')
+      : selected[0].text;
+
+    return base ? `${base} ${selections}` : selections;
+  };
+
+  // ⬇️ Each time a choice is selected, speak the full sentence immediately
+  const selectPhrase = item => {
+    const currentTask = getCurrentTask();
+    if (!currentTask) return;
+
+    let updatedSelected;
+    if (currentTask.multiSelect) {
+      if (!selected.includes(item)) updatedSelected = [...selected, item];
+      else updatedSelected = selected.filter(p => p !== item);
+    } else {
+      updatedSelected = [item];
+    }
+
+    setSelected(updatedSelected);
+
+    // Speak combined sentence immediately
+    const currentTaskSpeech = currentTask.speech || '';
+    const itemText = currentTask.multiSelect
+      ? updatedSelected.map(s => s.text).join(', ')
+      : item.text;
+    const fullSpeech = currentTaskSpeech
+      ? `${currentTaskSpeech} ${itemText}`
+      : itemText;
+    speak(fullSpeech);
+  };
 
   const navigateToChoice = choice => {
     if (inProcess) {
       const currentTask = getCurrentTask();
       if (!currentTask) return;
 
-      // merge selected into currentSelections
-      if (selected.length > 0)
-        setCurrentSelections(prev => [...prev, ...selected]);
+      // Save current selected choices into currentSelections
+      if (selected.length > 0) {
+        setCurrentSelections(prev => [
+          ...prev,
+          { taskId: currentTask.id, choices: [...selected] },
+        ]);
+      }
 
       if (currentTask.next === 'end') {
-        // Save currentSelections as a group if not empty
         if (currentSelections.length > 0 || selected.length > 0) {
-          const group = [...currentSelections, ...selected];
-          setAllSelections(prev => [group, ...prev]);
+          // Include the final selected for the last task
+          const allTaskSelections = [...currentSelections];
+          if (selected.length > 0) {
+            allTaskSelections.push({
+              taskId: currentTask.id,
+              choices: [...selected],
+            });
+          }
+
+          // Build full speech combining task.speech + choices
+          const fullSpeech = allTaskSelections
+            .map(ts => {
+              const task = processesState.find(p => p.id === ts.taskId);
+              if (!task) return '';
+              const spoken = task.speech ? task.speech.trim() + ' ' : '';
+              const items = ts.choices.map(i => i.text).join(', ');
+              return (spoken + items).trim();
+            })
+            .filter(Boolean)
+            .join(', ');
+
+          // Store in history
+          const allItems = allTaskSelections.flatMap(ts => ts.choices);
+          setAllSelections(prev =>
+            [{ fullSpeech, items: allItems }, ...prev].slice(0, 12),
+          );
         }
 
-        // reset everything
+        // Reset process
         setNavigationStack([]);
         setInProcess(false);
         setTasks([]);
@@ -203,8 +280,10 @@ export const PhrasesProvider = ({ children }) => {
           processesState.find(p => p.id === currentTask.next),
         ]);
       }
+
       setSelected([]);
     } else if (choice?.id) {
+      // Start process
       setTasks([processesState.find(p => p.id === choice.id)]);
       setInProcess(true);
       setCurrentSelections([]);
@@ -213,31 +292,8 @@ export const PhrasesProvider = ({ children }) => {
     if (choice?.text) setNavigationStack(prev => [...prev, choice.text]);
   };
 
-  const selectPhrase = item => {
-    const currentTask = getCurrentTask();
-    if (!currentTask) return;
-
-    if (currentTask.multiSelect) {
-      if (!selected.includes(item)) setSelected(prev => [...prev, item]);
-      else setSelected(prev => prev.filter(p => p !== item));
-    } else {
-      setSelected([item]);
-    }
-  };
-
-  const getSpeechText = () => {
-    if (!inProcess) return '';
-    const currentTask = getCurrentTask();
-    if (!currentTask) return '';
-
-    let speech = currentTask.speech ? currentTask.speech + '\n' : '';
-    if (selected.length === 0) return speech + '...';
-
-    speech += currentTask.multiSelect
-      ? selected.map(s => s.text).join(', ')
-      : selected[0].text;
-    return speech;
-  };
+  const getCurrent = () =>
+    inProcess ? getCurrentTask() : getCurrentCategory();
 
   const goBack = () => {
     if (inProcess) {
@@ -247,16 +303,21 @@ export const PhrasesProvider = ({ children }) => {
         setTasks([]);
       } else setTasks(prev => prev.slice(0, -1));
       setSelected([]);
-    } else if (navigationStack.length > 0) {
+    } else if (navigationStack.length)
       setNavigationStack(prev => prev.slice(0, -1));
-    }
   };
 
   const getBreadcrumbs = () => ['Categories', ...navigationStack];
 
-  const deleteGroup = index => {
+  const deleteGroup = index =>
     setAllSelections(prev => prev.filter((_, i) => i !== index));
-  };
+
+  const moveGroupToTop = index =>
+    setAllSelections(prev => {
+      const newArr = [...prev];
+      const [moved] = newArr.splice(index, 1);
+      return [moved, ...newArr];
+    });
 
   const value = {
     categoriesState,
@@ -272,6 +333,7 @@ export const PhrasesProvider = ({ children }) => {
     deletePhrase,
     allSelections,
     deleteGroup,
+    moveGroupToTop,
   };
 
   return (
