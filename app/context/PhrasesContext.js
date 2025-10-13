@@ -62,11 +62,11 @@ const processes = [
     next: 'where_eat',
     choices: [
       {
-        text: 'Extra chicken',
+        text: 'Chicken',
         image: require('../../assets/phrases/food.png'),
       },
-      { text: 'Extra rice', image: require('../../assets/phrases/food.png') },
-      { text: 'Add egg', image: require('../../assets/phrases/food.png') },
+      { text: 'Rice', image: require('../../assets/phrases/food.png') },
+      { text: 'Egg', image: require('../../assets/phrases/food.png') },
     ],
   },
   {
@@ -77,12 +77,12 @@ const processes = [
     diverge: false,
     next: 'where_eat',
     choices: [
-      { text: 'Add prawn', image: require('../../assets/phrases/food.png') },
+      { text: 'Prawn', image: require('../../assets/phrases/food.png') },
       {
-        text: 'Add fish cake',
+        text: 'Fish cake',
         image: require('../../assets/phrases/food.png'),
       },
-      { text: 'Add egg', image: require('../../assets/phrases/food.png') },
+      { text: 'Egg', image: require('../../assets/phrases/food.png') },
     ],
   },
   {

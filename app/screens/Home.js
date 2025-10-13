@@ -31,15 +31,13 @@ const Home = ({ avatarSelection, avatarItems }) => {
 
       <Button
         title="View Recent History"
+        style={styles.historyButton}
         onPress={() => navigation.navigate('History')}
-        color="#2196F3"
       />
-
       <Button
         title="See More..."
         onPress={() => {
           navigateToChoice({ text: 'Categories' });
-          navigation.navigate('Phrases');
         }}
         color="#2196F3"
       />
@@ -73,6 +71,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: '#d9d9d9',
     borderRadius: 15,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -26,6 +26,9 @@ const TabScreens = ({
   selectedPhrase,
   setSelectedPhrase,
   buttonLayout,
+  setButtonLayout,
+  caregiverNumber,
+  setCaregiverNumber,
   coins,
   setCoins,
   avatarSelection,
@@ -64,6 +67,7 @@ const TabScreens = ({
         <Phrases
           setSelectedPhrase={setSelectedPhrase}
           buttonLayout={buttonLayout}
+          caregiverNumber={caregiverNumber}
         />
       )}
     </Tab.Screen>
@@ -113,7 +117,13 @@ const TabScreens = ({
         ),
       }}
     >
-      {() => <Settings buttonLayout={buttonLayout} />}
+      {() => (
+        <Settings
+          buttonLayout={buttonLayout}
+          caregiverNumber={caregiverNumber}
+          setCaregiverNumber={setCaregiverNumber}
+        />
+      )}
     </Tab.Screen>
   </Tab.Navigator>
 );
@@ -122,6 +132,7 @@ const App = () => {
   const [selectedPhrase, setSelectedPhrase] = useState('');
   const [buttonLayout, setButtonLayout] = useState(2);
   const [coins, setCoins] = useState(100);
+  const [caregiverNumber, setCaregiverNumber] = useState('');
 
   const [avatarSelection, setAvatarSelection] = useState({
     hats: 0,
@@ -202,6 +213,8 @@ const App = () => {
                 selectedPhrase={selectedPhrase}
                 setSelectedPhrase={setSelectedPhrase}
                 buttonLayout={buttonLayout}
+                caregiverNumber={caregiverNumber}
+                setCaregiverNumber={setCaregiverNumber}
                 coins={coins}
                 setCoins={setCoins}
                 avatarSelection={avatarSelection}

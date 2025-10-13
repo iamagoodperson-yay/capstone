@@ -8,6 +8,7 @@ import {
   Switch,
   ScrollView,
   Modal,
+  Linking,
   Alert,
 } from 'react-native';
 import {
@@ -20,7 +21,7 @@ import { usePhrasesContext } from '../context/PhrasesContext';
 import Button from '../components/button';
 import Cell from '../components/cell';
 
-const Phrases = ({ buttonLayout, daily }) => {
+const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   const insets = useSafeAreaInsets();
   const {
     inProcess,
@@ -79,7 +80,9 @@ const Phrases = ({ buttonLayout, daily }) => {
         content={item}
         buttonlayout={buttonLayout}
         onPress={() => {
-          if (item.type === 'phrase') speak(item.text);
+          if (item.text == 'Emergency') {
+            Linking.openURL(`tel:${caregiverNumber}`);
+          } else if (item.type === 'phrase') speak(item.text);
           else navigateToChoice(item);
         }}
         onLongPress={() => {
