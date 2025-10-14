@@ -171,6 +171,29 @@ export const PhrasesProvider = ({ children }) => {
     setCategoriesState({ ...categoriesState });
   };
 
+  const editPhrase = (parent, item, newText) => {
+    if (!item) return;
+
+    if (!parent) {
+      // Could be a task option if inProcess
+      const currentTask = getCurrentTask();
+      if (!currentTask) return;
+
+      const option = currentTask.choices.find(c => c === item);
+      if (option) {
+        option.text = newText;
+        // Force re-render
+        setTasks([...tasks]);
+      }
+    } else if (parent?.choices) {
+      // Category phrase
+      const catItem = parent.choices.find(c => c === item);
+      if (catItem) {
+        catItem.text = newText;
+        setCategoriesState({ ...categoriesState });
+      }
+    }
+  };
   const getCurrentTask = () =>
     tasks.length
       ? processesState.find(p => p.id === tasks[tasks.length - 1].id)
@@ -334,6 +357,7 @@ export const PhrasesProvider = ({ children }) => {
     allSelections,
     deleteGroup,
     moveGroupToTop,
+    editPhrase,
   };
 
   return (

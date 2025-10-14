@@ -34,6 +34,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     getBreadcrumbs,
     addPhrase,
     deletePhrase,
+    editPhrase,
   } = usePhrasesContext();
 
   const current = getCurrent();
@@ -46,6 +47,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   const [newPhraseText, setNewPhraseText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const [editText, setEditText] = useState('');
+  const [editingItem, setEditingItem] = useState(null);
+  const [editParent, setEditParent] = useState(null); // null = task option
+  const [editModal, setEditModal] = useState(false);
+
   useEffect(() => {
     initTTS();
   }, []);
@@ -55,7 +61,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       Alert.alert('Error', 'Please enter some text.');
       return;
     }
-
     setIsAdding(true);
     const newItem = {
       text: newPhraseText.trim(),
@@ -63,14 +68,21 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       image: selectedImage || null,
       choices: isPhrase ? undefined : [],
     };
-
     addPhrase(current, newItem);
-
     setNewPhraseText('');
     setSelectedImage(null);
     setIsPhrase(true);
     setAddModal(false);
     setIsAdding(false);
+  };
+
+  const handleEditConfirm = () => {
+    if (!editText.trim() || !editingItem) return;
+    editPhrase(editParent, editingItem, editText.trim());
+    setEditText('');
+    setEditingItem(null);
+    setEditParent(null);
+    setEditModal(false);
   };
 
   const renderChoices = () =>
@@ -80,20 +92,33 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         content={item}
         buttonlayout={buttonLayout}
         onPress={() => {
-          if (item.text == 'Emergency') {
+          if (item.text === 'Emergency')
             Linking.openURL(`tel:${caregiverNumber}`);
-          } else if (item.type === 'phrase') speak(item.text);
+          else if (item.type === 'phrase') speak(item.text);
           else navigateToChoice(item);
         }}
         onLongPress={() => {
-          Alert.alert('Delete', `Delete "${item.text}"?`, [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Delete',
-              style: 'destructive',
-              onPress: () => deletePhrase(current, item.text),
-            },
-          ]);
+          Alert.alert(
+            'Edit or Delete',
+            `What would you like to do with "${item.text}"?`,
+            [
+              { text: 'Cancel', style: 'cancel' },
+              {
+                text: 'Edit',
+                onPress: () => {
+                  setEditText(item.text);
+                  setEditingItem(item);
+                  setEditParent(current);
+                  setEditModal(true);
+                },
+              },
+              {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: () => deletePhrase(current, item.text),
+              },
+            ],
+          );
         }}
         delayLongPress={500}
       />
@@ -116,6 +141,20 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           content={item}
           buttonlayout={buttonLayout}
           onPress={() => selectPhrase(item)}
+          onLongPress={() => {
+            Alert.alert('Edit Option', `Edit text for "${item.text}"?`, [
+              { text: 'Cancel', style: 'cancel' },
+              {
+                text: 'Edit',
+                onPress: () => {
+                  setEditText(item.text);
+                  setEditingItem(item);
+                  setEditParent(null);
+                  setEditModal(true);
+                },
+              },
+            ]);
+          }}
         />
       ))}
       <Cell
@@ -192,6 +231,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         {inProcess ? renderProcess() : renderChoices()}
       </ScrollView>
 
+      {/* Add Modal */}
       <Modal
         visible={addModal}
         animationType="slide"
@@ -206,7 +246,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           }}
         >
           <Text style={{ fontSize: 40, fontWeight: '500' }}>Add</Text>
-
           <View style={{ width: '95%' }}>
             <Text style={{ fontSize: 20, marginBottom: 5 }}>
               Add {isPhrase ? 'phrase' : 'category'} text
@@ -223,7 +262,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
               onChangeText={setNewPhraseText}
             />
           </View>
-
           <View style={{ width: '95%' }}>
             <Text style={{ fontSize: 20, marginBottom: 5 }}>
               Add phrase or category
@@ -237,7 +275,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
               </Text>
             </View>
           </View>
-
           {selectedImage ? (
             <View
               style={{
@@ -274,7 +311,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 title="Select Image"
                 width="0.4"
                 color="#2196F3"
-                onPress={() => {
+                onPress={() =>
                   launchImageLibrary(
                     {
                       mediaType: 'photo',
@@ -286,14 +323,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                       if (response.assets && response.assets[0])
                         setSelectedImage({ uri: response.assets[0].uri });
                     },
-                  );
-                }}
+                  )
+                }
               />
               <Button
                 title="Take Photo"
                 width="0.4"
                 color="#2196F3"
-                onPress={() => {
+                onPress={() =>
                   launchCamera(
                     {
                       mediaType: 'photo',
@@ -305,12 +342,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                       if (response.assets && response.assets[0])
                         setSelectedImage({ uri: response.assets[0].uri });
                     },
-                  );
-                }}
+                  )
+                }
               />
             </View>
           )}
-
           <View
             style={{
               width: '95%',
@@ -330,6 +366,53 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
               onPress={handleAddPhrase}
               disabled={isAdding}
             />
+          </View>
+        </SafeAreaView>
+      </Modal>
+
+      {/* Edit Modal */}
+      <Modal
+        visible={editModal}
+        animationType="slide"
+        onRequestClose={() => setEditModal(false)}
+      >
+        <SafeAreaView
+          style={{
+            alignItems: 'center',
+            paddingHorizontal: 20,
+            paddingTop: insets.top,
+            gap: 20,
+          }}
+        >
+          <Text style={{ fontSize: 40, fontWeight: '500' }}>Edit</Text>
+          <View style={{ width: '95%' }}>
+            <Text style={{ fontSize: 20, marginBottom: 5 }}>Edit text</Text>
+            <TextInput
+              style={{
+                fontSize: 20,
+                borderWidth: 1,
+                borderColor: 'gray',
+                borderRadius: 10,
+                padding: 10,
+              }}
+              value={editText}
+              onChangeText={setEditText}
+            />
+          </View>
+          <View
+            style={{
+              width: '95%',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Button
+              title="Cancel"
+              width="0.4"
+              color="#DC3545"
+              onPress={() => setEditModal(false)}
+            />
+            <Button title="Save" width="0.4" onPress={handleEditConfirm} />
           </View>
         </SafeAreaView>
       </Modal>

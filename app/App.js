@@ -120,6 +120,7 @@ const TabScreens = ({
       {() => (
         <Settings
           buttonLayout={buttonLayout}
+          setButtonLayout={setButtonLayout}
           caregiverNumber={caregiverNumber}
           setCaregiverNumber={setCaregiverNumber}
         />
@@ -213,6 +214,7 @@ const App = () => {
                 selectedPhrase={selectedPhrase}
                 setSelectedPhrase={setSelectedPhrase}
                 buttonLayout={buttonLayout}
+                setButtonLayout={setButtonLayout}
                 caregiverNumber={caregiverNumber}
                 setCaregiverNumber={setCaregiverNumber}
                 coins={coins}
