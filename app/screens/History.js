@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
-  backButton: { padding: 5 },
+  backButton: { position: 'absolute', padding: 5 },
   backText: { fontSize: 18, color: '#2196F3' },
   headerTitle: {
     fontSize: 24,

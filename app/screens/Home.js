@@ -13,7 +13,7 @@ import Avatar from '../components/avatar';
 
 const Home = ({ avatarSelection, avatarItems }) => {
   const navigation = useNavigation();
-  const { allSelections, deleteGroup, navigateToChoice } = usePhrasesContext();
+  const { resetNav } = usePhrasesContext();
 
   const handleDeleteGroup = index => {
     if (deleteGroup) deleteGroup(index);
@@ -33,11 +33,13 @@ const Home = ({ avatarSelection, avatarItems }) => {
         title="View Recent History"
         style={styles.historyButton}
         onPress={() => navigation.navigate('History')}
+        color="#2196F3"
       />
       <Button
         title="See More..."
         onPress={() => {
-          navigateToChoice({ text: 'Categories' });
+          resetNav();
+          navigation.navigate('Phrases');
         }}
         color="#2196F3"
       />

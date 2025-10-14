@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import {
-  faHome,
-  faComment,
-  faCalendar,
-  faShoppingCart,
-  faCog,
-} from '@fortawesome/free-solid-svg-icons';
+import { faHome, faComment, faCalendar, faShoppingCart, faCog } from '@fortawesome/free-solid-svg-icons';
 
 import Home from './screens/Home';
 import Phrases from './screens/Phrases';
@@ -34,6 +28,7 @@ const TabScreens = ({
   avatarSelection,
   setAvatarSelection,
   avatarItems,
+  setAvatarItems,
 }) => (
   <Tab.Navigator
     screenOptions={{
@@ -105,6 +100,7 @@ const TabScreens = ({
           avatarSelection={avatarSelection}
           setAvatarSelection={setAvatarSelection}
           avatarItems={avatarItems}
+          setAvatarItems={setAvatarItems}
         />
       )}
     </Tab.Screen>
@@ -143,7 +139,7 @@ const App = () => {
     accessories: 0,
   });
 
-  const [avatarItems] = useState({
+  const [avatarItems, setAvatarItems] = useState({
     hats: [
       {
         id: 0,
@@ -222,6 +218,7 @@ const App = () => {
                 avatarSelection={avatarSelection}
                 setAvatarSelection={setAvatarSelection}
                 avatarItems={avatarItems}
+                setAvatarItems={setAvatarItems}
               />
             )}
           </Stack.Screen>

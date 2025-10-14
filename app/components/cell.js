@@ -75,9 +75,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        marginHorizontal: 10,
     },
     image: {
-        marginHorizontal: 20,
+        marginHorizontal: 10,
         width: "25%",
         aspectRatio: 1,
     },
