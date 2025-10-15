@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 
-const Cell = ({ content, buttonlayout, onPress, onLongPress, height = 0.125 }) => {
+const Cell = ({ content, buttonlayout, onPress, onLongPress, height = 0.115 }) => {
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
     const renderContent = () => {

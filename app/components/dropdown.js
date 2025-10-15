@@ -8,7 +8,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
-const Dropdown = ({ values, base, changebase }) => {
+const Dropdown = ({ values, base, changebase, width = 0.875 }) => {
+  const screenWidth = Dimensions.get('window').width;
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = item => {
@@ -33,12 +34,13 @@ const Dropdown = ({ values, base, changebase }) => {
         style={{
             backgroundColor: '#d9d9d9',
             color: '#000000',
-            width: '90%',
+            width: screenWidth * width,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
             paddingVertical: 10,
             paddingHorizontal: 20,
+            borderRadius: 10,
         }}
         onPress={() => setIsOpen(!isOpen)}
       >
@@ -51,7 +53,7 @@ const Dropdown = ({ values, base, changebase }) => {
       </TouchableOpacity>
 
       {isOpen && values && (
-        <View style={[styles.dropdownList, { width: '90%' }]}>
+        <View style={[styles.dropdownList, { width: screenWidth * width }]}>
           <FlatList
             data={values}
             renderItem={renderItem}
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
     top: 50,
     zIndex: 1000,
     elevation: 5,
+    maxHeight: 160,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -80,11 +83,10 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     padding: 12,
-    borderBottomColor: '#EEEEEE',
     backgroundColor: '#FFFFFF',
   },
   dropdownItemText: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#000000',
   },
 });

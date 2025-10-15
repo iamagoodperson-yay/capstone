@@ -91,100 +91,100 @@ function Settings({
           style={styles.text_input}
         />
       </View>
-      {/*
-      <View style={styles.container}>
-        <Text style={styles.subtext}> User's Manual</Text>
-        <Text style={styles.subheader}>Phrases</Text>
-        <Text style={styles.small_text}>
-          The buttons in the Phrases Tab allow you to choose between different
-          scenarios, such as ordering food or asking for directions.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial1.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.small_text}>
-          Buttons with a loudspeaker icon will read out the phrase when pressed.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial2.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Daily Challenge + Shop</Text>
-        <Text style={styles.small_text}>
-          The Daily Challenge resets daily, and requires the user to accomplish
-          a certain task using the Phrases, such as ordering food.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial3.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.small_text}>
-          Successfully completing the Daily Challenge awards you coins, allowing
-          you to purchase cosmetics for your avatar in the Shop Tab.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial4.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial5.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Adding Custom Phrases</Text>
-        <Text style={styles.small_text}>
-          To add your own phrases, navigate to the Phrases tab and select the
-          "Add Phrase" button at the bottom of the screen. You can then input
-          your desired phrase, and even add an image to it.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial6.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial7.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial8.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Deleting Phrases</Text>
-        <Text style={styles.small_text}>
-          To delete a specific phrase, simply long-press on the phrase button in
-          the Phrases tab, and confirm the deletion when prompted.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial9.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial10.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Home Page</Text>
-        <Text style={styles.small_text}>
-          For easy access, the 4 most frequently used phrases are in the Home
-          Tab. You can tap on any of these phrases to go to their corresponding
-          page in the Phrases Tab.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial11.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Settings Customisation</Text>
-        <Text style={styles.small_text}>
-          If you wish to change the language and how each phrase icon looks, you
-          can pick your desired language and button layout by clicking on the
-          icons above in the Settings Tab. The currently selected option is
-          highlighted in green.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial12.png')}
-          style={styles.main_image}
-        />
-      </View>
-      */}
+{/* 
+          <View style={styles.container}>
+              <Text style={styles.subtext}> User's Manual</Text>
+              <Text style={styles.subheader}>Phrases</Text>
+              <Text style={styles.small_text}>
+                  The buttons in the Phrases Tab allow you to choose between different
+                  scenarios, such as ordering food or asking for directions.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial1.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.small_text}>
+                  Buttons with a loudspeaker icon will read out the phrase when pressed.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial2.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.subheader}>Daily Challenge + Shop</Text>
+              <Text style={styles.small_text}>
+                  The Daily Challenge resets daily, and requires the user to accomplish
+                  a certain task using the Phrases, such as ordering food.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial3.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.small_text}>
+                  Successfully completing the Daily Challenge awards you coins, allowing
+                  you to purchase cosmetics for your avatar in the Shop Tab.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial4.png')}
+                  style={styles.main_image}
+              />
+              <Image
+                  source={require('../../assets/settings/tutorial5.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.subheader}>Adding Custom Phrases</Text>
+              <Text style={styles.small_text}>
+                  To add your own phrases, navigate to the Phrases tab and select the
+                  "Add Phrase" button at the bottom of the screen. You can then input
+                  your desired phrase, and even add an image to it.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial6.png')}
+                  style={styles.main_image}
+              />
+              <Image
+                  source={require('../../assets/settings/tutorial7.png')}
+                  style={styles.main_image}
+              />
+              <Image
+                  source={require('../../assets/settings/tutorial8.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.subheader}>Deleting Phrases</Text>
+              <Text style={styles.small_text}>
+                  To delete a specific phrase, simply long-press on the phrase button in
+                  the Phrases tab, and confirm the deletion when prompted.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial9.png')}
+                  style={styles.main_image}
+              />
+              <Image
+                  source={require('../../assets/settings/tutorial10.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.subheader}>Home Page</Text>
+              <Text style={styles.small_text}>
+                  For easy access, the 4 most frequently used phrases are in the Home
+                  Tab. You can tap on any of these phrases to go to their corresponding
+                  page in the Phrases Tab.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial11.png')}
+                  style={styles.main_image}
+              />
+              <Text style={styles.subheader}>Settings Customisation</Text>
+              <Text style={styles.small_text}>
+                  If you wish to change the language and how each phrase icon looks, you
+                  can pick your desired language and button layout by clicking on the
+                  icons above in the Settings Tab. The currently selected option is
+                  highlighted in green.
+              </Text>
+              <Image
+                  source={require('../../assets/settings/tutorial12.png')}
+                  style={styles.main_image}
+              />
+          </View> */}
+
     </ScrollView>
   );
 }
@@ -228,7 +228,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     width: '100%',
-    backgroundColor: '#fff',
   },
   text: {
     fontSize: 32,

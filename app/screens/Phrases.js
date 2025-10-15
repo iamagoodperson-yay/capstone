@@ -6,6 +6,7 @@ import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import Button from '../components/button';
 import Cell from '../components/cell';
+import Dropdown from '../components/dropdown';
 
 const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     const insets = useSafeAreaInsets();
@@ -20,15 +21,17 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         getBreadcrumbs,
         addCategory,
         deleteCategory,
-        editCategory,
+        editPhrase,
         addTask,
         addChoiceToTask,
+        getAllTaskIds,
     } = usePhrasesContext();
 
     const current = getCurrent();
     const breadcrumbs = getBreadcrumbs().join(' > ');
     const speechText = getSpeechText();
 
+    // Add modal fields
     const [addModal, setAddModal] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [isAddProcess, setIsAddProcess] = useState(false);
@@ -36,20 +39,30 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     const [selectedImage, setSelectedImage] = useState(null);
 
     // Process configuration fields
+    const [taskChoices, setTaskChoices] = useState([]);
+    const [targetTask, setTargetTask] = useState(null);
     const [taskTitle, setTaskTitle] = useState('');
     const [processSpeech, setProcessSpeech] = useState('');
     const [processMultiSelect, setProcessMultiSelect] = useState(false);
     const [processDiverge, setProcessDiverge] = useState(false);
 
+    // Edit modal fields
     const [editText, setEditText] = useState('');
     const [editingItem, setEditingItem] = useState(null);
-    const [editParent, setEditParent] = useState(null); // null = task option
+    const [editParent, setEditParent] = useState(null);
     const [editModal, setEditModal] = useState(false);
     const [editImage, setEditImage] = useState(null);
-
+    
     useEffect(() => {
         initTTS();
     }, []);
+
+    useEffect(() => {
+        // If multi-select is enabled, ensure diverge is disabled
+        if (processMultiSelect && processDiverge) {
+            setProcessDiverge(false);
+        }
+    }, [processMultiSelect, processDiverge]);
 
     const handleAdd = () => {
         if (!newItemText.trim()) {
@@ -71,7 +84,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     return;
                 }
 
-                const id = Date.now().toString();
+                const id = taskTitle.trim().toLowerCase().replace(/\s+/g, '_') + '_' + newItemText.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Date.now().toString();
                 const newChoice = {
                     text: newItemText.trim(),
                     image: selectedImage || null,
@@ -97,33 +110,42 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 addChoiceToTask(current.id, newChoice);
             }
         } else if (isAddProcess) {
-            if (!taskTitle.trim()) {
-                Alert.alert('Error', 'Please enter a title for the process.');
-                setIsAdding(false);
-                return;
-            } else if (!processSpeech.trim()) {
-                Alert.alert('Error', 'Please enter speech text for the process.');
-                setIsAdding(false);
-                return;
+            if (targetTask === 'New Task') {
+                if (!taskTitle.trim()) {
+                    Alert.alert('Error', 'Please enter a title for the process.');
+                    setIsAdding(false);
+                    return;
+                } else if (!processSpeech.trim()) {
+                    Alert.alert('Error', 'Please enter speech text for the process.');
+                    setIsAdding(false);
+                    return;
+                }
+
+                const id = newItemText.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Date.now().toString();
+                const newCategory = {
+                    text: newItemText.trim(),
+                    image: selectedImage || null,
+                    id: id,
+                };
+                addCategory(current, newCategory);
+                
+                const newTask = {
+                    id: id,
+                    text: taskTitle.trim(),
+                    speech: processSpeech.trim(),
+                    multiSelect: processMultiSelect,
+                    diverge: processDiverge,
+                    next: 'end'
+                };
+                addTask(newTask);
+            } else {
+                const newCategory = {
+                    text: newItemText.trim(),
+                    image: selectedImage || null,
+                    id: targetTask,
+                };
+                addCategory(current, newCategory);
             }
-
-            const id = Date.now().toString();
-            const newCategory = {
-                text: newItemText.trim(),
-                image: selectedImage || null,
-                id: id,
-            };
-            addCategory(current, newCategory);
-
-            const newTask = {
-                id: id,
-                text: taskTitle.trim(),
-                speech: processSpeech.trim(),
-                multiSelect: processMultiSelect,
-                diverge: processDiverge,
-                next: 'end'
-            };
-            addTask(newTask);
         } else {
             const newCategory = {
                 text: newItemText.trim(),
@@ -134,7 +156,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         }
 
         // Reset all form fields
-        resetFormFields();
+        resetAdd();
     };
 
     const createTask = (id, title, speech, multiSelect = false, diverge = false, nextId = 'end') => {
@@ -149,7 +171,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         };
     };
 
-    const resetFormFields = () => {
+     const resetAdd = () => {
         setIsAddProcess(false);
         setTaskTitle('');
         setProcessSpeech('');
@@ -161,23 +183,56 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         setIsAdding(false);
     };
 
-    const handleEditConfirm = () => {
-        if (!editText.trim() || !editingItem) return;
-        
-        // Update image if it changed
-        if (editingItem.image !== editImage) {
-            editingItem.image = editImage;
+    const handleEdit = () => {
+        if (!editText.trim()) {
+            Alert.alert('Error', 'Please put in some text in the text field.');
+            setIsAdding(false);
+            return;
         }
         
-        editCategory(editParent, editingItem, editText.trim());
-        
+        if (editingItem.text !== editText.trim()) {
+            editingItem.text = editText.trim();
+        }
+        if (editingItem.image && editingItem.image !== editImage) {
+            editingItem.image = editImage;
+        }
+        if (editingItem.speech && editingItem.speech !== processSpeech) {
+            editingItem.speech = processSpeech;
+        }
+        if (editingItem.multiSelect !== null && editingItem.multiSelect !== processMultiSelect) {
+            editingItem.multiSelect = processMultiSelect;
+        }
+        if (editingItem.diverge !== null && editingItem.diverge !== processDiverge) {
+            editingItem.diverge = processDiverge;
+        }
+        if (inProcess && current.id === editingItem.id ? !editingItem.diverge : true) {
+            if (editingItem.next !== targetTask) {
+                if (targetTask === 'End (no next task)') {
+                    editingItem.next = 'end';
+                } else {
+                    editingItem.next = targetTask;
+                }
+            }
+        }
+
+        editPhrase(editParent, editingItem);
+        resetEdit();
+    }
+    
+    const resetEdit = () => {
         setEditText('');
         setEditingItem(null);
         setEditParent(null);
         setEditImage(null);
+        setTaskChoices([]);
+        setTargetTask(null);
+        setTaskTitle('');
+        setProcessSpeech('');
+        setProcessMultiSelect(false);
+        setProcessDiverge(false);
         setEditModal(false);
     };
-
+    
     const renderChoices = () =>
         current.choices?.map((item, index) => (
             <Cell
@@ -192,8 +247,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 }}
                 onLongPress={() => {
                     Alert.alert(
-                        'Edit or Delete',
-                        `What would you like to do with "${item.text}"?`,
+                        `Edit or delete "${item.text}"?`, '',
                         [
                             { text: 'Cancel', style: 'cancel' },
                             {
@@ -214,7 +268,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                         ],
                     );
                 }}
-                delayLongPress={500}
             />
         ));
 
@@ -227,6 +280,27 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 }}
                 buttonlayout={4}
                 onPress={() => speak(speechText)}
+                onLongPress={() => {
+                    Alert.alert(`Edit current task "${current.text}"?`, '',[
+                        { text: 'Cancel', style: 'cancel' },
+                        {
+                            text: 'Edit',
+                            onPress: () => {
+                                setEditText(current.text);
+                                setEditingItem(current);
+                                setEditParent(null);
+                                setEditImage(null);
+                                setProcessSpeech(current.speech);
+                                setProcessMultiSelect(current.multiSelect);
+                                setProcessDiverge(current.diverge);
+                                setEditModal(true);
+                                const choices = getAllTaskIds();
+                                setTargetTask(choices.find(c => c === current.next) || current.next);
+                                setTaskChoices(['End (no next task)', ...choices]);
+                            },
+                        },
+                    ]);
+                }}
                 height={0.2}
             />
             {current.choices?.map((item, index) => (
@@ -236,7 +310,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     buttonlayout={buttonLayout}
                     onPress={() => selectPhrase(item)}
                     onLongPress={() => {
-                        Alert.alert('Edit Option', `Edit text for "${item.text}"?`, [
+                        Alert.alert(`Edit "${item.text}"?`, '',[
                             { text: 'Cancel', style: 'cancel' },
                             {
                                 text: 'Edit',
@@ -245,7 +319,16 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                     setEditingItem(item);
                                     setEditParent(null);
                                     setEditImage(item.image || null);
+                                    setTaskTitle('');
+                                    setProcessSpeech('');
+                                    setProcessMultiSelect(false);
+                                    setProcessDiverge(false);
                                     setEditModal(true);
+                                    if (item.next) {
+                                        const choices = getAllTaskIds();
+                                        setTargetTask(choices.find(c => c === item.next) || item.next);
+                                        setTaskChoices(['End (no next task)', ...choices]);
+                                    }
                                 },
                             },
                         ]);
@@ -292,7 +375,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     ) : (
                         <TouchableOpacity
                             style={styles.addBtn}
-                            onPress={() => setAddModal(true)}
+                            onPress={() => {
+                                setAddModal(true);
+                                setTargetTask('New Task');
+                                setTaskChoices(['New Task', ...getAllTaskIds()]);
+                            }}
                         >
                             <Text style={styles.addText}>
                                 +
@@ -316,7 +403,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     style={[styles.modalSafeArea, { paddingTop: insets.top }]}
                 >
                     <ScrollView
-                        style={styles.modalScrollView}
+                        style={{ flex: 1 }}
                         contentContainerStyle={styles.modalContainer}
                         keyboardShouldPersistTaps="handled"
                         showsVerticalScrollIndicator={false}
@@ -324,7 +411,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                         keyboardDismissMode="interactive"
                     >
                         <Text style={styles.modalTitle}>
-                            {'Add' + (inProcess ? (current.diverge ? ' Choice with New Task' : ' Choice to Current Task') : '')}
+                            {'Add' + (inProcess ? (current.diverge ? ' Choice with Task' : ' Choice to Current Task') : '')}
                         </Text>
                         <View style={styles.inputSection}>
                             <Text style={styles.inputLabel}>
@@ -403,43 +490,57 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                 </View>
                             </View>
                         )}
-                        {(!inProcess && isAddProcess) || (inProcess && current.diverge) ? (
+                        {((!inProcess && isAddProcess) || (inProcess && current.diverge)) ? (
                             <>
                                 <View style={styles.inputSection}>
-                                    <Text style={styles.inputLabel}>Task Title</Text>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        value={taskTitle}
-                                        onChangeText={setTaskTitle}
+                                    <Text style={styles.inputLabel}>Target task</Text>
+                                    <Dropdown
+                                        values={taskChoices}
+                                        base={targetTask}
+                                        changebase={setTargetTask}
                                     />
                                 </View>
+                                {(targetTask === 'New Task') ? (
+                                    <>
+                                        <View style={styles.inputSection}>
+                                            <Text style={styles.inputLabel}>Task Title</Text>
+                                            <TextInput
+                                                style={styles.textInput}
+                                                value={taskTitle}
+                                                onChangeText={setTaskTitle}
+                                            />
+                                        </View>
 
-                                <View style={styles.inputSection}>
-                                    <Text style={styles.inputLabel}>Speech Text</Text>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        value={processSpeech}
-                                        onChangeText={setProcessSpeech}
-                                    />
-                                </View>
+                                        <View style={styles.inputSection}>
+                                            <Text style={styles.inputLabel}>Speech Text</Text>
+                                            <TextInput
+                                                style={styles.textInput}
+                                                value={processSpeech}
+                                                onChangeText={setProcessSpeech}
+                                            />
+                                        </View>
 
-                                <View style={styles.inputSection}>
-                                    <Text style={styles.inputLabel}>Process Settings</Text>
-                                    <View style={styles.switchRow}>
-                                        <Switch
-                                            value={processMultiSelect}
-                                            onValueChange={setProcessMultiSelect}
-                                        />
-                                        <Text style={styles.switchText}>Allow Multiple Selections</Text>
-                                    </View>
-                                    <View style={styles.switchRow}>
-                                        <Switch
-                                            value={processDiverge}
-                                            onValueChange={setProcessDiverge}
-                                        />
-                                        <Text style={styles.switchText}>Different Next Steps</Text>
-                                    </View>
-                                </View>
+                                        <View style={styles.inputSection}>
+                                            <Text style={styles.inputLabel}>Process Settings</Text>
+                                            <View style={styles.switchRow}>
+                                                <Switch
+                                                    value={processMultiSelect}
+                                                    onValueChange={setProcessMultiSelect}
+                                                />
+                                                <Text style={styles.switchText}>Allow Multiple Selections</Text>
+                                            </View>
+                                            <View style={{height: 5}} />
+                                            <View style={styles.switchRow}>
+                                                <Switch
+                                                    disabled={processMultiSelect}
+                                                    value={processDiverge}
+                                                    onValueChange={setProcessDiverge}
+                                                />
+                                                <Text style={styles.switchText}>Different Next Steps</Text>
+                                            </View>
+                                        </View>
+                                    </>
+                                ): <View style={{ height : 150 }}/> }
                             </>
                         ) : null}
                         <View style={styles.buttonRow}>
@@ -447,7 +548,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                 title="Close"
                                 width="0.4"
                                 color="#DC3545"
-                                onPress={resetFormFields}
+                                onPress={resetAdd}
                             />
                             <Button
                                 title={isAdding ? 'Adding...' : 'Add'}
@@ -473,91 +574,154 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 <SafeAreaView
                     style={[styles.modalSafeArea, { paddingTop: insets.top }]}
                 >
-                    <ScrollView
-                        style={styles.modalScrollView}
-                        contentContainerStyle={styles.modalContainer}
+                    <View
+                        style={styles.modalContainer}
                         keyboardShouldPersistTaps="handled"
                         showsVerticalScrollIndicator={false}
                         automaticallyAdjustKeyboardInsets={true}
                         keyboardDismissMode="interactive"
                     >
                         <Text style={styles.modalTitle}>Edit</Text>
-                        <View style={styles.inputSection}>
-                            <Text style={styles.inputLabel}>Edit text</Text>
-                            <TextInput
-                                style={styles.textInput}
-                                value={editText}
-                                onChangeText={setEditText}
-                            />
-                        </View>
-                        {editImage ? (
-                            <View style={styles.imagePreviewContainer}>
-                                <Image
-                                    source={editImage}
-                                    style={styles.imagePreview}
-                                />
-                                <Button
-                                    title="Remove Image"
-                                    width="0.4"
-                                    color="#DC3545"
-                                    onPress={() => setEditImage(null)}
-                                />
-                            </View>
+                        {inProcess && editingItem?.id !== current?.id ? (
+                            <>
+                                <View style={styles.inputSection}>
+                                    <Text style={styles.inputLabel}>Edit text</Text>
+                                    <TextInput
+                                        style={styles.textInput}
+                                        value={editText}
+                                        onChangeText={setEditText}
+                                    />
+                                </View>
+                                {inProcess && (current.diverge ? editingItem?.id !== current?.id : editingItem?.id === current?.id) && (
+                                    <View style={styles.inputSection}>
+                                        <Text style={styles.inputLabel}>Edit target task</Text>
+                                        <Dropdown
+                                            values={taskChoices}
+                                            base={targetTask}
+                                            changebase={setTargetTask}
+                                            width="0.85"
+                                        />
+                                    </View>
+                                )}
+                                {(editingItem?.id !== current?.id) && (editImage ? (
+                                    <View style={styles.imagePreviewContainer}>
+                                        <Image
+                                            source={editImage}
+                                            style={styles.imagePreview}
+                                        />
+                                        <Button
+                                            title="Remove Image"
+                                            width="0.4"
+                                            color="#DC3545"
+                                            onPress={() => setEditImage(null)}
+                                        />
+                                    </View>
+                                ) : (
+                                    <View style={styles.buttonRow}>
+                                        <Button
+                                            title="Select Image"
+                                            width="0.4"
+                                            color="#2196F3"
+                                            onPress={() =>
+                                                launchImageLibrary(
+                                                    {
+                                                        mediaType: 'photo',
+                                                        quality: 0.8,
+                                                        maxWidth: 500,
+                                                        maxHeight: 500,
+                                                    },
+                                                    response => {
+                                                        if (response.assets && response.assets[0])
+                                                            setEditImage({ uri: response.assets[0].uri });
+                                                    },
+                                                )
+                                            }
+                                        />
+                                        <Button
+                                            title="Take Photo"
+                                            width="0.4"
+                                            color="#2196F3"
+                                            onPress={() =>
+                                                launchCamera(
+                                                    {
+                                                        mediaType: 'photo',
+                                                        quality: 0.8,
+                                                        maxWidth: 500,
+                                                        maxHeight: 500,
+                                                    },
+                                                    response => {
+                                                        if (response.assets && response.assets[0])
+                                                            setEditImage({ uri: response.assets[0].uri });
+                                                    },
+                                                )
+                                            }
+                                        />
+                                    </View>
+                                ))}
+                            </>
                         ) : (
-                            <View style={styles.buttonRow}>
-                                <Button
-                                    title="Select Image"
-                                    width="0.4"
-                                    color="#2196F3"
-                                    onPress={() =>
-                                        launchImageLibrary(
-                                            {
-                                                mediaType: 'photo',
-                                                quality: 0.8,
-                                                maxWidth: 500,
-                                                maxHeight: 500,
-                                            },
-                                            response => {
-                                                if (response.assets && response.assets[0])
-                                                    setEditImage({ uri: response.assets[0].uri });
-                                            },
-                                        )
-                                    }
-                                />
-                                <Button
-                                    title="Take Photo"
-                                    width="0.4"
-                                    color="#2196F3"
-                                    onPress={() =>
-                                        launchCamera(
-                                            {
-                                                mediaType: 'photo',
-                                                quality: 0.8,
-                                                maxWidth: 500,
-                                                maxHeight: 500,
-                                            },
-                                            response => {
-                                                if (response.assets && response.assets[0])
-                                                    setEditImage({ uri: response.assets[0].uri });
-                                            },
-                                        )
-                                    }
-                                />
-                            </View>
+                            <>
+                                <View style={styles.inputSection}>
+                                    <Text style={styles.inputLabel}>Task Title</Text>
+                                    <TextInput
+                                        style={styles.textInput}
+                                        value={editText}
+                                        onChangeText={setEditText}
+                                    />
+                                </View>
+
+                                <View style={styles.inputSection}>
+                                    <Text style={styles.inputLabel}>Speech Text</Text>
+                                    <TextInput
+                                        style={styles.textInput}
+                                        value={processSpeech}
+                                        onChangeText={setProcessSpeech}
+                                    />
+                                </View>
+
+                                <View style={styles.inputSection}>
+                                    <Text style={styles.inputLabel}>Process Settings</Text>
+                                    <View style={styles.switchRow}>
+                                        <Switch
+                                            value={processMultiSelect}
+                                            onValueChange={setProcessMultiSelect}
+                                        />
+                                        <Text style={styles.switchText}>Allow Multiple Selections</Text>
+                                    </View>
+                                    <View style={{height: 5}} />
+                                    <View style={styles.switchRow}>
+                                        <Switch
+                                            disabled={processMultiSelect}
+                                            value={processDiverge}
+                                            onValueChange={setProcessDiverge}
+                                        />
+                                        <Text style={styles.switchText}>Different Next Steps</Text>
+                                    </View>
+                                </View>
+
+                                {!processDiverge && (
+                                    <View style={styles.inputSection}>
+                                        <Text style={styles.inputLabel}>Edit target task</Text>
+                                        <Dropdown
+                                            values={taskChoices}
+                                            base={targetTask}
+                                            changebase={setTargetTask}
+                                            width="0.85"
+                                        />
+                                    </View>
+                                )}
+                            </>
                         )}
                         <View style={styles.buttonRow}>
                             <Button
                                 title="Cancel"
                                 width="0.4"
                                 color="#DC3545"
-                                onPress={() => {
-                                    setEditModal(false);
-                                    setEditImage(null);
-                                }}
+                                onPress={resetEdit}
                             />
-                            <Button title="Save" width="0.4" onPress={handleEditConfirm} />
+                            <Button title="Save" width="0.4" onPress={handleEdit} />
                         </View>
-                    </ScrollView>
+                    </View>
                 </SafeAreaView>
             </Modal>
         </>
@@ -614,9 +778,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     modalSafeArea: {
-        flex: 1,
-    },
-    modalScrollView: {
         flex: 1,
     },
     modalContainer: {

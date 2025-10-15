@@ -88,12 +88,12 @@ const processes = [
     {
         id: 'where_eat',
         text: 'Place to eat',
-        speech: 'Eat',
+        speech: '',
         multiSelect: false,
         diverge: false,
         next: 'spicy',
         choices: [
-            { text: 'Here', image: require('../../assets/phrases/food.png') },
+            { text: 'Eat here', image: require('../../assets/phrases/food.png') },
             { text: 'Takeaway', image: require('../../assets/phrases/takeaway.png') },
         ],
     },
@@ -179,25 +179,59 @@ export const PhrasesProvider = ({ children }) => {
         setCategoriesState({ ...categoriesState });
     };
 
-    const editCategory = (parent, item, newText) => {
+    const editPhrase = (parent, item) => {
         if (!item) return;
+
+        if (item.id && processesState.some(p => p.id === item.id)) {
+            const newProcesses = processesState.map(p => {
+                if (p.id !== item.id) return p;
+                return {
+                    ...p,
+                    // Only overwrite fields that are provided on `item`
+                    text: item.text ?? p.text,
+                    speech: item.speech ?? p.speech,
+                    multiSelect: typeof item.multiSelect === 'boolean' ? item.multiSelect : p.multiSelect,
+                    diverge: typeof item.diverge === 'boolean' ? item.diverge : p.diverge,
+                    next: item.next ?? p.next,
+                    // Replace choices array only if provided (otherwise keep existing)
+                    choices: item.choices ?? p.choices,
+                };
+            });
+            setProcessesState(newProcesses);
+            return;
+        }
 
         if (!parent) {
             // Could be a task option if inProcess
             const currentTask = getCurrentTask();
             if (!currentTask) return;
             
-            const option = currentTask.choices.find(c => c === item);
-            if (option) {
-                option.text = newText;
-                option.image = option.image || require('../../assets/phrases/others.png');
-                setTasks([...tasks]);
-            }
+            const choiceIndex = currentTask.choices.findIndex(c => c === item);
+            if (choiceIndex === -1) return;
+
+            // Create updated choice immutably
+            const updatedChoice = {
+                ...currentTask.choices[choiceIndex],
+                text: item.text,
+                image: currentTask.choices[choiceIndex].image || require('../../assets/phrases/others.png'),
+                next: currentTask.choices[choiceIndex].next ?? null,
+            };
+
+            // Create new processesState array with updated choice
+            const newProcesses = processesState.map(task => {
+                if (task.id !== currentTask.id) return task;
+                const newChoices = [...task.choices];
+                newChoices[choiceIndex] = updatedChoice;
+                return { ...task, choices: newChoices };
+            });
+
+            setProcessesState(newProcesses);
+            console.log(processesState);
         } else if (parent?.choices) {
             // Category phrase
             const catItem = parent.choices.find(c => c === item);
             if (catItem) {
-                catItem.text = newText;
+                catItem.text = item.text;
                 catItem.image = catItem.image || require('../../assets/phrases/others.png');
                 setCategoriesState({ ...categoriesState });
             }
@@ -250,6 +284,42 @@ export const PhrasesProvider = ({ children }) => {
         speak(fullSpeech);
     };
 
+    const end = (currentTask) => {
+        if (!currentTask) return;
+
+        if (currentSelections.length > 0 || selected.length > 0) {
+            // Include the final selected for the last task
+            const allTaskSelections = [...currentSelections];
+            if (selected.length > 0) {
+                allTaskSelections.push({
+                    taskId: currentTask.id,
+                    choices: [...selected],
+                });
+            }
+
+            // Build full speech combining task.speech + choices
+            const fullSpeech = allTaskSelections
+                .map(ts => {
+                    const task = processesState.find(p => p.id === ts.taskId);
+                    if (!task) return '';
+                    const spoken = task.speech ? task.speech.trim() + ' ' : '';
+                    const items = ts.choices.map(i => i.text).join(', ');
+                    return (spoken + items).trim();
+                })
+                .filter(Boolean)
+                .join(', ');
+
+            // Store in history
+            const allItems = allTaskSelections.flatMap(ts => ts.choices);
+            setAllSelections(prev =>
+                [{ fullSpeech, items: allItems }, ...prev].slice(0, 12),
+            );
+        }
+
+        // Reset process
+        resetNav();
+    }
+
     const navigateToChoice = choice => {
         if (inProcess) {
             const currentTask = getCurrentTask();
@@ -264,40 +334,13 @@ export const PhrasesProvider = ({ children }) => {
             }
 
             if (currentTask.next === 'end') {
-                if (currentSelections.length > 0 || selected.length > 0) {
-                    // Include the final selected for the last task
-                    const allTaskSelections = [...currentSelections];
-                    if (selected.length > 0) {
-                        allTaskSelections.push({
-                            taskId: currentTask.id,
-                            choices: [...selected],
-                        });
-                    }
-
-                    // Build full speech combining task.speech + choices
-                    const fullSpeech = allTaskSelections
-                        .map(ts => {
-                            const task = processesState.find(p => p.id === ts.taskId);
-                            if (!task) return '';
-                            const spoken = task.speech ? task.speech.trim() + ' ' : '';
-                            const items = ts.choices.map(i => i.text).join(', ');
-                            return (spoken + items).trim();
-                        })
-                        .filter(Boolean)
-                        .join(', ');
-
-                    // Store in history
-                    const allItems = allTaskSelections.flatMap(ts => ts.choices);
-                    setAllSelections(prev =>
-                        [{ fullSpeech, items: allItems }, ...prev].slice(0, 12),
-                    );
-                }
-
-                // Reset process
-                resetNav();
+                end(currentTask);
             } else if (currentTask.diverge) {
                 if (selected.length === 0)
                     throw new Error('Please choose something to continue');
+                if (selected[0].next === 'end') {
+                    end(currentTask);
+                }
                 setTasks(prev => [
                     ...prev,
                     processesState.find(p => p.id === selected[0].next),
@@ -336,12 +379,22 @@ export const PhrasesProvider = ({ children }) => {
         if (!taskId || !newItem) return;
         const task = processesState.find(p => p.id === taskId);
         if (!task) return;
+        
         newItem.text = newItem.text || 'New Choice';
         newItem.image = newItem.image || require('../../assets/phrases/others.png');
-        newItem.next = newItem.next || null;
-        task.choices = task.choices || [];
-        task.choices.push(newItem);
-        setProcessesState([...processesState]);
+        newItem.next = newItem.next ?? null;
+
+        // Immutable update: create new processes array with choice added
+        const newProcesses = processesState.map(p => {
+            if (p.id !== taskId) return p;
+            return { ...p, choices: [...(p.choices || []), newItem] };
+        });
+
+        setProcessesState(newProcesses);
+    }
+
+    const getAllTaskIds = () => {
+        return processesState.map(p => p.id);
     }
 
     const getCurrent = () =>
@@ -377,12 +430,13 @@ export const PhrasesProvider = ({ children }) => {
         resetNav,
         addCategory,
         deleteCategory,
-        editCategory,
+        editPhrase,
         getSpeechText,
         selectPhrase,
         navigateToChoice,
         addTask,
         addChoiceToTask,
+        getAllTaskIds,
         getCurrent,
         goBack,
         canGoBack: navigationStack.length > 0,
