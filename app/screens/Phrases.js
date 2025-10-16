@@ -283,15 +283,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             });
         };
         searchRecursive(choices);
-        return results.sort((a, b) => {
-            const aBook = bookmarkedTexts.includes(a.text) ? 1 : 0;
-            const bBook = bookmarkedTexts.includes(b.text) ? 1 : 0;
-            if (aBook !== bBook) return bBook - aBook; // bookmarked first
-            const countA = a.usageCount || 0;
-            const countB = b.usageCount || 0;
-            if (countA !== countB) return countB - countA; // usage next
-            return a.text.localeCompare(b.text); // alphabetical last
-        });
+        return results
     };
 
     // ---------------- RENDER CHOICES ----------------
@@ -362,17 +354,24 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     const renderProcess = () => {
         if (!inProcess) return null;
 
-        const choices = current.choices || [];
+        const choicesToShow = searchQuery
+            ? getFilteredChoices(current.choices)
+            : current.choices;
 
-        // Sort choices: bookmarked -> usage count -> alphabetical
-        const sortedChoices = [...choices].sort((a, b) => {
+        // Filter out processes unless inProcess or in search mode
+        const filtered = choicesToShow.filter(
+            c => !c.speech || inProcess || searchQuery,
+        );
+
+        // Sort by bookmark -> usageCount -> alphabetical
+        filtered.sort((a, b) => {
             const aBook = bookmarkedTexts.includes(a.text) ? 1 : 0;
             const bBook = bookmarkedTexts.includes(b.text) ? 1 : 0;
-            if (aBook !== bBook) return bBook - aBook; // bookmarked first
+            if (aBook !== bBook) return bBook - aBook;
             const countA = a.usageCount || 0;
             const countB = b.usageCount || 0;
-            if (countA !== countB) return countB - countA; // usage next
-            return a.text.localeCompare(b.text); // alphabetical last
+            if (countA !== countB) return countB - countA;
+            return a.text.localeCompare(b.text);
         });
 
         return (
@@ -411,7 +410,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 />
 
                 {/* Choices */}
-                {sortedChoices.map((item, index) => (
+                {filtered.map((item, index) => (
                     <Cell
                         key={index.toString()}
                         content={{

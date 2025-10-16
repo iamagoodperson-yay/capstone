@@ -184,13 +184,17 @@ export const usePhrasesContext = () => {
 export const PhrasesProvider = ({ children }) => {
   const [categoriesState, setCategoriesState] = useState(categories);
   const [navigationStack, setNavigationStack] = useState([]);
+
   const [processesState, setProcessesState] = useState(processes);
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
+
   const [selected, setSelected] = useState([]);
   const [currentSelections, setCurrentSelections] = useState([]);
   const [allSelections, setAllSelections] = useState([]);
+
   const [bookmarkedTexts, setBookmarkedTexts] = useState([]);
+  const [fromBookmark, setFromBookmark] = useState(false);
 
   const getCurrentCategory = () => {
     if (navigationStack.length === 0) return categoriesState;
@@ -208,6 +212,7 @@ export const PhrasesProvider = ({ children }) => {
     setTasks([]);
     setSelected([]);
     setCurrentSelections([]);
+    setFromBookmark(false);
   };
 
   const addCategory = (parent, newItem) => {
@@ -452,12 +457,23 @@ export const PhrasesProvider = ({ children }) => {
         const path = [...parentPath, item.text];
         if (bookmarkedTexts.includes(item.text) && !seen.has(path.join('>'))) {
           seen.add(path.join('>'));
-          out.push({ item, path });
+          out.push({ item, path, kind: 'category' });
         }
         if (item.choices && item.choices.length) recurse(item.choices, path);
       }
     };
     recurse(categoriesState.choices, []);
+
+    // Also check process choices (task-based phrases)
+    for (const proc of processesState) {
+      for (const choice of proc.choices || []) {
+        const key = `proc:${proc.id}>${choice.text}`;
+        if (bookmarkedTexts.includes(choice.text) && !seen.has(key)) {
+          seen.add(key);
+          out.push({ item: choice, processId: proc.id, processText: proc.text, kind: 'process' });
+        }
+      }
+    }
     return out;
   };
 
@@ -468,14 +484,39 @@ export const PhrasesProvider = ({ children }) => {
     setTasks([]);
     setSelected([]);
     setCurrentSelections([]);
+    setFromBookmark(false);
+  };
+
+  const navigateToProcessChoice = (processId, choiceText) => {
+    const process = processesState.find(p => p.id === processId);
+    if (!process) return;
+
+    const choice = (process.choices || []).find(c => c.text === choiceText);
+
+    setNavigationStack([]);
+    setTasks([process]);
+    setInProcess(true);
+    setCurrentSelections([]);
+    setSelected(choice ? [choice] : []);
+    setFromBookmark(true);
   };
 
   const goBack = () => {
     if (inProcess) {
       if (tasks.length <= 1) {
-        setInProcess(false);
-        setTasks([]);
-        setSelected([]);
+        if (fromBookmark) {
+          // If we came from a bookmark, go back to categories root
+          setFromBookmark(false);
+          setInProcess(false);
+          setTasks([]);
+          setSelected([]);
+          setNavigationStack([]);
+        } else {
+          // Normal back behavior
+          setInProcess(false);
+          setTasks([]);
+          setSelected([]);
+        }
       } else {
         setTasks(prev => prev.slice(0, -1));
         setSelected([]);
@@ -515,8 +556,9 @@ export const PhrasesProvider = ({ children }) => {
     toggleBookmark,
     getBookmarkedItems,
     navigateToPath,
+    navigateToProcessChoice,
     goBack,
-    canGoBack: navigationStack.length > 0,
+    canGoBack: navigationStack.length > 0 || inProcess,
     getBreadcrumbs,
     allSelections,
     deleteGroup,

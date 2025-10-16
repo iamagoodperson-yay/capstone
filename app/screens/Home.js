@@ -14,7 +14,7 @@ import Avatar from '../components/avatar';
 
 const Home = ({ avatarSelection, avatarItems }) => {
   const navigation = useNavigation();
-  const { resetNav, getBookmarkedItems, navigateToPath } = usePhrasesContext();
+  const { resetNav, getBookmarkedItems, navigateToPath, navigateToProcessChoice } = usePhrasesContext();
   const bookmarked = getBookmarkedItems();
 
   return (
@@ -44,8 +44,12 @@ const Home = ({ avatarSelection, avatarItems }) => {
                         padding: 20,
                     }}
                     onPress={() => {
-                      // Deep link: set navigation stack to the item's path, then switch to Phrases tab
-                      navigateToPath(b.path);
+                      if (b.kind === 'process') {
+                        navigateToProcessChoice(b.processId, b.item.text);
+                      } else {
+                        navigateToPath(b.path);
+                      }
+                      navigation.navigate('Phrases');
                     }}
                 >
                   <Image
