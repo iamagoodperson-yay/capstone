@@ -113,13 +113,13 @@ const processes = [
   {
     id: 'where_eat',
     text: 'Place to eat',
-    speech: 'Eat',
+    speech: '',
     multiSelect: false,
     diverge: false,
     next: 'spicy',
     choices: [
       {
-        text: 'Here',
+        text: 'Eat here',
         image: require('../../assets/phrases/food.png'),
         usageCount: 0,
       },
@@ -207,7 +207,6 @@ export const PhrasesProvider = ({ children }) => {
     setTasks([]);
     setSelected([]);
     setCurrentSelections([]);
-    setAllSelections([]);
   };
 
   const addCategory = (parent, newItem) => {
@@ -309,7 +308,7 @@ export const PhrasesProvider = ({ children }) => {
     if (!currentTask) return;
 
     // increment usage count
-    item.usageCount = (item.usageCount || 0) + 1;
+    item.usageCount += 1;
 
     let updatedSelected;
     if (currentTask.multiSelect) {
@@ -334,7 +333,7 @@ export const PhrasesProvider = ({ children }) => {
   };
 
   const navigateToChoice = choice => {
-    if (choice?.usageCount !== undefined) {
+    if (!inProcess && choice?.usageCount !== undefined) {
       choice.usageCount += 1;
       setCategoriesState({ ...categoriesState });
     }
@@ -351,14 +350,8 @@ export const PhrasesProvider = ({ children }) => {
       }
 
       if (currentTask.next === 'end') {
-        if (currentSelections.length > 0 || selected.length > 0) {
+        if (currentSelections.length > 0) {
           const allTaskSelections = [...currentSelections];
-          if (selected.length > 0) {
-            allTaskSelections.push({
-              taskId: currentTask.id,
-              choices: [...selected],
-            });
-          }
 
           const fullSpeech = allTaskSelections
             .map(ts => {
@@ -371,10 +364,7 @@ export const PhrasesProvider = ({ children }) => {
             .filter(Boolean)
             .join(', ');
 
-          const allItems = allTaskSelections.flatMap(ts => ts.choices);
-          setAllSelections(prev =>
-            [{ fullSpeech, items: allItems }, ...prev].slice(0, 12),
-          );
+          setAllSelections(prev => [fullSpeech, ...prev].slice(0, 12));
         }
 
         resetNav();
@@ -397,9 +387,7 @@ export const PhrasesProvider = ({ children }) => {
       setTasks([processesState.find(p => p.id === choice.id)]);
       setInProcess(true);
       setCurrentSelections([]);
-    }
-
-    if (choice?.text) setNavigationStack(prev => [...prev, choice.text]);
+    } else if (choice?.text) setNavigationStack(prev => [...prev, choice.text]);
   };
 
   const addTask = newItem => {

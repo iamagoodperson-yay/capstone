@@ -67,13 +67,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     // Handle selecting or navigating
   const handlePress = item => {
     if (inProcess) {
-      item.usageCount = (item.usageCount || 0) + 1;
       selectPhrase(item);
     } else {
       if (item.text === 'Emergency') Linking.openURL(`tel:${caregiverNumber}`);
       else if (item.type === 'phrase') speak(item.text);
       else {
-        item.usageCount = (item.usageCount || 0) + 1;
         navigateToChoice(item);
       }
     }
@@ -297,75 +295,75 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
     const renderProcess = () => {
         const sortedChoices = getFilteredChoices(current.choices);
-    return (
-        <>
-            <Cell
-                content={{
-                    text: speechText,
-                    image: require('../../assets/phrases/speaker.png'),
-                }}
-                buttonlayout={4}
-                onPress={() => speak(speechText)}
-                onLongPress={() => {
-                    Alert.alert(`Edit current task "${current.text}"?`, '',[
-                        { text: 'Cancel', style: 'cancel' },
-                        {
-                            text: 'Edit',
-                            onPress: () => {
-                                setEditText(current.text);
-                                setEditingItem(current);
-                                setEditParent(null);
-                                setEditImage(null);
-                                setProcessSpeech(current.speech);
-                                setProcessMultiSelect(current.multiSelect);
-                                setProcessDiverge(current.diverge);
-                                setEditModal(true);
-                                const choices = getAllTaskIds();
-                                setTargetTask(choices.find(c => c === current.next) || current.next);
-                                setTaskChoices(['End (no next task)', ...choices]);
-                            },
-                        },
-                    ]);
-                }}
-                height={0.2}
-            />
-            {sortedChoices.map((item, index) => (
+        return (
+            <>
                 <Cell
-                    key={index.toString()}
-                    content={item}
-                    buttonlayout={buttonLayout}
-                    onPress={() => handlePress(item)}
+                    content={{
+                        text: speechText,
+                        image: require('../../assets/phrases/speaker.png'),
+                    }}
+                    buttonlayout={4}
+                    onPress={() => speak(speechText)}
                     onLongPress={() => {
-                        Alert.alert('Edit Option', `Edit text for "${item.text}"?`, [
+                        Alert.alert(`Edit current task "${current.text}"?`, '',[
                             { text: 'Cancel', style: 'cancel' },
                             {
                                 text: 'Edit',
                                 onPress: () => {
-                                    setEditText(item.text);
-                                    setEditingItem(item);
+                                    setEditText(current.text);
+                                    setEditingItem(current);
                                     setEditParent(null);
-                                    setEditImage(item.image || null);
+                                    setEditImage(null);
+                                    setProcessSpeech(current.speech);
+                                    setProcessMultiSelect(current.multiSelect);
+                                    setProcessDiverge(current.diverge);
                                     setEditModal(true);
+                                    const choices = getAllTaskIds();
+                                    setTargetTask(choices.find(c => c === current.next) || current.next);
+                                    setTaskChoices(['End (no next task)', ...choices]);
                                 },
                             },
                         ]);
                     }}
+                    height={0.2}
                 />
-            ))}
-            <Cell
-                content={{ text: 'Next', type: 'next' }}
-                buttonlayout={3}
-                height={0.1}
-                onPress={() => {
-                    try {
-                        navigateToChoice(null);
-                    } catch (err) {
-                        Alert.alert('Error', err.message);
-                    }
-                }}
-            />
-        </>
-    );
+                {sortedChoices.map((item, index) => (
+                    <Cell
+                        key={index.toString()}
+                        content={item}
+                        buttonlayout={buttonLayout}
+                        onPress={() => handlePress(item)}
+                        onLongPress={() => {
+                            Alert.alert('Edit Option', `Edit text for "${item.text}"?`, [
+                                { text: 'Cancel', style: 'cancel' },
+                                {
+                                    text: 'Edit',
+                                    onPress: () => {
+                                        setEditText(item.text);
+                                        setEditingItem(item);
+                                        setEditParent(null);
+                                        setEditImage(item.image || null);
+                                        setEditModal(true);
+                                    },
+                                },
+                            ]);
+                        }}
+                    />
+                ))}
+                <Cell
+                    content={{ text: 'Next', type: 'next' }}
+                    buttonlayout={3}
+                    height={0.1}
+                    onPress={() => {
+                        try {
+                            navigateToChoice(null);
+                        } catch (err) {
+                            Alert.alert('Error', err.message);
+                        }
+                    }}
+                />
+            </>
+        );
   };
 
     return (

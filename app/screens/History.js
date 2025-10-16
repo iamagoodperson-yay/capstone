@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   View,
   Text,
@@ -20,12 +19,7 @@ const History = () => {
     if (!group) return;
 
     // Speak stored full phrase or fallback to individual items
-    if (group.fullSpeech) {
-      speak(group.fullSpeech);
-    } else if (group.items?.length) {
-      const text = group.items.map(i => i.text).join(', ');
-      speak(text);
-    }
+    speak(group);
 
     // Move to top of history
     moveGroupToTop(index);
@@ -63,12 +57,7 @@ const History = () => {
             onPress={() => handlePressGroup(index)}
             onLongPress={() => handleDeleteGroup(index)}
           >
-            <Text style={styles.historyText}>
-              {group.fullSpeech ||
-                (group.items
-                  ? group.items.map(i => i.text).join(', ')
-                  : 'Unknown')}
-            </Text>
+            <Text style={styles.historyText}>{group}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -94,13 +83,13 @@ const styles = StyleSheet.create({
   scrollContainer: { gap: 10, paddingVertical: 10 },
   historyButton: {
     width: '100%',
-    paddingVertical: 20,
+    padding: 20,
     backgroundColor: '#d9d9d9',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  historyText: { fontSize: 18, textAlign: 'center' },
+  historyText: { fontSize: 18},
 });
 
 export default History;
