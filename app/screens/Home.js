@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
+  Image,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
@@ -13,11 +14,8 @@ import Avatar from '../components/avatar';
 
 const Home = ({ avatarSelection, avatarItems }) => {
   const navigation = useNavigation();
-  const { resetNav } = usePhrasesContext();
-
-  const handleDeleteGroup = index => {
-    if (deleteGroup) deleteGroup(index);
-  };
+  const { resetNav, getBookmarkedItems, navigateToPath } = usePhrasesContext();
+  const bookmarked = getBookmarkedItems();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -27,26 +25,61 @@ const Home = ({ avatarSelection, avatarItems }) => {
         avatarItems={avatarItems}
       />
 
-      <Text style={styles.header}>Last Saved Phrases:</Text>
+      <Text style={styles.header}>Bookmarked :</Text>
 
-      <Button
-        title="View Recent History"
-        style={styles.historyButton}
-        onPress={() => navigation.navigate('History')}
-        color="#2196F3"
-      />
-      <Button
-        title="See More..."
-        onPress={() => {
-          resetNav();
-          navigation.navigate('Phrases');
-        }}
-        color="#2196F3"
-      />
-      <Button
-        title="Solve Daily Challenge"
-        onPress={() => navigation.navigate('Challenge')}
-      />
+      {bookmarked.length > 0 ? (
+        <View style={styles.gridContainer}>
+          {bookmarked.map((b, i) => {
+            // b is { item, path }
+            return (
+                <TouchableOpacity
+                    key={i.toString()}
+                    style={{
+                        width: '48%',
+                        height: 150,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#FFE082',
+                        borderRadius: 10,
+                        padding: 20,
+                    }}
+                    onPress={() => {
+                      // Deep link: set navigation stack to the item's path, then switch to Phrases tab
+                      navigateToPath(b.path);
+                    }}
+                >
+                  <Image
+                    source={b.item.image}
+                    style={{ width: 60, height: 60 }}
+                  />
+                  <Text style={{ fontSize: 20, textAlign: 'center' }}>
+                    {b.item.text}
+                  </Text>
+                </TouchableOpacity>
+            );
+          })}
+        </View>
+      ) : (
+        <Text style={{ fontSize: 16, fontStyle: 'italic', opacity: 0.5 }}>No bookmarked items yet.</Text>
+      )}
+
+        <Button
+            title="View Recent History"
+            onPress={() => navigation.navigate('History')}
+            color="#2196F3"
+        />
+        <Button
+            title="See More..."
+            onPress={() => {
+            resetNav();
+            navigation.navigate('Phrases');
+            }}
+            color="#2196F3"
+        />
+        <Button
+            title="Solve Daily Challenge"
+            onPress={() => navigation.navigate('Challenge')}
+        />
     </ScrollView>
   );
 };
@@ -63,23 +96,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
-  historyContainer: {
-    width: '95%',
+  gridContainer: {
+    width: '85%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     gap: 10,
-    marginVertical: 20,
-  },
-  historyButton: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#d9d9d9',
-    borderRadius: 15,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  historyText: {
-    fontSize: 18,
-    textAlign: 'center',
   },
 });
 

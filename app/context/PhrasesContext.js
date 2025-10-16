@@ -190,6 +190,7 @@ export const PhrasesProvider = ({ children }) => {
   const [selected, setSelected] = useState([]);
   const [currentSelections, setCurrentSelections] = useState([]);
   const [allSelections, setAllSelections] = useState([]);
+  const [bookmarkedTexts, setBookmarkedTexts] = useState([]);
 
   const getCurrentCategory = () => {
     if (navigationStack.length === 0) return categoriesState;
@@ -433,16 +434,55 @@ export const PhrasesProvider = ({ children }) => {
   const getCurrent = () =>
     inProcess ? getCurrentTask() : getCurrentCategory();
 
+  // Toggle a bookmark for a phrase text
+  const toggleBookmark = text => {
+    if (!text) return;
+    setBookmarkedTexts(prev =>
+      prev.includes(text) ? prev.filter(t => t !== text) : [...prev, text],
+    );
+  };
+
+  // Recursively collect choices from categoriesState whose text is bookmarked
+  const getBookmarkedItems = () => {
+    const out = [];
+    const seen = new Set();
+    const recurse = (items, parentPath = []) => {
+      if (!items) return;
+      for (const item of items) {
+        const path = [...parentPath, item.text];
+        if (bookmarkedTexts.includes(item.text) && !seen.has(path.join('>'))) {
+          seen.add(path.join('>'));
+          out.push({ item, path });
+        }
+        if (item.choices && item.choices.length) recurse(item.choices, path);
+      }
+    };
+    recurse(categoriesState.choices, []);
+    return out;
+  };
+
+  const navigateToPath = pathArray => {
+    if (!Array.isArray(pathArray)) return;
+    setNavigationStack([...pathArray]);
+    setInProcess(false);
+    setTasks([]);
+    setSelected([]);
+    setCurrentSelections([]);
+  };
+
   const goBack = () => {
     if (inProcess) {
       if (tasks.length <= 1) {
-        setNavigationStack(prev => prev.slice(0, -1));
         setInProcess(false);
         setTasks([]);
-      } else setTasks(prev => prev.slice(0, -1));
-      setSelected([]);
-    } else if (navigationStack.length)
-      setNavigationStack(prev => prev.slice(0, -1));
+        setSelected([]);
+      } else {
+        setTasks(prev => prev.slice(0, -1));
+        setSelected([]);
+      }
+    } else if (navigationStack.length > 0) {
+        setNavigationStack(prev => prev.slice(0, -1));
+    }
   };
 
   const getBreadcrumbs = () => ['Categories', ...navigationStack];
@@ -461,6 +501,7 @@ export const PhrasesProvider = ({ children }) => {
     categoriesState,
     inProcess,
     resetNav,
+    bookmarkedTexts,
     addCategory,
     deleteCategory,
     editPhrase,
@@ -471,6 +512,9 @@ export const PhrasesProvider = ({ children }) => {
     addChoiceToTask,
     getAllTaskIds,
     getCurrent,
+    toggleBookmark,
+    getBookmarkedItems,
+    navigateToPath,
     goBack,
     canGoBack: navigationStack.length > 0,
     getBreadcrumbs,

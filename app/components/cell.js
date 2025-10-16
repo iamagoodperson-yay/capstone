@@ -13,6 +13,7 @@ const Cell = ({
   onPress,
   onLongPress,
   height = 0.115,
+  widthFactor = 0.8,
 }) => {
   const screenHeight = Dimensions.get('window').height;
   const screenWidth = Dimensions.get('window').width;
@@ -42,8 +43,8 @@ const Cell = ({
         );
       case 3:
         return (
-          <Text style={[styles.text, styles.next_text]}>{content.text}</Text>
-        ); // <-- 3: Next button style
+          <Text style={[styles.text, content.type === 'next' ? styles.next_text : null]}>{content.text}</Text>
+        );
       case 4:
         return (
           <View style={styles.horizontalContainer}>
@@ -67,13 +68,13 @@ const Cell = ({
     <TouchableOpacity
       style={[
         styles.normal_button,
-        { height: screenHeight * height, width: screenWidth * 0.8 },
+        { height: screenHeight * height, width: screenWidth * widthFactor },
         content.type === 'selected'
           ? styles.selected_button
           : content.type === 'next'
           ? styles.next_button
           : null,
-        content.bookmarked ? { backgroundColor: '#6cc1ddff' } : null, // <-- 4: light blue tint for bookmarked
+        content.bookmarked ? styles.bookmarked_button : null,
       ]}
       onPress={onPress}
       onLongPress={onLongPress}
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
   },
   next_text: {
     color: '#FFFFFF', // <-- 3: text color for Next
+  },
+  bookmarked_button: {
+    backgroundColor: '#FFE082',
   },
   horizontalContainer: {
     flexDirection: 'row',

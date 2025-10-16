@@ -46,7 +46,10 @@ const TabScreens = ({
       }}
     >
       {() => (
-        <Home avatarSelection={avatarSelection} avatarItems={avatarItems} />
+        <Home
+          avatarSelection={avatarSelection}
+          avatarItems={avatarItems}
+        />
       )}
     </Tab.Screen>
 
