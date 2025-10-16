@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { speak } from '../utils/tts';
 
 const categories = {
@@ -195,6 +196,88 @@ export const PhrasesProvider = ({ children }) => {
 
   const [bookmarkedTexts, setBookmarkedTexts] = useState([]);
   const [fromBookmark, setFromBookmark] = useState(false);
+
+  const categoriesKey = 'categoriesState';
+  const processesKey = 'processesState';
+  const bookmarksKey = 'bookmarkedTexts';
+
+  // load categories, processes, bookmarks from async storage
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const storedCategories = await AsyncStorage.getItem(categoriesKey);
+        const storedProcesses = await AsyncStorage.getItem(processesKey);
+        const storedBookmarks = await AsyncStorage.getItem(bookmarksKey);
+
+        if (storedCategories) {
+          setCategoriesState(JSON.parse(storedCategories));
+        }
+        if (storedProcesses) {
+          setProcessesState(JSON.parse(storedProcesses));
+        }
+        if (storedBookmarks) {
+          setBookmarkedTexts(JSON.parse(storedBookmarks));
+          console.log('Loaded bookmarks:', JSON.parse(storedBookmarks));
+        }
+      } catch (e) {
+        console.warn('Failed to load data from storage', e);
+      }
+    };
+    loadData();
+  }, []);
+
+  // save categories, processes, bookmarks to async storage on change
+useEffect(() => {
+    const saveCategories = async () => {
+        try {
+            const stored = await AsyncStorage.getItem(categoriesKey);
+            const current = JSON.stringify(categoriesState);
+            // If there's no stored value, or the stored value differs from current, save.
+            // This avoids overwriting a previously-loaded stored value with defaults on boot.
+            if (stored === null || stored !== current) {
+                await AsyncStorage.setItem(categoriesKey, current);
+            }
+        } catch (e) {
+            console.warn('Failed to save categories to storage', e);
+        }
+    };
+    saveCategories();
+}, [categoriesState]);
+
+useEffect(() => {
+    const saveProcesses = async () => {
+        try {
+            const stored = await AsyncStorage.getItem(processesKey);
+            const current = JSON.stringify(processesState);
+            if (stored === null || stored !== current) {
+                await AsyncStorage.setItem(processesKey, current);
+            }
+        } catch (e) {
+            console.warn('Failed to save processes to storage', e);
+        }
+    };
+    saveProcesses();
+}, [processesState]);
+
+useEffect(() => {
+    const saveBookmarks = async () => {
+        try {
+            const stored = await AsyncStorage.getItem(bookmarksKey);
+            const current = JSON.stringify(bookmarkedTexts);
+            // Only save when necessary to avoid writing on initial boot.
+            // Keep the existing behavior of not saving empty arrays unless storage differs.
+            if (stored === null || stored !== current) {
+                // If bookmarkedTexts is empty and there's no stored value, writing an empty array is harmless.
+                // If bookmarkedTexts is empty but stored had values, this will persist the cleared state.
+                await AsyncStorage.setItem(bookmarksKey, current);
+                console.log('Saved bookmarks:', bookmarkedTexts);
+            }
+        } catch (e) {
+            console.warn('Failed to save bookmarks to storage', e);
+        }
+    };
+    saveBookmarks();
+}, [bookmarkedTexts]);
 
   const getCurrentCategory = () => {
     if (navigationStack.length === 0) return categoriesState;
