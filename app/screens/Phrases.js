@@ -27,16 +27,16 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         getAllTaskIds,
     } = usePhrasesContext();
 
-    const current = getCurrent();
-    const breadcrumbs = getBreadcrumbs().join(' > ');
-    const speechText = getSpeechText();
+  const current = getCurrent();
+  const breadcrumbs = getBreadcrumbs().join(' > ');
+  const speechText = getSpeechText();
 
-    // Add modal fields
-    const [addModal, setAddModal] = useState(false);
-    const [isAdding, setIsAdding] = useState(false);
-    const [isAddProcess, setIsAddProcess] = useState(false);
-    const [newItemText, setNewItemText] = useState('');
-    const [selectedImage, setSelectedImage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [addModal, setAddModal] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isAddProcess, setIsAddProcess] = useState(false);
+  const [newItemText, setNewItemText] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
     // Process configuration fields
     const [taskChoices, setTaskChoices] = useState([]);
@@ -64,93 +64,101 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         }
     }, [processMultiSelect, processDiverge]);
 
-    const handleAdd = () => {
-        if (!newItemText.trim()) {
-            Alert.alert('Error', 'Please enter some text.');
-            return;
+    // Handle selecting or navigating
+  const handlePress = item => {
+    if (inProcess) {
+      item.usageCount = (item.usageCount || 0) + 1;
+      selectPhrase(item);
+    } else {
+      if (item.text === 'Emergency') Linking.openURL(`tel:${caregiverNumber}`);
+      else if (item.type === 'phrase') speak(item.text);
+      else {
+        item.usageCount = (item.usageCount || 0) + 1;
+        navigateToChoice(item);
+      }
+    }
+  };
+
+  const handleAdd = () => {
+    if (!newItemText.trim()) {
+      Alert.alert('Error', 'Please enter some text.');
+      return;
+    }
+    setIsAdding(true);
+
+    if (inProcess) {
+      if (current.diverge) {
+        if (!taskTitle.trim()) {
+          Alert.alert('Error', 'Please enter a title for the process.');
+          setIsAdding(false);
+          return;
+        } else if (!processSpeech.trim()) {
+          Alert.alert('Error', 'Please enter speech text for the process.');
+          setIsAdding(false);
+          return;
         }
-        setIsAdding(true);
 
-        if (inProcess) {
-            // If current task has diverge=true, create a new task for this choice
-            if (current.diverge) {
-                 if (!taskTitle.trim()) {
-                    Alert.alert('Error', 'Please enter a title for the process.');
-                    setIsAdding(false);
-                    return;
-                } else if (!processSpeech.trim()) {
-                    Alert.alert('Error', 'Please enter speech text for the process.');
-                    setIsAdding(false);
-                    return;
-                }
+        const id = taskTitle.trim().toLowerCase().replace(/\s+/g, '_') + '_' + newItemText.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Date.now().toString();
+        const newChoice = {
+          text: newItemText.trim(),
+          image: selectedImage || null,
+          next: id,
+          usageCount: 0,
+        };
+        addChoiceToTask(current.id, newChoice);
 
-                const id = taskTitle.trim().toLowerCase().replace(/\s+/g, '_') + '_' + newItemText.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Date.now().toString();
-                const newChoice = {
-                    text: newItemText.trim(),
-                    image: selectedImage || null,
-                    next: id,
-                };
-                addChoiceToTask(current.id, newChoice);
-                
-                // Create a new task for this choice using form values or defaults
-                const newTask = createTask(
-                    id,
-                    taskTitle.trim(),
-                    processSpeech.trim(),
-                    processMultiSelect,
-                    processDiverge,
-                    'end',
-                );
-                addTask(newTask);
-            } else {
-                const newChoice = {
-                    text: newItemText.trim(),
-                    image: selectedImage || null,
-                };
-                addChoiceToTask(current.id, newChoice);
-            }
-        } else if (isAddProcess) {
+        const newTask = createTask(
+          id,
+          taskTitle.trim(),
+          processSpeech.trim(),
+          processMultiSelect,
+          processDiverge,
+          'end',
+        );
+        addTask(newTask);
+      } else {
+        const newChoice = {
+          text: newItemText.trim(),
+          image: selectedImage || null,
+          usageCount: 0,
+        };
+        addChoiceToTask(current.id, newChoice);
+      }
+    } else if (isAddProcess) {
             if (targetTask === 'New Task') {
-                if (!taskTitle.trim()) {
-                    Alert.alert('Error', 'Please enter a title for the process.');
-                    setIsAdding(false);
-                    return;
-                } else if (!processSpeech.trim()) {
-                    Alert.alert('Error', 'Please enter speech text for the process.');
-                    setIsAdding(false);
-                    return;
-                }
+          if (!taskTitle.trim()) {
+            Alert.alert('Error', 'Please enter a title for the process.');
+            setIsAdding(false);
+            return;
+          } else if (!processSpeech.trim()) {
+            Alert.alert('Error', 'Please enter speech text for the process.');
+            setIsAdding(false);
+            return;
+          }
 
-                const id = newItemText.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Date.now().toString();
-                const newCategory = {
-                    text: newItemText.trim(),
-                    image: selectedImage || null,
-                    id: id,
-                };
-                addCategory(current, newCategory);
-                
-                const newTask = {
-                    id: id,
-                    text: taskTitle.trim(),
-                    speech: processSpeech.trim(),
-                    multiSelect: processMultiSelect,
-                    diverge: processDiverge,
-                    next: 'end'
-                };
-                addTask(newTask);
-            } else {
-                const newCategory = {
-                    text: newItemText.trim(),
-                    image: selectedImage || null,
-                    id: targetTask,
-                };
-                addCategory(current, newCategory);
-            }
+            const id = Date.now().toString();
+            const newCategory = {
+                text: newItemText.trim(),
+                image: selectedImage || null,
+                id: id,
+            };
+            addCategory(current, newCategory);
+
+            const newTask = {
+                id: id,
+                text: taskTitle.trim(),
+                speech: processSpeech.trim(),
+                multiSelect: processMultiSelect,
+                diverge: processDiverge,
+                next: 'end'
+            };
+            addTask(newTask);
         } else {
             const newCategory = {
                 text: newItemText.trim(),
                 image: selectedImage || null,
                 choices: [],
+                usageCount: 0,
             };
             addCategory(current, newCategory);
         }
@@ -158,18 +166,24 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         // Reset all form fields
         resetAdd();
     };
+};
 
-    const createTask = (id, title, speech, multiSelect = false, diverge = false, nextId = 'end') => {
-        return {
-            id: id,
-            text: title,
-            speech: speech,
-            multiSelect: multiSelect,
-            diverge: diverge,
-            choices: [],
-            next: nextId,
-        };
-    };
+  const createTask = (
+    id,
+    title,
+    speech,
+    multiSelect = false,
+    diverge = false,
+    nextId = 'end',
+  ) => ({
+    id,
+    text: title,
+    speech,
+    multiSelect,
+    diverge,
+    choices: [],
+    next: nextId,
+  });
 
      const resetAdd = () => {
         setIsAddProcess(false);
@@ -232,19 +246,28 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         setProcessDiverge(false);
         setEditModal(false);
     };
+
+    // Filter choices by search query and sort by usageCount
+  const getFilteredChoices = choices => {
+    const filtered = (choices || []).filter(c =>
+      c.text.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    return filtered.sort((a, b) => {
+      const countA = a.usageCount || 0;
+      const countB = b.usageCount || 0;
+      if (countA !== countB) return countB - countA;
+      return a.text.localeCompare(b.text);
+    });
+  };
     
-    const renderChoices = () =>
-        current.choices?.map((item, index) => (
+    const renderChoices = () => {
+        const sortedChoices = getFilteredChoices(current.choices);
+        return sortedChoices.map((item, index) => (
             <Cell
                 key={index.toString()}
                 content={item}
                 buttonlayout={buttonLayout}
-                onPress={() => {
-                    if (item.text === 'Emergency')
-                        Linking.openURL(`tel:${caregiverNumber}`);
-                    else if (item.type === 'phrase') speak(item.text);
-                    else navigateToChoice(item);
-                }}
+                onPress={() => {handlePress(item)}}
                 onLongPress={() => {
                     Alert.alert(
                         `Edit or delete "${item.text}"?`, '',
@@ -270,8 +293,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 }}
             />
         ));
+    };
 
-    const renderProcess = () => (
+    const renderProcess = () => {
+        const sortedChoices = getFilteredChoices(current.choices);
+    return (
         <>
             <Cell
                 content={{
@@ -303,14 +329,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 }}
                 height={0.2}
             />
-            {current.choices?.map((item, index) => (
+            {sortedChoices.map((item, index) => (
                 <Cell
                     key={index.toString()}
                     content={item}
                     buttonlayout={buttonLayout}
-                    onPress={() => selectPhrase(item)}
+                    onPress={() => handlePress(item)}
                     onLongPress={() => {
-                        Alert.alert(`Edit "${item.text}"?`, '',[
+                        Alert.alert('Edit Option', `Edit text for "${item.text}"?`, [
                             { text: 'Cancel', style: 'cancel' },
                             {
                                 text: 'Edit',
@@ -319,16 +345,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                     setEditingItem(item);
                                     setEditParent(null);
                                     setEditImage(item.image || null);
-                                    setTaskTitle('');
-                                    setProcessSpeech('');
-                                    setProcessMultiSelect(false);
-                                    setProcessDiverge(false);
                                     setEditModal(true);
-                                    if (item.next) {
-                                        const choices = getAllTaskIds();
-                                        setTargetTask(choices.find(c => c === item.next) || item.next);
-                                        setTaskChoices(['End (no next task)', ...choices]);
-                                    }
                                 },
                             },
                         ]);
@@ -349,6 +366,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             />
         </>
     );
+  };
 
     return (
         <>
@@ -389,6 +407,17 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 </View>
 
                 {canGoBack && <Text style={styles.breadcrumbs}>{breadcrumbs}</Text>}
+
+                {/* Search Bar */}
+                <View style={styles.searchContainer}>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search phrases..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
+                </View>
+
                 {inProcess ? renderProcess() : renderChoices()}
             </ScrollView>
 
@@ -411,7 +440,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                         keyboardDismissMode="interactive"
                     >
                         <Text style={styles.modalTitle}>
-                            {'Add' + (inProcess ? (current.diverge ? ' Choice with Task' : ' Choice to Current Task') : '')}
+                            {'Add' + (inProcess ? (current.diverge ? ' Choice with New Task' : ' Choice to Current Task') : '')}
                         </Text>
                         <View style={styles.inputSection}>
                             <Text style={styles.inputLabel}>
@@ -832,6 +861,17 @@ const styles = StyleSheet.create({
         width: '95%',
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+      searchContainer: {
+        width: '95%',
+        marginVertical: 10,
+    },
+    searchInput: {
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 10,
+        padding: 8,
     },
 });
 
