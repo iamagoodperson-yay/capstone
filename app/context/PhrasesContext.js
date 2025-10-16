@@ -224,84 +224,90 @@ export const PhrasesProvider = ({ children }) => {
     setCategoriesState({ ...categoriesState });
   };
 
-    const editPhrase = (parent, item) => {
-        if (!item) return;
+  const editPhrase = (parent, item) => {
+    if (!item) return;
 
-        if (item.id && processesState.some(p => p.id === item.id)) {
-            const newProcesses = processesState.map(p => {
-                if (p.id !== item.id) return p;
-                return {
-                    ...p,
-                    // Only overwrite fields that are provided on `item`
-                    text: item.text ?? p.text,
-                    speech: item.speech ?? p.speech,
-                    multiSelect: typeof item.multiSelect === 'boolean' ? item.multiSelect : p.multiSelect,
-                    diverge: typeof item.diverge === 'boolean' ? item.diverge : p.diverge,
-                    next: item.next ?? p.next,
-                    // Replace choices array only if provided (otherwise keep existing)
-                    choices: item.choices ?? p.choices,
-                };
-            });
-            setProcessesState(newProcesses);
-            return;
-        }
-
-        if (!parent) {
-            // Could be a task option if inProcess
-            const currentTask = getCurrentTask();
-            if (!currentTask) return;
-            
-            const choiceIndex = currentTask.choices.findIndex(c => c === item);
-            if (choiceIndex === -1) return;
-
-            // Create updated choice immutably
-            const updatedChoice = {
-                ...currentTask.choices[choiceIndex],
-                text: item.text,
-                image: currentTask.choices[choiceIndex].image || require('../../assets/phrases/others.png'),
-                next: currentTask.choices[choiceIndex].next ?? null,
-            };
-
-            // Create new processesState array with updated choice
-            const newProcesses = processesState.map(task => {
-                if (task.id !== currentTask.id) return task;
-                const newChoices = [...task.choices];
-                newChoices[choiceIndex] = updatedChoice;
-                return { ...task, choices: newChoices };
-            });
-
-            setProcessesState(newProcesses);
-            console.log(processesState);
-        } else if (parent?.choices) {
-            // Category phrase
-            const catItem = parent.choices.find(c => c === item);
-            if (catItem) {
-                catItem.text = item.text;
-                catItem.image = catItem.image || require('../../assets/phrases/others.png');
-                setCategoriesState({ ...categoriesState });
-            }
-        }
-    };
-    
-    const getCurrentTask = () => {
-        return processesState.find(p => p.id === tasks[tasks.length - 1].id);
+    if (item.id && processesState.some(p => p.id === item.id)) {
+      const newProcesses = processesState.map(p => {
+        if (p.id !== item.id) return p;
+        return {
+          ...p,
+          // Only overwrite fields that are provided on `item`
+          text: item.text ?? p.text,
+          speech: item.speech ?? p.speech,
+          multiSelect:
+            typeof item.multiSelect === 'boolean'
+              ? item.multiSelect
+              : p.multiSelect,
+          diverge: typeof item.diverge === 'boolean' ? item.diverge : p.diverge,
+          next: item.next ?? p.next,
+          // Replace choices array only if provided (otherwise keep existing)
+          choices: item.choices ?? p.choices,
+        };
+      });
+      setProcessesState(newProcesses);
+      return;
     }
-    
-    // ⬇️ Fix: combine speech + selection in one natural TTS output
-    const getSpeechText = () => {
-        if (!inProcess) return '';
-        const currentTask = getCurrentTask();
-        if (!currentTask) return '';
 
-        const base = currentTask.speech ? currentTask.speech.trim() : '';
-        if (!selected.length) return base ? base + ' ...' : '...';
+    if (!parent) {
+      // Could be a task option if inProcess
+      const currentTask = getCurrentTask();
+      if (!currentTask) return;
 
-        const selections = currentTask.multiSelect
-            ? selected.map(s => s.text).join(', ')
-            : selected[0].text;
+      const choiceIndex = currentTask.choices.findIndex(c => c === item);
+      if (choiceIndex === -1) return;
 
-        return base ? `${base} ${selections}` : selections;
-    };
+      // Create updated choice immutably
+      const updatedChoice = {
+        ...currentTask.choices[choiceIndex],
+        text: item.text,
+        image:
+          currentTask.choices[choiceIndex].image ||
+          require('../../assets/phrases/others.png'),
+        next: currentTask.choices[choiceIndex].next ?? null,
+      };
+
+      // Create new processesState array with updated choice
+      const newProcesses = processesState.map(task => {
+        if (task.id !== currentTask.id) return task;
+        const newChoices = [...task.choices];
+        newChoices[choiceIndex] = updatedChoice;
+        return { ...task, choices: newChoices };
+      });
+
+      setProcessesState(newProcesses);
+      console.log(processesState);
+    } else if (parent?.choices) {
+      // Category phrase
+      const catItem = parent.choices.find(c => c === item);
+      if (catItem) {
+        catItem.text = item.text;
+        catItem.image =
+          catItem.image || require('../../assets/phrases/others.png');
+        setCategoriesState({ ...categoriesState });
+      }
+    }
+  };
+
+  const getCurrentTask = () => {
+    return processesState.find(p => p.id === tasks[tasks.length - 1].id);
+  };
+
+  // ⬇️ Fix: combine speech + selection in one natural TTS output
+  const getSpeechText = () => {
+    if (!inProcess) return '';
+    const currentTask = getCurrentTask();
+    if (!currentTask) return '';
+
+    const base = currentTask.speech ? currentTask.speech.trim() : '';
+    if (!selected.length) return base ? base + ' ...' : '...';
+
+    const selections = currentTask.multiSelect
+      ? selected.map(s => s.text).join(', ')
+      : selected[0].text;
+
+    return base ? `${base} ${selections}` : selections;
+  };
 
   const selectPhrase = item => {
     const currentTask = getCurrentTask();
@@ -402,27 +408,27 @@ export const PhrasesProvider = ({ children }) => {
     setProcessesState(prev => [...prev, newItem]);
   };
 
-    const addChoiceToTask = (taskId, newItem) => {
-        if (!taskId || !newItem) return;
-        const task = processesState.find(p => p.id === taskId);
-        if (!task) return;
-        
-        newItem.text = newItem.text || 'New Choice';
-        newItem.image = newItem.image || require('../../assets/phrases/others.png');
-        newItem.next = newItem.next ?? null;
+  const addChoiceToTask = (taskId, newItem) => {
+    if (!taskId || !newItem) return;
+    const task = processesState.find(p => p.id === taskId);
+    if (!task) return;
 
-        // Immutable update: create new processes array with choice added
-        const newProcesses = processesState.map(p => {
-            if (p.id !== taskId) return p;
-            return { ...p, choices: [...(p.choices || []), newItem] };
-        });
+    newItem.text = newItem.text || 'New Choice';
+    newItem.image = newItem.image || require('../../assets/phrases/others.png');
+    newItem.next = newItem.next ?? null;
 
-        setProcessesState(newProcesses);
-    }
+    // Immutable update: create new processes array with choice added
+    const newProcesses = processesState.map(p => {
+      if (p.id !== taskId) return p;
+      return { ...p, choices: [...(p.choices || []), newItem] };
+    });
 
-    const getAllTaskIds = () => {
-        return processesState.map(p => p.id);
-    }
+    setProcessesState(newProcesses);
+  };
+
+  const getAllTaskIds = () => {
+    return processesState.map(p => p.id);
+  };
 
   const getCurrent = () =>
     inProcess ? getCurrentTask() : getCurrentCategory();
@@ -451,27 +457,27 @@ export const PhrasesProvider = ({ children }) => {
       return [moved, ...newArr];
     });
 
-    const value = {
-        categoriesState,
-        inProcess,
-        resetNav,
-        addCategory,
-        deleteCategory,
-        editPhrase,
-        getSpeechText,
-        selectPhrase,
-        navigateToChoice,
-        addTask,
-        addChoiceToTask,
-        getAllTaskIds,
-        getCurrent,
-        goBack,
-        canGoBack: navigationStack.length > 0,
-        getBreadcrumbs,
-        allSelections,
-        deleteGroup,
-        moveGroupToTop,
-    };
+  const value = {
+    categoriesState,
+    inProcess,
+    resetNav,
+    addCategory,
+    deleteCategory,
+    editPhrase,
+    getSpeechText,
+    selectPhrase,
+    navigateToChoice,
+    addTask,
+    addChoiceToTask,
+    getAllTaskIds,
+    getCurrent,
+    goBack,
+    canGoBack: navigationStack.length > 0,
+    getBreadcrumbs,
+    allSelections,
+    deleteGroup,
+    moveGroupToTop,
+  };
 
   return (
     <PhrasesContext.Provider value={value}>{children}</PhrasesContext.Provider>
