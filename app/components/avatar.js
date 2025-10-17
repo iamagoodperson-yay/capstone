@@ -11,7 +11,7 @@ const Avatar = ({ size = 300, avatarSelection, avatarItems }) => {
             {avatarSelection.hats !== 0 && (
                 <View style={styles.hatContainer}>
                     <Image
-                        style={{width: size * 0.3, height: size * 0.3}}
+                        style={{width: size * 0.3339776632, height: size * 0.3339776632}}
                         source={avatarItems.hats.find(item => item.id === avatarSelection.hats)?.name}
                         resizeMode="contain"
                     />
@@ -20,7 +20,7 @@ const Avatar = ({ size = 300, avatarSelection, avatarItems }) => {
             {avatarSelection.shirts !== 0 && (
                 <View style={styles.shirtContainer}>
                     <Image
-                        style={{width: size * 0.3, height: size * 0.3}}
+                        style={{width: size * 0.262242268, height: size * 0.262242268}}
                         source={avatarItems.shirts.find(item => item.id === avatarSelection.shirts)?.name}
                         resizeMode="contain"
                     />
@@ -37,23 +37,19 @@ const styles = StyleSheet.create({
     },
     avatarImage: {
         position: 'absolute',
-        top: '20%',
-        width: '80%',
-        height: '80%',
+        top: '19.5661512%',
+        width: '74.89261168%',
+        height: '74.89261168%',
     },
     hatContainer: {
         zIndex: 1,
         position: 'absolute',
-        top: '7%',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+        top: 0,
     },
     shirtContainer: {
         zIndex: 1,
         position: 'absolute',
-        top: '50%',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+        top: '46.4991408935%',
     },
 });
 

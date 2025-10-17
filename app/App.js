@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,8 +18,6 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabScreens = ({
-  selectedPhrase,
-  setSelectedPhrase,
   buttonLayout,
   setButtonLayout,
   caregiverNumber,
@@ -63,7 +62,6 @@ const TabScreens = ({
     >
       {() => (
         <Phrases
-          setSelectedPhrase={setSelectedPhrase}
           buttonLayout={buttonLayout}
           caregiverNumber={caregiverNumber}
         />
@@ -80,9 +78,8 @@ const TabScreens = ({
     >
       {() => (
         <Daily
-          selectedPhrase={selectedPhrase}
-          setSelectedPhrase={setSelectedPhrase}
           buttonLayout={buttonLayout}
+          setCoins={setCoins}
           coins={coins}
         />
       )}
@@ -129,9 +126,8 @@ const TabScreens = ({
 );
 
 const App = () => {
-  const [selectedPhrase, setSelectedPhrase] = useState('');
   const [buttonLayout, setButtonLayout] = useState(2);
-  const [coins, setCoins] = useState(100);
+  const [coins, setCoins] = useState(0);
   const [caregiverNumber, setCaregiverNumber] = useState('');
 
   const [avatarSelection, setAvatarSelection] = useState({
@@ -141,7 +137,6 @@ const App = () => {
     shoes: 0,
     accessories: 0,
   });
-
   const [avatarItems, setAvatarItems] = useState({
     hats: [
       {
@@ -176,6 +171,24 @@ const App = () => {
         price: 0,
         unlocked: true,
       },
+      {
+        id: 1,
+        name: require('../assets/avatar/shirts/shirt1.png'),
+        price: 1,
+        unlocked: false,
+      },
+      {
+        id: 2,
+        name: require('../assets/avatar/shirts/shirt2.png'),
+        price: 1,
+        unlocked: false,
+      },
+      {
+        id: 3,
+        name: require('../assets/avatar/shirts/shirt3.png'),
+        price: 1,
+        unlocked: false,
+      },
     ],
     pants: [
       {
@@ -184,6 +197,24 @@ const App = () => {
         price: 0,
         unlocked: true,
       },
+      {
+        id: 1,
+        name: require('../assets/avatar/pants/pants1.png'),
+        price: 1,
+        unlocked: false,
+      },
+      {
+        id: 2,
+        name: require('../assets/avatar/pants/pants2.png'),
+        price: 1,
+        unlocked: false,
+      },
+      {
+        id: 3,
+        name: require('../assets/avatar/pants/pants3.png'),
+        price: 1,
+        unlocked: false,
+      },
     ],
     shoes: [
       {
@@ -191,6 +222,24 @@ const App = () => {
         name: require('../assets/avatar/none.png'),
         price: 0,
         unlocked: true,
+      },
+      {
+        id: 1,
+        name: require('../assets/avatar/shoes/shoe1.png'),
+        price: 2,
+        unlocked: false,
+      },
+      {
+        id: 2,
+        name: require('../assets/avatar/shoes/shoe2.png'),
+        price: 2,
+        unlocked: false,
+      },
+      {
+        id: 3,
+        name: require('../assets/avatar/shoes/shoe3.png'),
+        price: 2,
+        unlocked: false,
       },
     ],
     accessories: [
@@ -203,6 +252,43 @@ const App = () => {
     ],
   });
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const storedAvatar = await AsyncStorage.getItem('avatarSelection');
+        const storedItems = await AsyncStorage.getItem('avatarItems');
+        const storedCoins = await AsyncStorage.getItem('coins');
+        const storedCaregiverNumber = await AsyncStorage.getItem('caregiverNumber');
+        const storedButtonLayout = await AsyncStorage.getItem('buttonLayout');
+
+        if (storedAvatar) setAvatarSelection(JSON.parse(storedAvatar));
+        if (storedItems) setAvatarItems(JSON.parse(storedItems));
+        if (storedCoins) setCoins(parseInt(storedCoins, 10));
+        if (storedCaregiverNumber) setCaregiverNumber(storedCaregiverNumber);
+        if (storedButtonLayout) setButtonLayout(parseInt(storedButtonLayout, 10));
+      } catch (e) {
+        console.warn('Failed to load data', e);
+      }
+    };
+    loadData();
+  }, []);
+
+
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem('avatarSelection', JSON.stringify(avatarSelection));
+        await AsyncStorage.setItem('avatarItems', JSON.stringify(avatarItems));
+        await AsyncStorage.setItem('coins', coins.toString());
+        await AsyncStorage.setItem('caregiverNumber', caregiverNumber);
+        await AsyncStorage.setItem('buttonLayout', buttonLayout.toString());
+      } catch (e) {
+        console.warn('Failed to save data', e);
+      }
+    };
+    saveData();
+  }, [avatarSelection, avatarItems, coins, caregiverNumber, buttonLayout]);
+
   return (
     <PhrasesProvider>
       <NavigationContainer>
@@ -210,8 +296,6 @@ const App = () => {
           <Stack.Screen name="Tabs">
             {() => (
               <TabScreens
-                selectedPhrase={selectedPhrase}
-                setSelectedPhrase={setSelectedPhrase}
                 buttonLayout={buttonLayout}
                 setButtonLayout={setButtonLayout}
                 caregiverNumber={caregiverNumber}

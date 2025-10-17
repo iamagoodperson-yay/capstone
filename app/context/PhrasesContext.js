@@ -623,6 +623,9 @@ useEffect(() => {
 
   const value = {
     categoriesState,
+    processesState,
+    selected,
+    navigationStack,
     inProcess,
     resetNav,
     bookmarkedTexts,
