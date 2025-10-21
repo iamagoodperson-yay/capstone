@@ -307,7 +307,21 @@ useEffect(() => {
     setCategoriesState({ ...categoriesState });
   };
 
-  const deleteCategory = (parent, itemText) => {
+  const deleteTask = (parent, itemText) => {
+    // Handle deleting choices from a task (process)
+    if (parent?.id && processesState.some(p => p.id === parent.id)) {
+      const newProcesses = processesState.map(process => {
+        if (process.id !== parent.id) return process;
+        return {
+          ...process,
+          choices: process.choices.filter(choice => choice.text !== itemText)
+        };
+      });
+      setProcessesState(newProcesses);
+      return;
+    }
+    
+    // Handle deleting category choices (original functionality)
     if (!parent?.choices) return;
     parent.choices = parent.choices.filter(choice => choice.text !== itemText);
     setCategoriesState({ ...categoriesState });
@@ -630,7 +644,7 @@ useEffect(() => {
     resetNav,
     bookmarkedTexts,
     addCategory,
-    deleteCategory,
+    deleteTask,
     editPhrase,
     getSpeechText,
     selectPhrase,

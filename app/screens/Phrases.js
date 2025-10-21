@@ -35,7 +35,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         canGoBack,
         getBreadcrumbs,
         addCategory,
-        deleteCategory,
+        deleteTask,
         editPhrase,
         addTask,
         addChoiceToTask,
@@ -339,11 +339,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                 setEditModal(true);
                             },
                         },
-                        {
-                            text: 'Delete',
-                            style: 'destructive',
-                            onPress: () => deleteCategory(current, item.text),
-                        },
                     ]);
                 }}
             />
@@ -423,7 +418,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                         buttonlayout={buttonLayout}
                         onPress={() => handlePress(item)}
                         onLongPress={() => {
-                            Alert.alert(`Edit, Delete, or Bookmark "${item.text}"?`, '', [
+                            Alert.alert(`Edit or Bookmark "${item.text}"?`, '', [
                                 { text: 'Cancel', style: 'cancel' },
                                 {
                                     text: bookmarkedTexts.includes(item.text)
@@ -448,11 +443,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                         }
                                         setEditModal(true);
                                     },
-                                },
-                                {
-                                    text: 'Delete',
-                                    style: 'destructive',
-                                    onPress: () => deleteCategory(current, item.text),
                                 },
                             ]);
                         }}
@@ -727,6 +717,15 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                         <Text style={styles.modalTitle}>Edit</Text>
                         {!inProcess || (inProcess && editingItem?.id !== current?.id) ? (
                             <>
+                                <Button
+                                    title="Delete"
+                                    width="0.8"
+                                    color="#DC3545"
+                                    onPress={() => {
+                                        deleteTask(current, editingItem?.text);
+                                        resetEdit();
+                                    }}
+                                />
                                 <View style={styles.inputSection}>
                                     <Text style={styles.inputLabel}>Edit text</Text>
                                     <TextInput
