@@ -16,12 +16,12 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import Button from '../components/button';
 import Cell from '../components/cell';
 import Dropdown from '../components/dropdown';
+import ImagePicker from '../components/imagePicker';
 
 const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     const insets = useSafeAreaInsets();
@@ -569,58 +569,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 onChangeText={setNewItemText}
               />
             </View>
-            {selectedImage ? (
-              <View style={styles.imagePreviewContainer}>
-                <Image source={selectedImage} style={styles.imagePreview} />
-                <Button
-                  title="Remove Image"
-                  width="0.4"
-                  color="#DC3545"
-                  onPress={() => setSelectedImage(null)}
-                />
-              </View>
-            ) : (
-              <View style={styles.buttonRow}>
-                <Button
-                  title="Select Image"
-                  width="0.4"
-                  color="#2196F3"
-                  onPress={() =>
-                    launchImageLibrary(
-                      {
-                        mediaType: 'photo',
-                        quality: 0.8,
-                        maxWidth: 500,
-                        maxHeight: 500,
-                      },
-                      response => {
-                        if (response.assets && response.assets[0])
-                          setSelectedImage({ uri: response.assets[0].uri });
-                      },
-                    )
-                  }
-                />
-                <Button
-                  title="Take Photo"
-                  width="0.4"
-                  color="#2196F3"
-                  onPress={() =>
-                    launchCamera(
-                      {
-                        mediaType: 'photo',
-                        quality: 0.8,
-                        maxWidth: 500,
-                        maxHeight: 500,
-                      },
-                      response => {
-                        if (response.assets && response.assets[0])
-                          setSelectedImage({ uri: response.assets[0].uri });
-                      },
-                    )
-                  }
-                />
-              </View>
-            )}
+            <ImagePicker
+              selectedImage={selectedImage}
+              onImageSelected={setSelectedImage}
+              onImageRemoved={() => setSelectedImage(null)}
+            />
             {!inProcess && (
               <View style={styles.inputSection}>
                 <Text style={styles.inputLabel}>Add process or category</Text>
@@ -783,59 +736,13 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                                         />
                                     </View>
                                 )}
-                                {(!inProcess || editingItem?.id !== current?.id) &&
-                                    (editImage ? (
-                                        <View style={styles.imagePreviewContainer}>
-                                            <Image source={editImage} style={styles.imagePreview} />
-                                            <Button
-                                                title="Remove Image"
-                                                width="0.4"
-                                                color="#DC3545"
-                                                onPress={() => setEditImage(null)}
-                                            />
-                                        </View>
-                                    ) : (
-                                        <View style={styles.buttonRow}>
-                                            <Button
-                                                title="Select Image"
-                                                width="0.4"
-                                                color="#2196F3"
-                                                onPress={() =>
-                                                    launchImageLibrary(
-                                                        {
-                                                            mediaType: 'photo',
-                                                            quality: 0.8,
-                                                            maxWidth: 500,
-                                                            maxHeight: 500,
-                                                        },
-                                                        response => {
-                                                            if (response.assets && response.assets[0])
-                                                                setEditImage({ uri: response.assets[0].uri });
-                                                        },
-                                                    )
-                                                }
-                                            />
-                                            <Button
-                                                title="Take Photo"
-                                                width="0.4"
-                                                color="#2196F3"
-                                                onPress={() =>
-                                                    launchCamera(
-                                                        {
-                                                            mediaType: 'photo',
-                                                            quality: 0.8,
-                                                            maxWidth: 500,
-                                                            maxHeight: 500,
-                                                        },
-                                                        response => {
-                                                            if (response.assets && response.assets[0])
-                                                                setEditImage({ uri: response.assets[0].uri });
-                                                        },
-                                                    )
-                                                }
-                                            />
-                                        </View>
-                                    ))}
+                                {(!inProcess || editingItem?.id !== current?.id) && (
+                                    <ImagePicker
+                                        selectedImage={editImage}
+                                        onImageSelected={setEditImage}
+                                        onImageRemoved={() => setEditImage(null)}
+                                    />
+                                )}
                             </>
                         ) : (
                             <>
@@ -996,21 +903,6 @@ const styles = StyleSheet.create({
   },
   switchText: {
     fontSize: 20,
-  },
-  imagePreviewContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
-    width: '95%',
-    backgroundColor: '#d9d9d9',
-    paddingVertical: 20,
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  imagePreview: {
-    width: 200,
-    height: 200,
-    resizeMode: 'cover',
   },
   buttonRow: {
     width: '95%',
