@@ -6,15 +6,21 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Linking,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../components/button';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import Avatar from '../components/avatar';
 
-const Home = ({ avatarSelection, avatarItems }) => {
+const Home = ({ avatarSelection, avatarItems, caregiverNumber }) => {
   const navigation = useNavigation();
-  const { resetNav, getBookmarkedItems, navigateToPath, navigateToProcessChoice } = usePhrasesContext();
+  const {
+    resetNav,
+    getBookmarkedItems,
+    navigateToPath,
+    navigateToProcessChoice,
+  } = usePhrasesContext();
   const bookmarked = getBookmarkedItems();
 
   return (
@@ -32,58 +38,62 @@ const Home = ({ avatarSelection, avatarItems }) => {
           {bookmarked.map((b, i) => {
             // b is { item, path }
             return (
-                <TouchableOpacity
-                    key={i.toString()}
-                    style={{
-                        width: '48%',
-                        height: 150,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#FFE082',
-                        borderRadius: 10,
-                        padding: 20,
-                    }}
-                    onPress={() => {
-                      if (b.kind === 'process') {
-                        navigateToProcessChoice(b.processId, b.item.text);
-                      } else {
-                        navigateToPath(b.path);
-                      }
-                      navigation.navigate('Phrases');
-                    }}
-                >
-                  <Image
-                    source={b.item.image}
-                    style={{ width: 60, height: 60 }}
-                  />
-                  <Text style={{ fontSize: 20, textAlign: 'center' }}>
-                    {b.item.text}
-                  </Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                key={i.toString()}
+                style={{
+                  width: '48%',
+                  height: 150,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#FFE082',
+                  borderRadius: 10,
+                  padding: 20,
+                }}
+                onPress={() => {
+                  if (b.item.text === 'Emergency')
+                    Linking.openURL(`tel:${caregiverNumber}`);
+                  else if (b.kind === 'process') {
+                    navigateToProcessChoice(b.processId, b.item.text);
+                  } else {
+                    navigateToPath(b.path);
+                  }
+                  navigation.navigate('Phrases');
+                }}
+              >
+                <Image
+                  source={b.item.image}
+                  style={{ width: 60, height: 60 }}
+                />
+                <Text style={{ fontSize: 20, textAlign: 'center' }}>
+                  {b.item.text}
+                </Text>
+              </TouchableOpacity>
             );
           })}
         </View>
       ) : (
-        <Text style={{ fontSize: 16, fontStyle: 'italic', opacity: 0.5 }}>No bookmarked items yet.</Text>
+        <Text style={{ fontSize: 16, fontStyle: 'italic', opacity: 0.5 }}>
+          No bookmarked items yet.
+        </Text>
       )}
 
-        <Button
-            title="View Recent History"
-            onPress={() => navigation.navigate('History')}
-            color="#2196F3"
-        />
-        <Button
-            title="See More..."
-            onPress={() => {
-            resetNav();
-            navigation.navigate('Phrases');
-            }}
-            color="#2196F3"
-        />
-        <Button
-            title="Solve Daily Challenge"
-            onPress={() => navigation.navigate('Challenge')}
-        />
+      <Button
+        title="View Recent History"
+        onPress={() => navigation.navigate('History')}
+        color="#2196F3"
+      />
+      <Button
+        title="See More..."
+        onPress={() => {
+          resetNav();
+          navigation.navigate('Phrases');
+        }}
+        color="#2196F3"
+      />
+      <Button
+        title="Solve Daily Challenge"
+        onPress={() => navigation.navigate('Challenge')}
+      />
     </ScrollView>
   );
 };
