@@ -307,24 +307,52 @@ useEffect(() => {
     setCategoriesState({ ...categoriesState });
   };
 
-  const deleteTask = (parent, itemText) => {
-    // Handle deleting choices from a task (process)
-    if (parent?.id && processesState.some(p => p.id === parent.id)) {
-      const newProcesses = processesState.map(process => {
-        if (process.id !== parent.id) return process;
-        return {
-          ...process,
-          choices: process.choices.filter(choice => choice.text !== itemText)
-        };
-      });
-      setProcessesState(newProcesses);
-      return;
-    }
-    
-    // Handle deleting category choices (original functionality)
-    if (!parent?.choices) return;
-    parent.choices = parent.choices.filter(choice => choice.text !== itemText);
-    setCategoriesState({ ...categoriesState });
+  const deletePhrase = (parent, itemIdentifier) => {
+      // Handle deleting an entire task by ID
+      const taskToDelete = processesState.find(p => p.id === itemIdentifier);
+      if (taskToDelete) {
+          // Update all process references to point to 'end'
+          const newProcesses = processesState
+              .filter(p => p.id !== itemIdentifier)
+              .map(p => ({
+                  ...p,
+                  next: p.next === itemIdentifier ? 'end' : p.next,
+                  choices: p.choices?.map(c => ({
+                      ...c,
+                      next: c.next === itemIdentifier ? 'end' : c.next
+                  }))
+              }));
+
+          // Remove category links to the deleted task
+          const removeCategoryLinks = (items) =>
+              items?.map(({ id, ...item }) => ({
+                  ...(id === itemIdentifier ? item : { id, ...item }),
+                  choices: removeCategoryLinks(item.choices)
+              }));
+
+          setProcessesState(newProcesses);
+          setCategoriesState({
+              ...categoriesState,
+              choices: removeCategoryLinks(categoriesState.choices)
+          });
+          return;
+      }
+
+      // Handle deleting choices from a task
+      if (parent?.id) {
+          setProcessesState(processesState.map(p =>
+              p.id === parent.id
+                  ? { ...p, choices: p.choices.filter(c => c.text !== itemIdentifier) }
+                  : p
+          ));
+          return;
+      }
+
+      // Handle deleting category choices
+      if (parent?.choices) {
+          parent.choices = parent.choices.filter(c => c.text !== itemIdentifier);
+          setCategoriesState({ ...categoriesState });
+      }
   };
 
   const editPhrase = (parent, item) => {
@@ -644,7 +672,7 @@ useEffect(() => {
     resetNav,
     bookmarkedTexts,
     addCategory,
-    deleteTask,
+    deletePhrase,
     editPhrase,
     getSpeechText,
     selectPhrase,
