@@ -15,7 +15,7 @@ import History from './screens/History';
 import { PhrasesProvider } from './context/PhrasesContext';
 import { initImageStorage } from './utils/imageStorage';
 import { useTranslation } from 'react-i18next';
-import './l10n/i18n';
+import * as i18n from './l10n/i18n';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

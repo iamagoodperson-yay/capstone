@@ -16,11 +16,52 @@
             "recentHistory": "View Recent History",
             "daily": "Solve Daily Challenge"
         },
+        "daily": {
+            "challenge": "Challenge: ",
+            "submit": "Submit Answer",
+            "status": {
+                "loading": "Loading...",
+                "noChallenge": "No challenge available",
+                "loadingError": "Error loading challenge"
+            },
+            "correct": {
+                "title": "Correct Answer!",
+                "text1": "You get your daily",
+                "text2": "Total"
+            },
+            "wrong": {
+                "title": "Wrong Answer",
+                "text": "Try again!"
+            },
+            "noChall": {
+                "title": "No challenge",
+                "text": "No active challenge for today."
+            },
+            "error": {
+                "title": "Error",
+                "text": "An error occurred while checking your answer."
+            }
+        },
+        "shop": {
+            "labelHats": "Hats",
+            "labelShirts": "Shirts",
+            "labelPants": "Pants",
+            "labelShoes": "Shoes",
+            "labelAccessories": "Accessories",
+            "notEnough": "Not enough 🪙",
+            "onlyHave": "You only have {{coins}} 🪙"
+        },
         "settings": {
             "languageTitle": "Languages",
             "buttonTitle": "Button Layout",
             "buttonFood": "Food",
             "caregiverNumberTitle": "Caregiver's Phone Number"
+        },
+        "history": {
+            "title": "History",
+            "backButton": "Back",
+            "delTitle": "Delete Group",
+            "delMessage": "Are you sure you want to delete this group?"
         }
     }
 }

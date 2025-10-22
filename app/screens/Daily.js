@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+import { usePhrasesContext } from '../context/PhrasesContext';
 import Phrases from './Phrases';
 import Button from '../components/button';
-import { usePhrasesContext } from '../context/PhrasesContext';
 
 const DAILY_KEY = 'daily_challenge';
 
 const Daily = ({ coins, setCoins, buttonLayout }) => {
+    const { t } = useTranslation();
     const { processesState, categoriesState, selected, inProcess, navigationStack } = usePhrasesContext();
-    const [chall, setChall] = useState({ text: 'Loading...', kind: null, payload: null });
+    const [chall, setChall] = useState({ text: t('screens.daily.status.loading'), kind: null, payload: null });
 
     useEffect(() => {
         const setup = async () => {
@@ -46,7 +48,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
                 }
 
                 if (!candidates.length) {
-                    const fallback = { text: 'No challenge available', kind: null, payload: null };
+                    const fallback = { text: t('screens.daily.noChallenge'), kind: null, payload: null };
                     setChall(fallback);
                     return;
                 }
@@ -56,7 +58,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
                 setChall(pick);
             } catch (e) {
                 console.warn('Failed to setup daily challenge', e);
-                setChall({ text: 'Error loading challenge', kind: null, payload: null });
+                setChall({ text: t('screens.daily.loadingError'), kind: null, payload: null });
             }
         };
         setup();
@@ -65,7 +67,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
     const submit = () => {
         try {
             if (!chall || !chall.kind) {
-                Alert.alert('No challenge', 'No active challenge for today.');
+                Alert.alert(t('screens.daily.noChall.title'), t('screens.daily.noChall.text'));
                 return;
             }
 
@@ -87,23 +89,23 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
             }
 
             if (correct) {
-                Alert.alert('✅ Correct Answer!', 'You get your daily coin!\nTotal coins: ' + (coins + 1));
+                Alert.alert(`✅ ${t('screens.daily.correct.title')}`, `${t('screens.daily.correct.text1')} 🪙 !\n${t('screens.daily.correct.text2')}: ${coins + 1} 🪙`);
                 setCoins(coins + 1);
             } else {
-                Alert.alert('Wrong Answer!', 'Try Again!');
+                Alert.alert(t('screens.daily.wrong.title'), t('screens.daily.wrong.text'));
             }
         } catch (e) {
             console.warn('Submit error', e);
-            Alert.alert('Error', 'An error occurred while checking your answer.');
+            Alert.alert(t('screens.daily.error.title'), t('screens.daily.error.text'));
         }
     };
 
     return (
         <View style={styles.container}>
             <View />
-            <Text style={styles.challengeText}>Challenge: {chall && chall.text ? chall.text : String(chall)}</Text>
+            <Text style={styles.challengeText}>{t('screens.daily.challenge')} {chall && chall.text ? chall.text : String(chall)}</Text>
             <Phrases buttonLayout={buttonLayout} daily={true} />
-            <Button title="Submit Answer" onPress={submit} />
+            <Button title={t('screens.daily.submit')} onPress={submit} />
             <View />
         </View>
     );

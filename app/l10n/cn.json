@@ -1,26 +1,67 @@
 {
     "language": "cn",
     "tabs": {
-        "home": "主页",
+        "home": "首页",
         "phrases": "短语",
         "challenge":  "挑战",
         "shop": "商店",
         "settings": "设置",
-        "history": "历史"
+        "history": "历史记录"
     },
     "screens": {
         "home" : {
             "bookmarked" : "已收藏:",
-            "noBookmarks": "还没有收藏任何东西。",
-            "seeMore": "查看更多...",
+            "noBookmarks": "暂无收藏项目。",
+            "seeMore": "查看更多......",
             "recentHistory": "查看最近历史",
             "daily": "完成每日挑战"
+        },
+        "daily": {
+            "challenge": "挑战: ",
+            "submit": "提交答案",
+            "status": {
+                "loading": "加载中...",
+                "noChallenge": "暂无可用挑战",
+                "loadingError": "加载挑战出错"
+            },
+            "correct": {
+                "title": "正确答案！",
+                "text1": "你获得了每日",
+                "text2": "总"
+            },
+            "wrong": {
+                "title": "答案错误",
+                "text": "请重试！"
+            },
+            "noChall": {
+                "title": "暂无挑战",
+                "text": "今日没有活跃挑战。"
+            },
+            "error": {
+                "title": "错误",
+                "text": "检查答案时发生错误。"
+            }
+        },
+        "shop": {
+            "labelHats": "帽子",
+            "labelShirts": "上衣",
+            "labelPants": "裤子",
+            "labelShoes": "鞋子",
+            "labelAccessories": "配饰",
+            "notEnough": "🪙 不足",
+            "onlyHave": "你只有 {{coins}} 🪙"
         },
         "settings": {
             "languageTitle": "语言",
             "buttonTitle": "按钮布局",
             "buttonFood": "食物",
-            "caregiverNumberTitle": "照顾者的手机号码"
+            "caregiverNumberTitle": "照顾者的电话号码"
+        },
+        "history": {
+            "title": "历史记录",
+            "backButton": "返回",
+            "delTitle": "删除分组",
+            "delMessage": "确定要删除此分组吗？"
         }
     }
 }

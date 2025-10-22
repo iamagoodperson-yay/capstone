@@ -12,8 +12,28 @@ const Dropdown = ({ values, base, changebase, width = 0.875 }) => {
   const screenWidth = Dimensions.get('window').width;
   const [isOpen, setIsOpen] = useState(false);
 
+  // Helper function to get display label for a value
+  const getDisplayLabel = (value) => {
+    if (!value) return 'Select an option';
+    
+    // Find the item in values that matches the current base value
+    const matchingItem = values?.find(item => {
+      const itemValue = typeof item === 'object' && item.value !== undefined ? item.value : item;
+      return itemValue === value;
+    });
+    
+    if (matchingItem) {
+      return typeof matchingItem === 'object' && matchingItem.label !== undefined 
+        ? matchingItem.label 
+        : matchingItem.toString();
+    }
+    
+    return value.toString();
+  };
+
   const handleSelect = item => {
-    changebase(item);
+    // Pass the value property to changebase, not the whole item
+    changebase(typeof item === 'object' && item.value !== undefined ? item.value : item);
     setIsOpen(false);
   };
 
@@ -23,7 +43,9 @@ const Dropdown = ({ values, base, changebase, width = 0.875 }) => {
       style={styles.dropdownItem}
       onPress={() => handleSelect(item)}
     >
-      <Text style={styles.dropdownItemText}>{item.toString()}</Text>
+      <Text style={styles.dropdownItemText}>
+        {typeof item === 'object' && item.label !== undefined ? item.label : item.toString()}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -45,7 +67,7 @@ const Dropdown = ({ values, base, changebase, width = 0.875 }) => {
         onPress={() => setIsOpen(!isOpen)}
       >
         <Text style={{ color: '#000000', fontSize: 24 }}>
-          {base ? base.toString() : 'Select an option'}
+          {getDisplayLabel(base)}
         </Text>
         <Text style={{ color: '#000000', fontSize: 18 }}>
           {isOpen ? '▲' : '▼'}

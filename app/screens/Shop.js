@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, Image, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Avatar from '../components/avatar';
 import Dropdown from '../components/dropdown'; 
 
 function Shop({ coins, setCoins, avatarSelection, setAvatarSelection, avatarItems, setAvatarItems }) {
+    const { t } = useTranslation();
     const [category, setCategory] = useState("Hats");
 
     const renderItem = ({ item, index }) => (
@@ -31,8 +33,8 @@ function Shop({ coins, setCoins, avatarSelection, setAvatarSelection, avatarItem
                         setCoins(prevCoins => prevCoins - item.price);
                     } else {
                         Alert.alert(
-                            'Not enough 🪙',
-                            `You need to have ${item.price} 🪙 but only have ${coins} 🪙.`,
+                            t('screens.shop.notEnough'),
+                            t('screens.shop.onlyHave', { coins: coins })
                         );
                     }
                 }
@@ -56,7 +58,13 @@ function Shop({ coins, setCoins, avatarSelection, setAvatarSelection, avatarItem
             <Text style={styles.coinsText}>🪙: {coins}</Text>
             <Avatar avatarSelection={avatarSelection} avatarItems={avatarItems} />
             <Dropdown
-                values={["Hats", "Shirts", "Pants", "Shoes", "Accessories"]}
+                values={[
+                    { label: t('screens.shop.labelHats'), value: 'Hats' },
+                    { label: t('screens.shop.labelShirts'), value: 'Shirts' },
+                    { label: t('screens.shop.labelPants'), value: 'Pants' },
+                    { label: t('screens.shop.labelShoes'), value: 'Shoes' },
+                    { label: t('screens.shop.labelAccessories'), value: 'Accessories' },
+                ]}
                 base={category}
                 changebase={setCategory}
             />
