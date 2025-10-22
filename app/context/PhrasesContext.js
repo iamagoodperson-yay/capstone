@@ -2,6 +2,9 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { speak } from '../utils/tts';
 
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
+
 const categories = {
   text: 'Categories',
   choices: [
@@ -186,6 +189,9 @@ export const PhrasesProvider = ({ children }) => {
   const [categoriesState, setCategoriesState] = useState(categories);
   const [navigationStack, setNavigationStack] = useState([]);
 
+  const { t } = useTranslation();
+  const currentLanguage = i18n.language;
+
   const [processesState, setProcessesState] = useState(processes);
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -196,6 +202,8 @@ export const PhrasesProvider = ({ children }) => {
 
   const [bookmarkedTexts, setBookmarkedTexts] = useState([]);
   const [fromBookmark, setFromBookmark] = useState(false);
+
+  const [translatedStack, setTranslatedStack] = useState([]);
 
   const categoriesKey = 'categoriesState';
   const processesKey = 'processesState';
@@ -227,57 +235,57 @@ export const PhrasesProvider = ({ children }) => {
   }, []);
 
   // save categories, processes, bookmarks to async storage on change
-useEffect(() => {
+  useEffect(() => {
     const saveCategories = async () => {
-        try {
-            const stored = await AsyncStorage.getItem(categoriesKey);
-            const current = JSON.stringify(categoriesState);
-            // If there's no stored value, or the stored value differs from current, save.
-            // This avoids overwriting a previously-loaded stored value with defaults on boot.
-            if (stored === null || stored !== current) {
-                await AsyncStorage.setItem(categoriesKey, current);
-            }
-        } catch (e) {
-            console.warn('Failed to save categories to storage', e);
+      try {
+        const stored = await AsyncStorage.getItem(categoriesKey);
+        const current = JSON.stringify(categoriesState);
+        // If there's no stored value, or the stored value differs from current, save.
+        // This avoids overwriting a previously-loaded stored value with defaults on boot.
+        if (stored === null || stored !== current) {
+          await AsyncStorage.setItem(categoriesKey, current);
         }
+      } catch (e) {
+        console.warn('Failed to save categories to storage', e);
+      }
     };
     saveCategories();
-}, [categoriesState]);
+  }, [categoriesState]);
 
-useEffect(() => {
+  useEffect(() => {
     const saveProcesses = async () => {
-        try {
-            const stored = await AsyncStorage.getItem(processesKey);
-            const current = JSON.stringify(processesState);
-            if (stored === null || stored !== current) {
-                await AsyncStorage.setItem(processesKey, current);
-            }
-        } catch (e) {
-            console.warn('Failed to save processes to storage', e);
+      try {
+        const stored = await AsyncStorage.getItem(processesKey);
+        const current = JSON.stringify(processesState);
+        if (stored === null || stored !== current) {
+          await AsyncStorage.setItem(processesKey, current);
         }
+      } catch (e) {
+        console.warn('Failed to save processes to storage', e);
+      }
     };
     saveProcesses();
-}, [processesState]);
+  }, [processesState]);
 
-useEffect(() => {
+  useEffect(() => {
     const saveBookmarks = async () => {
-        try {
-            const stored = await AsyncStorage.getItem(bookmarksKey);
-            const current = JSON.stringify(bookmarkedTexts);
-            // Only save when necessary to avoid writing on initial boot.
-            // Keep the existing behavior of not saving empty arrays unless storage differs.
-            if (stored === null || stored !== current) {
-                // If bookmarkedTexts is empty and there's no stored value, writing an empty array is harmless.
-                // If bookmarkedTexts is empty but stored had values, this will persist the cleared state.
-                await AsyncStorage.setItem(bookmarksKey, current);
-                console.log('Saved bookmarks:', bookmarkedTexts);
-            }
-        } catch (e) {
-            console.warn('Failed to save bookmarks to storage', e);
+      try {
+        const stored = await AsyncStorage.getItem(bookmarksKey);
+        const current = JSON.stringify(bookmarkedTexts);
+        // Only save when necessary to avoid writing on initial boot.
+        // Keep the existing behavior of not saving empty arrays unless storage differs.
+        if (stored === null || stored !== current) {
+          // If bookmarkedTexts is empty and there's no stored value, writing an empty array is harmless.
+          // If bookmarkedTexts is empty but stored had values, this will persist the cleared state.
+          await AsyncStorage.setItem(bookmarksKey, current);
+          console.log('Saved bookmarks:', bookmarkedTexts);
         }
+      } catch (e) {
+        console.warn('Failed to save bookmarks to storage', e);
+      }
     };
     saveBookmarks();
-}, [bookmarkedTexts]);
+  }, [bookmarkedTexts]);
 
   const getCurrentCategory = () => {
     if (navigationStack.length === 0) return categoriesState;
@@ -288,7 +296,11 @@ useEffect(() => {
     }
     return current;
   };
-
+  useEffect(() => {
+    setTranslatedStack(
+      navigationStack.map(text => t(`screens.phrases.${text}`)),
+    );
+  }, [navigationStack, i18n.language]);
   const resetNav = () => {
     setNavigationStack([]);
     setInProcess(false);
@@ -308,51 +320,56 @@ useEffect(() => {
   };
 
   const deletePhrase = (parent, itemIdentifier) => {
-      // Handle deleting an entire task by ID
-      const taskToDelete = processesState.find(p => p.id === itemIdentifier);
-      if (taskToDelete) {
-          // Update all process references to point to 'end'
-          const newProcesses = processesState
-              .filter(p => p.id !== itemIdentifier)
-              .map(p => ({
-                  ...p,
-                  next: p.next === itemIdentifier ? 'end' : p.next,
-                  choices: p.choices?.map(c => ({
-                      ...c,
-                      next: c.next === itemIdentifier ? 'end' : c.next
-                  }))
-              }));
+    // Handle deleting an entire task by ID
+    const taskToDelete = processesState.find(p => p.id === itemIdentifier);
+    if (taskToDelete) {
+      // Update all process references to point to 'end'
+      const newProcesses = processesState
+        .filter(p => p.id !== itemIdentifier)
+        .map(p => ({
+          ...p,
+          next: p.next === itemIdentifier ? 'end' : p.next,
+          choices: p.choices?.map(c => ({
+            ...c,
+            next: c.next === itemIdentifier ? 'end' : c.next,
+          })),
+        }));
 
-          // Remove category links to the deleted task
-          const removeCategoryLinks = (items) =>
-              items?.map(({ id, ...item }) => ({
-                  ...(id === itemIdentifier ? item : { id, ...item }),
-                  choices: removeCategoryLinks(item.choices)
-              }));
+      // Remove category links to the deleted task
+      const removeCategoryLinks = items =>
+        items?.map(({ id, ...item }) => ({
+          ...(id === itemIdentifier ? item : { id, ...item }),
+          choices: removeCategoryLinks(item.choices),
+        }));
 
-          setProcessesState(newProcesses);
-          setCategoriesState({
-              ...categoriesState,
-              choices: removeCategoryLinks(categoriesState.choices)
-          });
-          return;
-      }
+      setProcessesState(newProcesses);
+      setCategoriesState({
+        ...categoriesState,
+        choices: removeCategoryLinks(categoriesState.choices),
+      });
+      return;
+    }
 
-      // Handle deleting choices from a task
-      if (parent?.id) {
-          setProcessesState(processesState.map(p =>
-              p.id === parent.id
-                  ? { ...p, choices: p.choices.filter(c => c.text !== itemIdentifier) }
-                  : p
-          ));
-          return;
-      }
+    // Handle deleting choices from a task
+    if (parent?.id) {
+      setProcessesState(
+        processesState.map(p =>
+          p.id === parent.id
+            ? {
+                ...p,
+                choices: p.choices.filter(c => c.text !== itemIdentifier),
+              }
+            : p,
+        ),
+      );
+      return;
+    }
 
-      // Handle deleting category choices
-      if (parent?.choices) {
-          parent.choices = parent.choices.filter(c => c.text !== itemIdentifier);
-          setCategoriesState({ ...categoriesState });
-      }
+    // Handle deleting category choices
+    if (parent?.choices) {
+      parent.choices = parent.choices.filter(c => c.text !== itemIdentifier);
+      setCategoriesState({ ...categoriesState });
+    }
   };
 
   const editPhrase = (parent, item) => {
@@ -435,7 +452,7 @@ useEffect(() => {
 
     const selections = currentTask.multiSelect
       ? selected.map(s => s.text).join(', ')
-      : selected[0].text;
+      : t(`screens.phrases.${selected[0].text}`);
 
     return base ? `${base} ${selections}` : selections;
   };
@@ -595,7 +612,12 @@ useEffect(() => {
         const key = `proc:${proc.id}>${choice.text}`;
         if (bookmarkedTexts.includes(choice.text) && !seen.has(key)) {
           seen.add(key);
-          out.push({ item: choice, processId: proc.id, processText: proc.text, kind: 'process' });
+          out.push({
+            item: choice,
+            processId: proc.id,
+            processText: proc.text,
+            kind: 'process',
+          });
         }
       }
     }
@@ -647,11 +669,14 @@ useEffect(() => {
         setSelected([]);
       }
     } else if (navigationStack.length > 0) {
-        setNavigationStack(prev => prev.slice(0, -1));
+      setNavigationStack(prev => prev.slice(0, -1));
     }
   };
 
-  const getBreadcrumbs = () => ['Categories', ...navigationStack];
+  const getBreadcrumbs = () => [
+    t('screens.phrases.Categories'),
+    ...navigationStack,
+  ];
 
   const deleteGroup = index =>
     setAllSelections(prev => prev.filter((_, i) => i !== index));
