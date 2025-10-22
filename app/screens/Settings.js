@@ -34,7 +34,7 @@ function Settings({
       automaticallyAdjustKeyboardInsets={true}
     >
       <View style={styles.container}>
-        <Text style={styles.subtext}>Languages</Text>
+        <Text style={styles.subtext}>{t("screens.settings.languageTitle")}</Text>
         <View style={styles.flagcontainer}>
           {renderFlag(
             'en',
@@ -55,7 +55,8 @@ function Settings({
             require('../../assets/settings/indonesianflag.png'),
           )}
         </View>
-        <Text style={styles.subtext}>Button Layout</Text>
+        <View style={{height: 20}}/>
+        <Text style={styles.subtext}>{t("screens.settings.buttonTitle")}</Text>
         <Cell
           content={{
             type: buttonLayout == 1 ? 'selected' : 'normal_button',
@@ -68,7 +69,7 @@ function Settings({
           content={{
             type: buttonLayout == 2 ? 'selected' : 'normal_button',
             image: require('../../assets/phrases/food.png'),
-            text: 'Food',
+            text: t("screens.settings.buttonFood"),
           }}
           buttonlayout={2}
           onPress={() => setButtonLayout(2)}
@@ -76,14 +77,14 @@ function Settings({
         <Cell
           content={{
             type: buttonLayout == 3 ? 'selected' : 'normal_button',
-            text: 'Food',
+            text: t("screens.settings.buttonFood"),
           }}
           buttonlayout={3}
           onPress={() => setButtonLayout(3)}
         />
       </View>
       <View style={styles.container}>
-        <Text style={styles.subheader}>Enter Caregiver's Number</Text>
+        <Text style={styles.subheader}>{t("screens.settings.caregiverNumberTitle")}</Text>
         <TextInput
           value={caregiverNumber}
           onChangeText={setCaregiverNumber}
@@ -248,10 +249,10 @@ const styles = StyleSheet.create({
   text_input: {
     fontSize: 20,
     borderColor: 'gray',
+    width: '90%',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    color: 'black',
   },
 });
 

@@ -9,12 +9,18 @@
         "history": "History"
     },
     "screens": {
+        "home" : {
+            "bookmarked" : "Bookmarked:",
+            "noBookmarks": "No bookmarked items yet.",
+            "seeMore": "See More...",
+            "recentHistory": "View Recent History",
+            "daily": "Solve Daily Challenge"
+        },
         "settings": {
-            "title": "Settings",
-            "languageLabel": "Languages",
-            "caregiverNumberLabel": "Caregiver's Phone Number",
-            "enterNumberPlaceholder": "Enter phone number",
-            "saveButton": "Save"
+            "languageTitle": "Languages",
+            "buttonTitle": "Button Layout",
+            "buttonFood": "Food",
+            "caregiverNumberTitle": "Caregiver's Phone Number"
         }
     }
 }

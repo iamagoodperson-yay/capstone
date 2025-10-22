@@ -33,7 +33,7 @@ const Home = ({ avatarSelection, avatarItems, caregiverNumber }) => {
         avatarItems={avatarItems}
       />
 
-      <Text style={styles.header}>Bookmarked :</Text>
+      <Text style={styles.header}>{t("screens.home.bookmarked")}</Text>
 
       {bookmarked.length > 0 ? (
         <View style={styles.gridContainer}>
@@ -75,17 +75,12 @@ const Home = ({ avatarSelection, avatarItems, caregiverNumber }) => {
         </View>
       ) : (
         <Text style={{ fontSize: 16, fontStyle: 'italic', opacity: 0.5 }}>
-          No bookmarked items yet.
+            {t("screens.home.noBookmarks")}
         </Text>
       )}
 
       <Button
-        title="View Recent History"
-        onPress={() => navigation.navigate(t("tabs.history"))}
-        color="#2196F3"
-      />
-      <Button
-        title="See More..."
+        title={t("screens.home.seeMore")}
         onPress={() => {
           resetNav();
           navigation.navigate(t("tabs.phrases"));
@@ -93,7 +88,12 @@ const Home = ({ avatarSelection, avatarItems, caregiverNumber }) => {
         color="#2196F3"
       />
       <Button
-        title="Solve Daily Challenge"
+        title={t("screens.home.recentHistory")}
+        onPress={() => navigation.navigate(t("tabs.history"))}
+        color="#2196F3"
+      />
+      <Button
+        title={t("screens.home.daily")}
         onPress={() => navigation.navigate(t("tabs.challenge"))}
       />
     </ScrollView>

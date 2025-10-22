@@ -9,12 +9,18 @@
         "history": "历史"
     },
     "screens": {
+        "home" : {
+            "bookmarked" : "已收藏:",
+            "noBookmarks": "还没有收藏任何东西。",
+            "seeMore": "查看更多...",
+            "recentHistory": "查看最近历史",
+            "daily": "完成每日挑战"
+        },
         "settings": {
-            "title": "设置",
-            "languageLabel": "语言",
-            "caregiverNumberLabel": "照顾者的电话号码",
-            "enterNumberPlaceholder": "输入电话号码",
-            "saveButton": "保存"
+            "languageTitle": "语言",
+            "buttonTitle": "按钮布局",
+            "buttonFood": "食物",
+            "caregiverNumberTitle": "照顾者的手机号码"
         }
     }
 }
