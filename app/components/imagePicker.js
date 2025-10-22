@@ -1,94 +1,161 @@
-import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { saveImageToPersistentStorage, deleteImageFromStorage, isPersistentImage } from '../utils/imageStorage';
 import Button from './button';
 
 const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
-  const handleSelectImage = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        quality: 0.8,
-        maxWidth: 500,
-        maxHeight: 500,
-      },
-      response => {
-        if (response.assets && response.assets[0]) {
-          onImageSelected({ uri: response.assets[0].uri });
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSelectImage = async () => {
+        launchImageLibrary(
+            {
+                mediaType: 'photo',
+                quality: 0.8,
+                maxWidth: 500,
+                maxHeight: 500,
+            },
+            async response => {
+                if (response.didCancel) {
+                    return;
+                }
+
+                if (response.errorCode) {
+                    Alert.alert('Error', response.errorMessage || 'Failed to select image');
+                    return;
+                }
+
+                if (response.assets && response.assets[0]) {
+                    setIsSaving(true);
+                    try {
+                        const asset = response.assets[0];
+                        const sourceUri = asset.uri;
+                        const mimeType = asset.type;
+                        // Save to persistent storage with MIME type for better extension detection
+                        const persistentUri = await saveImageToPersistentStorage(sourceUri, null, mimeType);
+                        onImageSelected({ uri: persistentUri });
+                    } catch (error) {
+                        Alert.alert('Error', 'Failed to save image: ' + error.message);
+                        console.error('Image save error:', error);
+                    } finally {
+                        setIsSaving(false);
+                    }
+                }
+            },
+        );
+    };
+
+    const handleTakePhoto = async () => {
+        launchCamera(
+            {
+                mediaType: 'photo',
+                quality: 0.8,
+                maxWidth: 500,
+                maxHeight: 500,
+                saveToPhotos: false, // Don't save to camera roll
+            },
+            async response => {
+                if (response.didCancel) {
+                    return;
+                }
+
+                if (response.errorCode) {
+                    Alert.alert('Error', response.errorMessage || 'Failed to take photo');
+                    return;
+                }
+
+                if (response.assets && response.assets[0]) {
+                    setIsSaving(true);
+                    try {
+                        const asset = response.assets[0];
+                        const sourceUri = asset.uri;
+                        const mimeType = asset.type;
+                        // Save to persistent storage with MIME type for better extension detection
+                        const persistentUri = await saveImageToPersistentStorage(sourceUri, null, mimeType);
+                        onImageSelected({ uri: persistentUri });
+                    } catch (error) {
+                        Alert.alert('Error', 'Failed to save image: ' + error.message);
+                        console.error('Image save error:', error);
+                    } finally {
+                        setIsSaving(false);
+                    }
+                }
+            },
+        );
+    };
+
+    const handleRemoveImage = async () => {
+        // Delete from persistent storage if it's a persistent image
+        if (selectedImage && selectedImage.uri && isPersistentImage(selectedImage.uri)) {
+            await deleteImageFromStorage(selectedImage.uri);
         }
-      },
-    );
-  };
+        onImageRemoved();
+    };
 
-  const handleTakePhoto = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 0.8,
-        maxWidth: 500,
-        maxHeight: 500,
-      },
-      response => {
-        if (response.assets && response.assets[0]) {
-          onImageSelected({ uri: response.assets[0].uri });
-        }
-      },
-    );
-  };
+    if (isSaving) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#2196F3" />
+            </View>
+        );
+    }
 
-  if (selectedImage) {
-    return (
-      <View style={styles.imagePreviewContainer}>
-        <Image source={selectedImage} style={styles.imagePreview} />
-        <Button
-          title="Remove Image"
-          width="0.4"
-          color="#DC3545"
-          onPress={onImageRemoved}
-        />
-      </View>
+    if (selectedImage) return (
+        <View style={styles.imagePreviewContainer}>
+            <Image source={selectedImage} style={styles.imagePreview} />
+            <Button
+                title="Remove Image"
+                width="0.4"
+                color="#DC3545"
+                onPress={handleRemoveImage}
+            />
+        </View>
     );
-  }
-
-  return (
-    <View style={styles.buttonRow}>
-      <Button
-        title="Select Image"
-        width="0.4"
-        color="#2196F3"
-        onPress={handleSelectImage}
-      />
-      <Button
-        title="Take Photo"
-        width="0.4"
-        color="#2196F3"
-        onPress={handleTakePhoto}
-      />
-    </View>
-  );
+    else return (
+        <View style={styles.buttonRow}>
+            <Button
+                title="Select Image"
+                width="0.4"
+                color="#2196F3"
+                onPress={handleSelectImage}
+            />
+            <Button
+                title="Take Photo"
+                width="0.4"
+                color="#2196F3"
+                onPress={handleTakePhoto}
+            />
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  imagePreviewContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
-    width: '95%',
-    backgroundColor: '#d9d9d9',
-    paddingVertical: 20,
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  imagePreview: {
-    width: 200,
-    height: 200,
-    resizeMode: 'cover',
-  },
-  buttonRow: {
-    width: '95%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+    imagePreviewContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+        width: '95%',
+        backgroundColor: '#d9d9d9',
+        paddingVertical: 20,
+        borderRadius: 10,
+        marginVertical: 10,
+    },
+    imagePreview: {
+        width: 200,
+        height: 200,
+        resizeMode: 'cover',
+    },
+    buttonRow: {
+        width: '95%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    loadingContainer: {
+        width: '95%',
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 export default ImagePicker;

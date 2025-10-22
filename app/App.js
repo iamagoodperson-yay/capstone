@@ -13,6 +13,7 @@ import Shop from './screens/Shop';
 import Settings from './screens/Settings';
 import History from './screens/History';
 import { PhrasesProvider } from './context/PhrasesContext';
+import { initImageStorage } from './utils/imageStorage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -255,6 +256,9 @@ const App = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        // Initialize image storage directory
+        await initImageStorage();
+        
         const storedAvatar = await AsyncStorage.getItem('avatarSelection');
         const storedItems = await AsyncStorage.getItem('avatarItems');
         const storedCoins = await AsyncStorage.getItem('coins');
