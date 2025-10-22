@@ -18,34 +18,37 @@ import {
 } from 'react-native-safe-area-context';
 import { initTTS, speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
+import { useTranslation } from 'react-i18next';
 import Button from '../components/button';
 import Cell from '../components/cell';
 import Dropdown from '../components/dropdown';
 import ImagePicker from '../components/imagePicker';
 
 const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
-    const insets = useSafeAreaInsets();
-    const {
-        inProcess,
-        getCurrent,
-        navigateToChoice,
-        selectPhrase,
-        getSpeechText,
-        goBack,
-        canGoBack,
-        getBreadcrumbs,
-        addCategory,
-        deletePhrase,
-        editPhrase,
-        addTask,
-        addChoiceToTask,
-        getAllTaskIds,
-        bookmarkedTexts,
-        toggleBookmark,
-    } = usePhrasesContext();
+  const insets = useSafeAreaInsets();
+  const {
+    inProcess,
+    getCurrent,
+    navigateToChoice,
+    selectPhrase,
+    getSpeechText,
+    goBack,
+    canGoBack,
+    getBreadcrumbs,
+    addCategory,
+    deletePhrase,
+    editPhrase,
+    addTask,
+    addChoiceToTask,
+    getAllTaskIds,
+    bookmarkedTexts,
+    toggleBookmark,
+  } = usePhrasesContext();
 
   const current = getCurrent();
   const breadcrumbs = getBreadcrumbs().join(' > ');
+
+  const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [addModal, setAddModal] = useState(false);
@@ -70,6 +73,10 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   const [editImage, setEditImage] = useState(null);
 
   // bookmarks now come from context
+  const langMap = {
+    en: 'en-US',
+    cn: 'zh-CN',
+  };
 
   useEffect(() => {
     initTTS();
@@ -88,7 +95,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       selectPhrase(item);
     } else {
       if (item.text === 'Emergency') Linking.openURL(`tel:${caregiverNumber}`);
-      else if (item.type === 'phrase') speak(item.text);
+      else if (item.type === 'phrase') speak(t(`screens.phrases.${item.text}`));
       else {
         navigateToChoice(item);
       }
@@ -324,43 +331,48 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       return a.text.localeCompare(b.text);
     });
 
-        return filtered.map((item, index) => (
-            <Cell
-                key={index.toString()}
-                content={{
-                    text: item.text,
-                    subtitle: searchQuery ? item.path : undefined,
-                    image: item.image,
-                    type: item.type,
-                    bookmarked: bookmarkedTexts.includes(item.text), // Tint light blue if bookmarked
-                }}
-                buttonlayout={buttonLayout}
-                onPress={() => handlePress(item)}
-                onLongPress={() => {
-                    Alert.alert(`Edit or Bookmark "${item.text}"?`, '', [
-                        { text: 'Cancel', style: 'cancel' },
-                        {
-                            text: bookmarkedTexts.includes(item.text)
-                                ? 'Remove Bookmark'
-                                : 'Bookmark',
-                            onPress: () => toggleBookmark(item.text),
-                        },
-                        {
-                            text: 'Edit',
-                            onPress: () => {
-                                setEditText(item.text);
-                                setEditingItem(item);
-                                setEditParent(current);
-                                setEditImage(item.image || null);
-                                setEditModal(true);
-                            },
-                        },
-                    ]);
-                }}
-            />
-        ));
-    };
-
+    return filtered.map((item, index) => (
+      <Cell
+        key={index.toString()}
+        content={{
+          text: t(`screens.phrases.${item.text}`),
+          subtitle: searchQuery ? item.path : undefined,
+          image: item.image,
+          type: item.type,
+          bookmarked: bookmarkedTexts.includes(item.text), // Tint light blue if bookmarked
+        }}
+        buttonlayout={buttonLayout}
+        onPress={() => handlePress(item)}
+        onLongPress={() => {
+          Alert.alert(
+            `${t(`screens.phrases.Edit or Bookmark`)}"${t(
+              `screens.phrases.${item.text}`,
+            )}"?`,
+            '',
+            [
+              { text: t('screens.phrases.Cancel'), style: 'cancel' },
+              {
+                text: bookmarkedTexts.includes(item.text)
+                  ? t('screens.phrases.Remove Bookmark')
+                  : t('screens.phrases.Bookmark'),
+                onPress: () => toggleBookmark(item.text),
+              },
+              {
+                text: t('screens.phrases.Edit'),
+                onPress: () => {
+                  setEditText(item.text);
+                  setEditingItem(item);
+                  setEditParent(current);
+                  setEditImage(item.image || null);
+                  setEditModal(true);
+                },
+              },
+            ],
+          );
+        }}
+      />
+    ));
+  };
 
   const renderProcess = () => {
     if (!inProcess) return null;
@@ -395,7 +407,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             type: 'speech',
           }}
           buttonlayout={4}
-          onPress={() => speak(getSpeechText())}
+          onPress={() => speak(t(`screens.phrases.${getSpeechText()}`))}
           onLongPress={() => {
             Alert.alert(`Edit current task "${current.text}"?`, '', [
               { text: 'Cancel', style: 'cancel' },
@@ -422,50 +434,52 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           height={0.2}
         />
 
-                {/* Choices */}
-                {filtered.map((item, index) => (
-                    <Cell
-                        key={index.toString()}
-                        content={{
-                            text: item.text,
-                            subtitle: searchQuery ? item.path : undefined,
-                            image: item.image,
-                            type: item.type,
-                            bookmarked: bookmarkedTexts.includes(item.text),
-                        }}
-                        buttonlayout={buttonLayout}
-                        onPress={() => handlePress(item)}
-                        onLongPress={() => {
-                            Alert.alert(`Edit or Bookmark "${item.text}"?`, '', [
-                                { text: 'Cancel', style: 'cancel' },
-                                {
-                                    text: bookmarkedTexts.includes(item.text)
-                                        ? 'Remove Bookmark'
-                                        : 'Bookmark',
-                                    onPress: () => toggleBookmark(item.text),
-                                },
-                                {
-                                    text: 'Edit',
-                                    onPress: () => {
-                                        setEditText(item.text);
-                                        setEditingItem(item);
-                                        setEditParent(null);
-                                        setEditImage(item.image || null);
-                                        setProcessSpeech(null);
-                                        setProcessMultiSelect(null);
-                                        setProcessDiverge(null);
-                                        if (item.next) {
-                                            const choices = getAllTaskIds();
-                                            setTargetTask(choices.find(c => c === item.next) || item.next);
-                                            setTaskChoices(['End (no next task)', ...choices]);
-                                        }
-                                        setEditModal(true);
-                                    },
-                                },
-                            ]);
-                        }}
-                    />
-                ))}
+        {/* Choices */}
+        {filtered.map((item, index) => (
+          <Cell
+            key={index.toString()}
+            content={{
+              text: t(`screens.phrases.${item.text}`),
+              subtitle: searchQuery ? item.path : undefined,
+              image: item.image,
+              type: item.type,
+              bookmarked: bookmarkedTexts.includes(item.text),
+            }}
+            buttonlayout={buttonLayout}
+            onPress={() => handlePress(item)}
+            onLongPress={() => {
+              Alert.alert(`Edit or Bookmark "${item.text}"?`, '', [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: bookmarkedTexts.includes(item.text)
+                    ? 'Remove Bookmark'
+                    : 'Bookmark',
+                  onPress: () => toggleBookmark(item.text),
+                },
+                {
+                  text: 'Edit',
+                  onPress: () => {
+                    setEditText(item.text);
+                    setEditingItem(item);
+                    setEditParent(null);
+                    setEditImage(item.image || null);
+                    setProcessSpeech(null);
+                    setProcessMultiSelect(null);
+                    setProcessDiverge(null);
+                    if (item.next) {
+                      const choices = getAllTaskIds();
+                      setTargetTask(
+                        choices.find(c => c === item.next) || item.next,
+                      );
+                      setTaskChoices(['End (no next task)', ...choices]);
+                    }
+                    setEditModal(true);
+                  },
+                },
+              ]);
+            }}
+          />
+        ))}
 
         {/* Next button */}
         <Cell
@@ -665,95 +679,98 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         </SafeAreaView>
       </Modal>
 
-            {/* Edit Modal */}
-            <Modal
-                visible={editModal}
-                animationType="slide"
-                presentationStyle="fullScreen"
-                onRequestClose={() => {
-                    setEditModal(false);
-                    setEditImage(null);
-                }}
-            >
-                <SafeAreaView
-                    style={[styles.modalSafeArea, { paddingTop: insets.top }]}
-                >
-                    <View
-                        style={styles.modalContainer}
-                        keyboardShouldPersistTaps="handled"
-                        showsVerticalScrollIndicator={false}
-                        automaticallyAdjustKeyboardInsets={true}
-                        keyboardDismissMode="interactive"
-                    >
-                        <Text style={styles.modalTitle}>Edit</Text>
-                        <Button
-                            title="Delete"
-                            width="0.8"
-                            color="#DC3545"
-                            onPress={() => {
-                                Alert.alert(
-                                    'Confirm Delete',
-                                    `Are you sure you want to delete "${editingItem.text}"?`,
-                                    [
-                                        { text: 'Cancel', style: 'cancel' },
-                                        {
-                                            text: 'Delete',
-                                            style: 'destructive',
-                                            onPress: () => {
-                                                if (editingItem.id) {
-                                                    deletePhrase(editParent, editingItem.id);
-                                                } else {
-                                                    deletePhrase(editParent || current, editingItem.text);
-                                                }
-                                                resetEdit();
-                                                if (inProcess && editingItem.id === current.id) {
-                                                    goBack();
-                                                }
-                                            },
-                                        },
-                                    ],
-                                );
-                            }}
-                        />
-                        {!inProcess || (inProcess && editingItem?.id !== current?.id) ? (
-                            <>
-                                <View style={styles.inputSection}>
-                                    <Text style={styles.inputLabel}>Edit text</Text>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        value={editText}
-                                        onChangeText={setEditText}
-                                    />
-                                </View>
-                                {inProcess && (current.diverge ? editingItem?.id !== current?.id : editingItem?.id === current?.id) && (
-                                    <View style={styles.inputSection}>
-                                        <Text style={styles.inputLabel}>Edit target task</Text>
-                                        <Dropdown
-                                            values={taskChoices}
-                                            base={targetTask}
-                                            changebase={setTargetTask}
-                                            width="0.85"
-                                        />
-                                    </View>
-                                )}
-                                {(!inProcess || editingItem?.id !== current?.id) && (
-                                    <ImagePicker
-                                        selectedImage={editImage}
-                                        onImageSelected={setEditImage}
-                                        onImageRemoved={() => setEditImage(null)}
-                                    />
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                <View style={styles.inputSection}>
-                                    <Text style={styles.inputLabel}>Task Title</Text>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        value={editText}
-                                        onChangeText={setEditText}
-                                    />
-                                </View>
+      {/* Edit Modal */}
+      <Modal
+        visible={editModal}
+        animationType="slide"
+        presentationStyle="fullScreen"
+        onRequestClose={() => {
+          setEditModal(false);
+          setEditImage(null);
+        }}
+      >
+        <SafeAreaView
+          style={[styles.modalSafeArea, { paddingTop: insets.top }]}
+        >
+          <View
+            style={styles.modalContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            automaticallyAdjustKeyboardInsets={true}
+            keyboardDismissMode="interactive"
+          >
+            <Text style={styles.modalTitle}>Edit</Text>
+            <Button
+              title="Delete"
+              width="0.8"
+              color="#DC3545"
+              onPress={() => {
+                Alert.alert(
+                  'Confirm Delete',
+                  `Are you sure you want to delete "${editingItem.text}"?`,
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    {
+                      text: 'Delete',
+                      style: 'destructive',
+                      onPress: () => {
+                        if (editingItem.id) {
+                          deletePhrase(editParent, editingItem.id);
+                        } else {
+                          deletePhrase(editParent || current, editingItem.text);
+                        }
+                        resetEdit();
+                        if (inProcess && editingItem.id === current.id) {
+                          goBack();
+                        }
+                      },
+                    },
+                  ],
+                );
+              }}
+            />
+            {!inProcess || (inProcess && editingItem?.id !== current?.id) ? (
+              <>
+                <View style={styles.inputSection}>
+                  <Text style={styles.inputLabel}>Edit text</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={editText}
+                    onChangeText={setEditText}
+                  />
+                </View>
+                {inProcess &&
+                  (current.diverge
+                    ? editingItem?.id !== current?.id
+                    : editingItem?.id === current?.id) && (
+                    <View style={styles.inputSection}>
+                      <Text style={styles.inputLabel}>Edit target task</Text>
+                      <Dropdown
+                        values={taskChoices}
+                        base={targetTask}
+                        changebase={setTargetTask}
+                        width="0.85"
+                      />
+                    </View>
+                  )}
+                {(!inProcess || editingItem?.id !== current?.id) && (
+                  <ImagePicker
+                    selectedImage={editImage}
+                    onImageSelected={setEditImage}
+                    onImageRemoved={() => setEditImage(null)}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <View style={styles.inputSection}>
+                  <Text style={styles.inputLabel}>Task Title</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={editText}
+                    onChangeText={setEditText}
+                  />
+                </View>
 
                 <View style={styles.inputSection}>
                   <Text style={styles.inputLabel}>Speech Text</Text>
@@ -806,11 +823,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 color="#DC3545"
                 onPress={resetEdit}
               />
-              <Button
-                title="Save"
-                width="0.4"
-                onPress={handleEdit}
-              />
+              <Button title="Save" width="0.4" onPress={handleEdit} />
             </View>
           </View>
         </SafeAreaView>
