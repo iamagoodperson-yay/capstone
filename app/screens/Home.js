@@ -9,12 +9,14 @@ import {
   Linking,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Button from '../components/button';
+import { useTranslation } from 'react-i18next';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import Avatar from '../components/avatar';
+import Button from '../components/button';
 
 const Home = ({ avatarSelection, avatarItems, caregiverNumber }) => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const {
     resetNav,
     getBookmarkedItems,
@@ -79,20 +81,20 @@ const Home = ({ avatarSelection, avatarItems, caregiverNumber }) => {
 
       <Button
         title="View Recent History"
-        onPress={() => navigation.navigate('History')}
+        onPress={() => navigation.navigate(t("tabs.history"))}
         color="#2196F3"
       />
       <Button
         title="See More..."
         onPress={() => {
           resetNav();
-          navigation.navigate('Phrases');
+          navigation.navigate(t("tabs.phrases"));
         }}
         color="#2196F3"
       />
       <Button
         title="Solve Daily Challenge"
-        onPress={() => navigation.navigate('Challenge')}
+        onPress={() => navigation.navigate(t("tabs.challenge"))}
       />
     </ScrollView>
   );

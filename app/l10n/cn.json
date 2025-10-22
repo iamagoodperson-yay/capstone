@@ -1,0 +1,20 @@
+{
+    "language": "cn",
+    "tabs": {
+        "home": "主页",
+        "phrases": "短语",
+        "challenge":  "挑战",
+        "shop": "商店",
+        "settings": "设置",
+        "history": "历史"
+    },
+    "screens": {
+        "settings": {
+            "title": "设置",
+            "languageLabel": "语言",
+            "caregiverNumberLabel": "照顾者的电话号码",
+            "enterNumberPlaceholder": "输入电话号码",
+            "saveButton": "保存"
+        }
+    }
+}

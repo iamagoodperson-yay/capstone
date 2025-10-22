@@ -8,6 +8,7 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Cell from '../components/cell';
 
 function Settings({
@@ -16,13 +17,12 @@ function Settings({
   caregiverNumber,
   setCaregiverNumber,
 }) {
-  const [language, setLanguage] = useState('english');
-
+  const { t, i18n } = useTranslation(); 
   const renderFlag = (lang, imgSrc) => (
-    <TouchableOpacity onPress={() => setLanguage(lang)}>
+    <TouchableOpacity onPress={() => i18n.changeLanguage(lang)}>
       <Image
         source={imgSrc}
-        style={[styles.flag, language === lang ? styles.selectedFlag : null]}
+        style={[styles.flag, i18n.language === lang ? styles.selectedFlag : null]}
       />
     </TouchableOpacity>
   );
@@ -37,21 +37,21 @@ function Settings({
         <Text style={styles.subtext}>Languages</Text>
         <View style={styles.flagcontainer}>
           {renderFlag(
-            'english',
+            'en',
             require('../../assets/settings/englishflag.png'),
           )}
           {renderFlag(
-            'chinese',
+            'cn',
             require('../../assets/settings/chineseflag.png'),
           )}
         </View>
         <View style={styles.flagcontainer}>
           {renderFlag(
-            'malay',
+            'my',
             require('../../assets/settings/malaysianflag.png'),
           )}
           {renderFlag(
-            'indonesian',
+            'id',
             require('../../assets/settings/indonesianflag.png'),
           )}
         </View>
@@ -91,7 +91,7 @@ function Settings({
           style={styles.text_input}
         />
       </View>
-{/* 
+        {/* 
           <View style={styles.container}>
               <Text style={styles.subtext}> User's Manual</Text>
               <Text style={styles.subheader}>Phrases</Text>

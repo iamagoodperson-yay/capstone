@@ -14,6 +14,8 @@ import Settings from './screens/Settings';
 import History from './screens/History';
 import { PhrasesProvider } from './context/PhrasesContext';
 import { initImageStorage } from './utils/imageStorage';
+import { useTranslation } from 'react-i18next';
+import './l10n/i18n';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -29,104 +31,109 @@ const TabScreens = ({
   setAvatarSelection,
   avatarItems,
   setAvatarItems,
-}) => (
-  <Tab.Navigator
-    screenOptions={{
-      headerTitleStyle: { fontSize: 24, fontWeight: 'bold' },
-      headerTitleAlign: 'center',
-      tabBarLabelStyle: { fontSize: 14 },
-    }}
-  >
-    <Tab.Screen
-      name="Home"
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <FontAwesomeIcon icon={faHome} color={color} size={size} />
-        ),
-      }}
-    >
-      {() => (
-        <Home
-          avatarSelection={avatarSelection}
-          avatarItems={avatarItems}
-        />
-      )}
-    </Tab.Screen>
+}) => {
+    const { t } = useTranslation();
+    return (
+        <Tab.Navigator
+            screenOptions={{
+            headerTitleStyle: { fontSize: 24, fontWeight: 'bold' },
+            headerTitleAlign: 'center',
+            tabBarLabelStyle: { fontSize: 14 },
+            }}
+        >
+            <Tab.Screen
+            name={t("tabs.home")}
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                <FontAwesomeIcon icon={faHome} color={color} size={size} />
+                ),
+            }}
+            >
+            {() => (
+                <Home
+                avatarSelection={avatarSelection}
+                avatarItems={avatarItems}
+                />
+            )}
+            </Tab.Screen>
 
-    <Tab.Screen
-      name="Phrases"
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <FontAwesomeIcon icon={faComment} color={color} size={size} />
-        ),
-      }}
-    >
-      {() => (
-        <Phrases
-          buttonLayout={buttonLayout}
-          caregiverNumber={caregiverNumber}
-        />
-      )}
-    </Tab.Screen>
+            <Tab.Screen
+            name={t("tabs.phrases")}
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                <FontAwesomeIcon icon={faComment} color={color} size={size} />
+                ),
+            }}
+            >
+            {() => (
+                <Phrases
+                buttonLayout={buttonLayout}
+                caregiverNumber={caregiverNumber}
+                />
+            )}
+            </Tab.Screen>
 
-    <Tab.Screen
-      name="Challenge"
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <FontAwesomeIcon icon={faCalendar} color={color} size={size} />
-        ),
-      }}
-    >
-      {() => (
-        <Daily
-          buttonLayout={buttonLayout}
-          setCoins={setCoins}
-          coins={coins}
-        />
-      )}
-    </Tab.Screen>
+            <Tab.Screen
+            name={t("tabs.challenge")}
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                <FontAwesomeIcon icon={faCalendar} color={color} size={size} />
+                ),
+            }}
+            >
+            {() => (
+                <Daily
+                buttonLayout={buttonLayout}
+                setCoins={setCoins}
+                coins={coins}
+                />
+            )}
+            </Tab.Screen>
 
-    <Tab.Screen
-      name="Shop"
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <FontAwesomeIcon icon={faShoppingCart} color={color} size={size} />
-        ),
-      }}
-    >
-      {() => (
-        <Shop
-          coins={coins}
-          setCoins={setCoins}
-          avatarSelection={avatarSelection}
-          setAvatarSelection={setAvatarSelection}
-          avatarItems={avatarItems}
-          setAvatarItems={setAvatarItems}
-        />
-      )}
-    </Tab.Screen>
+            <Tab.Screen
+            name={t('tabs.shop')}
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                <FontAwesomeIcon icon={faShoppingCart} color={color} size={size} />
+                ),
+            }}
+            >
+            {() => (
+                <Shop
+                coins={coins}
+                setCoins={setCoins}
+                avatarSelection={avatarSelection}
+                setAvatarSelection={setAvatarSelection}
+                avatarItems={avatarItems}
+                setAvatarItems={setAvatarItems}
+                />
+            )}
+            </Tab.Screen>
 
-    <Tab.Screen
-      name="Settings"
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <FontAwesomeIcon icon={faCog} color={color} size={size} />
-        ),
-      }}
-    >
-      {() => (
-        <Settings
-          buttonLayout={buttonLayout}
-          setButtonLayout={setButtonLayout}
-          caregiverNumber={caregiverNumber}
-          setCaregiverNumber={setCaregiverNumber}
-        />
-      )}
-    </Tab.Screen>
-  </Tab.Navigator>
-);
+            <Tab.Screen
+            name={t('tabs.settings')}
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                <FontAwesomeIcon icon={faCog} color={color} size={size} />
+                ),
+            }}
+            >
+            {() => (
+                <Settings
+                buttonLayout={buttonLayout}
+                setButtonLayout={setButtonLayout}
+                caregiverNumber={caregiverNumber}
+                setCaregiverNumber={setCaregiverNumber}
+                />
+            )}
+            </Tab.Screen>
+        </Tab.Navigator>
+        )
+};
 
 const App = () => {
+  const { t } = useTranslation();
+  
   const [buttonLayout, setButtonLayout] = useState(2);
   const [coins, setCoins] = useState(0);
   const [caregiverNumber, setCaregiverNumber] = useState('');
@@ -313,7 +320,7 @@ const App = () => {
               />
             )}
           </Stack.Screen>
-          <Stack.Screen name="History" component={History} />
+          <Stack.Screen name={t("tabs.history")} component={History} />
         </Stack.Navigator>
       </NavigationContainer>
     </PhrasesProvider>

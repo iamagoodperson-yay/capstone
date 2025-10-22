@@ -1,0 +1,20 @@
+{
+    "language": "en",
+    "tabs": {
+        "home": "Home",
+        "phrases": "Phrases",
+        "challenge":  "Challenge",
+        "shop": "Shop",
+        "settings": "Settings",
+        "history": "History"
+    },
+    "screens": {
+        "settings": {
+            "title": "Settings",
+            "languageLabel": "Languages",
+            "caregiverNumberLabel": "Caregiver's Phone Number",
+            "enterNumberPlaceholder": "Enter phone number",
+            "saveButton": "Save"
+        }
+    }
+}
