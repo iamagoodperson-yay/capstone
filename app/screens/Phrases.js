@@ -16,7 +16,7 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import { initTTS, speak } from '../utils/tts';
+import { speak } from '../utils/tts';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import { useTranslation } from 'react-i18next';
 import Button from '../components/button';
@@ -71,16 +71,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   const [editParent, setEditParent] = useState(null);
   const [editModal, setEditModal] = useState(false);
   const [editImage, setEditImage] = useState(null);
-
-  // bookmarks now come from context
-  const langMap = {
-    en: 'en-US',
-    cn: 'zh-CN',
-  };
-
-  useEffect(() => {
-    initTTS();
-  }, []);
 
   useEffect(() => {
     // If multi-select is enabled, ensure diverge is disabled

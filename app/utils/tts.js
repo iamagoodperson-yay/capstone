@@ -1,11 +1,11 @@
 import Tts from 'react-native-tts';
 import { Platform } from 'react-native';
 
-// Track speaking state manually since isSpeaking() doesn't exist
 let isSpeaking = false;
+let preferredList = [];
 
 // Lightweight TTS helper with diagnostics.
-export async function initTTS() {
+export const initTTS = async () => {
     if (!Tts) return;
 
     try {
@@ -13,11 +13,6 @@ export async function initTTS() {
         const init = await Tts.getInitStatus();
         console.log('[TTS] init status:', init);
 
-        try {
-            Tts.setDefaultRate(0.5);
-        } catch (e) {
-            console.warn('[TTS] setDefaultRate failed', e);
-        }
         Tts.setDefaultPitch(1.0);
 
         // Enumerate voices and choose a suitable one if available.
@@ -26,12 +21,13 @@ export async function initTTS() {
         console.log('[TTS] available voices:', voices && voices.length);
 
         // Prefer an offline-ish English voice where possible, fallback to first en* voice, then default.
-        const preferred = (voices || []).find(v => typeof v === 'object' && /en[-_]us|en/.test(v.language) && !v.notInstalled) ||
-                          (voices || []).find(v => typeof v === 'object' && /en/.test(v.language));
+        preferredList = 
+            (voices || []).filter(v => typeof v === 'object' && /en[-_]us|en/.test(v.language) && !v.notInstalled) ||
+            (voices || []).filter(v => typeof v === 'object' && /en/.test(v.language));
 
-        if (preferred && preferred.id) {
-            await Tts.setDefaultVoice(preferred.id);
-            console.log('[TTS] selected voice:', preferred.id, preferred.language);
+        if (preferredList && preferredList[0] && preferredList[0].id) {
+            await Tts.setDefaultVoice(preferredList[0].id);
+            console.log('[TTS] selected voice:', preferredList[0].id, preferredList[0].language);
         } else {
             // Keep existing hard-coded fallback but only attempt if setDefaultVoice exists
             if (typeof Tts.setDefaultVoice === 'function') {
@@ -61,7 +57,7 @@ export async function initTTS() {
     }
 }
 
-export function speak(text) {
+export const speak = text => {
     if (!Tts || !text) return;
     try {
         // Check if TTS is currently speaking, if so, discard this request
@@ -82,3 +78,17 @@ export function speak(text) {
         console.log('[TTS] speak error', e);
     }
 }
+
+export const changeVoice = async (voiceNum) => {
+    if (!Tts || !preferredList[voiceNum]) return;
+
+    const voiceId = preferredList[voiceNum].id;
+
+    try {
+        await Tts.setDefaultVoice(voiceId);
+        console.log('[TTS] Changed voice to:', voiceId);
+        speak('This is voice ' + (voiceNum + 1));
+    } catch (e) {
+        console.log('[TTS] changeVoice error', e);
+    }
+};

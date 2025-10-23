@@ -14,6 +14,7 @@ import Settings from './screens/Settings';
 import History from './screens/History';
 import { PhrasesProvider } from './context/PhrasesContext';
 import { initImageStorage } from './utils/imageStorage';
+import { initTTS } from './utils/tts';
 import { useTranslation } from 'react-i18next';
 import * as i18n from './l10n/i18n';
 
@@ -259,6 +260,10 @@ const App = () => {
       },
     ],
   });
+
+  useEffect(() => {
+    initTTS();
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {

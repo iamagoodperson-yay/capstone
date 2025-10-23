@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Cell from '../components/cell';
-import Tts from 'react-native-tts';
+import { changeVoice } from '../utils/tts';
 
 function Settings({
   buttonLayout,
@@ -19,23 +19,10 @@ function Settings({
   setCaregiverNumber,
 }) {
   const { t, i18n } = useTranslation();
-
-  const [voice, setVoice] = useState(2);
-
-  const initTTS = () => {
-    Tts.getInitStatus()
-      .then(() => {
-        Tts.setDefaultLanguage('en-US');
-      })
-      .catch(err => console.error(err));
-  };
-
-  useEffect(() => {
-    initTTS();
-  }, []);
+  const [voice, setVoice] = useState(0);
 
   const renderFlag = (lang, imgSrc) => (
-    <TouchableOpacity onPress={() => flagClick(lang)}>
+    <TouchableOpacity onPress={() => i18n.changeLanguage(lang)}>
       <Image
         source={imgSrc}
         style={[
@@ -45,28 +32,6 @@ function Settings({
       />
     </TouchableOpacity>
   );
-
-  const flagClick = lang => {
-    i18n.changeLanguage(lang);
-    setDefaultLanguage(lang);
-  };
-
-  const changeVoice = number => {
-    if (number !== voice) {
-      if (number === 1) {
-        Tts.setDefaultRate(0.4);
-        Tts.setDefaultPitch(0.8);
-      } else if (number === 2) {
-        Tts.setDefaultRate(0.5);
-        Tts.setDefaultPitch(1.0);
-      } else {
-        Tts.setDefaultRate(0.55);
-        Tts.setDefaultPitch(1.1);
-      }
-    }
-    setVoice(number);
-    Tts.speak(`Voice ${number}`);
-  };
 
   return (
     <ScrollView
@@ -84,9 +49,7 @@ function Settings({
         </View>
         <View style={styles.flagcontainer}>
           {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
-          {renderFlag(
-            'id',
-            require('../../assets/settings/indonesianflag.png'),
+          {renderFlag('id', require('../../assets/settings/indonesianflag.png'),
           )}
         </View>
         <View style={{ height: 20 }} />
@@ -130,25 +93,34 @@ function Settings({
         <View style={styles.flagcontainer}>
           <TouchableOpacity
             style={[
-              voice === 1 ? styles.selectedvoicebutton : styles.voicebutton,
+              voice === 0 ? styles.selectedvoicebutton : styles.voicebutton,
             ]}
-            onPress={() => changeVoice(1)}
+            onPress={() => {
+                setVoice(0);
+                changeVoice(0);
+            }}
           >
             <Text style={styles.voicetext}>Voice 1</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              voice === 2 ? styles.selectedvoicebutton : styles.voicebutton,
+              voice === 1 ? styles.selectedvoicebutton : styles.voicebutton,
             ]}
-            onPress={() => changeVoice(2)}
+            onPress={() => {
+                setVoice(1);
+                changeVoice(1);
+            }}
           >
             <Text style={styles.voicetext}>Voice 2</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              voice === 3 ? styles.selectedvoicebutton : styles.voicebutton,
+              voice === 2 ? styles.selectedvoicebutton : styles.voicebutton,
             ]}
-            onPress={() => changeVoice(3)}
+            onPress={() => {
+                setVoice(2);
+                changeVoice(2);
+            }}
           >
             <Text style={styles.voicetext}>Voice 3</Text>
           </TouchableOpacity>
@@ -269,11 +241,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#000000',
     marginBottom: 20,
-  },
-  flagcontainer: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 10,
   },
   flagcontainer: {
     flexDirection: 'row',
