@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Cell from '../components/cell';
+import Tts from 'react-native-tts';
 
 function Settings({
   buttonLayout,
@@ -17,15 +18,55 @@ function Settings({
   caregiverNumber,
   setCaregiverNumber,
 }) {
-  const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation();
+
+  const [voice, setVoice] = useState(2);
+
+  const initTTS = () => {
+    Tts.getInitStatus()
+      .then(() => {
+        Tts.setDefaultLanguage('en-US');
+      })
+      .catch(err => console.error(err));
+  };
+
+  useEffect(() => {
+    initTTS();
+  }, []);
+
   const renderFlag = (lang, imgSrc) => (
-    <TouchableOpacity onPress={() => i18n.changeLanguage(lang)}>
+    <TouchableOpacity onPress={() => flagClick(lang)}>
       <Image
         source={imgSrc}
-        style={[styles.flag, i18n.language === lang ? styles.selectedFlag : null]}
+        style={[
+          styles.flag,
+          i18n.language === lang ? styles.selectedFlag : null,
+        ]}
       />
     </TouchableOpacity>
   );
+
+  const flagClick = lang => {
+    i18n.changeLanguage(lang);
+    setDefaultLanguage(lang);
+  };
+
+  const changeVoice = number => {
+    if (number !== voice) {
+      if (number === 1) {
+        Tts.setDefaultRate(0.4);
+        Tts.setDefaultPitch(0.8);
+      } else if (number === 2) {
+        Tts.setDefaultRate(0.5);
+        Tts.setDefaultPitch(1.0);
+      } else {
+        Tts.setDefaultRate(0.55);
+        Tts.setDefaultPitch(1.1);
+      }
+    }
+    setVoice(number);
+    Tts.speak(`Voice ${number}`);
+  };
 
   return (
     <ScrollView
@@ -34,29 +75,22 @@ function Settings({
       automaticallyAdjustKeyboardInsets={true}
     >
       <View style={styles.container}>
-        <Text style={styles.subtext}>{t("screens.settings.languageTitle")}</Text>
+        <Text style={styles.subtext}>
+          {t('screens.settings.languageTitle')}
+        </Text>
         <View style={styles.flagcontainer}>
-          {renderFlag(
-            'en',
-            require('../../assets/settings/englishflag.png'),
-          )}
-          {renderFlag(
-            'cn',
-            require('../../assets/settings/chineseflag.png'),
-          )}
+          {renderFlag('en', require('../../assets/settings/englishflag.png'))}
+          {renderFlag('cn', require('../../assets/settings/chineseflag.png'))}
         </View>
         <View style={styles.flagcontainer}>
-          {renderFlag(
-            'my',
-            require('../../assets/settings/malaysianflag.png'),
-          )}
+          {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
           {renderFlag(
             'id',
             require('../../assets/settings/indonesianflag.png'),
           )}
         </View>
-        <View style={{height: 20}}/>
-        <Text style={styles.subtext}>{t("screens.settings.buttonTitle")}</Text>
+        <View style={{ height: 20 }} />
+        <Text style={styles.subtext}>{t('screens.settings.buttonTitle')}</Text>
         <Cell
           content={{
             type: buttonLayout == 1 ? 'selected' : 'normal_button',
@@ -69,7 +103,7 @@ function Settings({
           content={{
             type: buttonLayout == 2 ? 'selected' : 'normal_button',
             image: require('../../assets/phrases/food.png'),
-            text: t("screens.settings.buttonFood"),
+            text: t('screens.settings.buttonFood'),
           }}
           buttonlayout={2}
           onPress={() => setButtonLayout(2)}
@@ -77,22 +111,50 @@ function Settings({
         <Cell
           content={{
             type: buttonLayout == 3 ? 'selected' : 'normal_button',
-            text: t("screens.settings.buttonFood"),
+            text: t('screens.settings.buttonFood'),
           }}
           buttonlayout={3}
           onPress={() => setButtonLayout(3)}
         />
       </View>
       <View style={styles.container}>
-        <Text style={styles.subheader}>{t("screens.settings.caregiverNumberTitle")}</Text>
+        <Text style={styles.subheader}>
+          {t('screens.settings.caregiverNumberTitle')}
+        </Text>
         <TextInput
           value={caregiverNumber}
           onChangeText={setCaregiverNumber}
           keyboardType="phone-pad"
           style={styles.text_input}
         />
+        <View style={styles.flagcontainer}>
+          <TouchableOpacity
+            style={[
+              voice === 1 ? styles.selectedvoicebutton : styles.voicebutton,
+            ]}
+            onPress={() => changeVoice(1)}
+          >
+            <Text style={styles.voicetext}>Voice 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              voice === 2 ? styles.selectedvoicebutton : styles.voicebutton,
+            ]}
+            onPress={() => changeVoice(2)}
+          >
+            <Text style={styles.voicetext}>Voice 2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              voice === 3 ? styles.selectedvoicebutton : styles.voicebutton,
+            ]}
+            onPress={() => changeVoice(3)}
+          >
+            <Text style={styles.voicetext}>Voice 3</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-        {/* 
+      {/* 
           <View style={styles.container}>
               <Text style={styles.subtext}> User's Manual</Text>
               <Text style={styles.subheader}>Phrases</Text>
@@ -185,7 +247,6 @@ function Settings({
                   style={styles.main_image}
               />
           </View> */}
-
     </ScrollView>
   );
 }
@@ -208,6 +269,11 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#000000',
     marginBottom: 20,
+  },
+  flagcontainer: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 10,
   },
   flagcontainer: {
     flexDirection: 'row',
@@ -253,6 +319,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
+  },
+  voicebutton: {
+    width: '25%',
+    padding: 20,
+    backgroundColor: '#d9d9d9',
+    marginVertical: 40,
+    borderColor: '#d9d9d9',
+    borderRadius: 15,
+    borderWidth: 3,
+  },
+  selectedvoicebutton: {
+    width: '25%',
+    padding: 20,
+    backgroundColor: '#d9d9d9',
+    marginVertical: 40,
+    borderColor: '#4CAF50',
+    borderRadius: 15,
+    borderWidth: 3,
+  },
+  voicetext: {
+    textAlign: 'center',
   },
 });
 
