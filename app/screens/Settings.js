@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Tts } from '../utils/tts';
 import {
   View,
   Text,
@@ -22,7 +23,7 @@ function Settings({
   const [voice, setVoice] = useState(0);
 
   const renderFlag = (lang, imgSrc) => (
-    <TouchableOpacity onPress={() => i18n.changeLanguage(lang)}>
+    <TouchableOpacity onPress={() => langSwitch(lang)}>
       <Image
         source={imgSrc}
         style={[
@@ -32,6 +33,32 @@ function Settings({
       />
     </TouchableOpacity>
   );
+
+  const langSwitch = async lang => {
+    await i18n.changeLanguage(lang);
+    Tts.stop();
+
+    const voices = await Tts.voices();
+    let voiceId;
+
+    if (lang === 'en') {
+      voiceId = voices.find(v => v.language.startsWith('en'))?.id;
+    } else if (lang === 'cn') {
+      voiceId = voices.find(v => v.language.startsWith('zh'))?.id;
+    }
+
+    if (voiceId) {
+      await Tts.setDefaultVoice(voiceId);
+    } else {
+      console.warn('No TTS voice available for', lang);
+    }
+
+    try {
+      await Tts.setDefaultLanguage(lang === 'cn' ? 'zh-CN' : 'en-GB');
+    } catch (e) {
+      console.warn('TTS language not available', e);
+    }
+  };
 
   return (
     <ScrollView
@@ -49,7 +76,9 @@ function Settings({
         </View>
         <View style={styles.flagcontainer}>
           {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
-          {renderFlag('id', require('../../assets/settings/indonesianflag.png'),
+          {renderFlag(
+            'id',
+            require('../../assets/settings/indonesianflag.png'),
           )}
         </View>
         <View style={{ height: 20 }} />
@@ -96,8 +125,8 @@ function Settings({
               voice === 0 ? styles.selectedvoicebutton : styles.voicebutton,
             ]}
             onPress={() => {
-                setVoice(0);
-                changeVoice(0);
+              setVoice(0);
+              changeVoice(0);
             }}
           >
             <Text style={styles.voicetext}>Voice 1</Text>
@@ -107,8 +136,8 @@ function Settings({
               voice === 1 ? styles.selectedvoicebutton : styles.voicebutton,
             ]}
             onPress={() => {
-                setVoice(1);
-                changeVoice(1);
+              setVoice(1);
+              changeVoice(1);
             }}
           >
             <Text style={styles.voicetext}>Voice 2</Text>
@@ -118,8 +147,8 @@ function Settings({
               voice === 2 ? styles.selectedvoicebutton : styles.voicebutton,
             ]}
             onPress={() => {
-                setVoice(2);
-                changeVoice(2);
+              setVoice(2);
+              changeVoice(2);
             }}
           >
             <Text style={styles.voicetext}>Voice 3</Text>

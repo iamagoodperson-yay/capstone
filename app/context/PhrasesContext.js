@@ -192,7 +192,51 @@ export const PhrasesProvider = ({ children }) => {
   const { t } = useTranslation();
   const currentLanguage = i18n.language;
 
-  const [processesState, setProcessesState] = useState(processes);
+  useEffect(() => {
+    const translateTasks = processesState.map(task => ({
+      ...task,
+      translatedSpeech: task.speech
+        ? i18n.exists(`screens.phrases.${task.speech}`)
+          ? i18n.t(`screens.phrases.${task.speech}`)
+          : task.speech
+        : '',
+      choices: task.choices?.map(c => ({
+        ...c,
+        translatedText: i18n.exists(`screens.phrases.${c.text}`)
+          ? i18n.t(`screens.phrases.${c.text}`)
+          : c.text,
+      })),
+    }));
+    setProcessesState(translateTasks);
+  }, [i18n.language]);
+
+  const getTranslatedText = text => {
+    if (!text) return '';
+    const key = `screens.phrases.${text}`;
+    return i18n.exists(key) ? i18n.t(key) : text;
+  };
+
+  const translateProcess = p => ({
+    ...p,
+    text: i18n.exists(`screens.phrases.${p.text}`)
+      ? i18n.t(`screens.phrases.${p.text}`)
+      : p.text,
+    speech: p.speech
+      ? i18n.exists(`screens.phrases.${p.speech}`)
+        ? i18n.t(`screens.phrases.${p.speech}`)
+        : p.speech
+      : '',
+    choices: p.choices?.map(c => ({
+      ...c,
+      text: i18n.exists(`screens.phrases.${c.text}`)
+        ? i18n.t(`screens.phrases.${c.text}`)
+        : c.text,
+    })),
+  });
+
+  const [processesState, setProcessesState] = useState(
+    processes.map(translateProcess),
+  );
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
 
@@ -447,16 +491,15 @@ export const PhrasesProvider = ({ children }) => {
     const currentTask = getCurrentTask();
     if (!currentTask) return '';
 
-    const base = currentTask.speech ? currentTask.speech.trim() : '';
+    const base = currentTask.translatedSpeech || '';
     if (!selected.length) return base ? base + ' ...' : '...';
 
     const selections = currentTask.multiSelect
-      ? selected.map(s => s.text).join(', ')
-      : t(`screens.phrases.${selected[0].text}`);
+      ? selected.map(s => s.translatedText || s.text).join(', ')
+      : selected[0].translatedText || selected[0].text;
 
     return base ? `${base} ${selections}` : selections;
   };
-
   const selectPhrase = item => {
     const currentTask = getCurrentTask();
     if (!currentTask) return;
