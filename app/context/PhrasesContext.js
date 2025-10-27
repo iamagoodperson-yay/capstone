@@ -202,40 +202,30 @@ export const PhrasesProvider = ({ children }) => {
         : '',
       choices: task.choices?.map(c => ({
         ...c,
-        translatedText: i18n.exists(`screens.phrases.${c.text}`)
+        text: c.text, // raw text
+        transText: i18n.exists(`screens.phrases.${c.text}`)
           ? i18n.t(`screens.phrases.${c.text}`)
           : c.text,
       })),
     }));
     setProcessesState(translateTasks);
   }, [i18n.language]);
-
   const getTranslatedText = text => {
     if (!text) return '';
     const key = `screens.phrases.${text}`;
     return i18n.exists(key) ? i18n.t(key) : text;
   };
 
-  const translateProcess = p => ({
-    ...p,
-    text: i18n.exists(`screens.phrases.${p.text}`)
-      ? i18n.t(`screens.phrases.${p.text}`)
-      : p.text,
-    speech: p.speech
-      ? i18n.exists(`screens.phrases.${p.speech}`)
-        ? i18n.t(`screens.phrases.${p.speech}`)
-        : p.speech
-      : '',
-    choices: p.choices?.map(c => ({
-      ...c,
-      text: i18n.exists(`screens.phrases.${c.text}`)
-        ? i18n.t(`screens.phrases.${c.text}`)
-        : c.text,
+  const translateProcess = process => ({
+    ...process,
+    choices: process.choices?.map(choice => ({
+      ...choice,
+      transText: choice.transText,
     })),
   });
 
   const [processesState, setProcessesState] = useState(
-    processes.map(translateProcess),
+    Array.isArray(processes) ? processes.map(translateProcess) : [],
   );
   const [inProcess, setInProcess] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -341,9 +331,7 @@ export const PhrasesProvider = ({ children }) => {
     return current;
   };
   useEffect(() => {
-    setTranslatedStack(
-      navigationStack.map(text => t(`screens.phrases.${text}`)),
-    );
+    setTranslatedStack(navigationStack.map(text => text));
   }, [navigationStack, i18n.language]);
   const resetNav = () => {
     setNavigationStack([]);
@@ -491,12 +479,15 @@ export const PhrasesProvider = ({ children }) => {
     const currentTask = getCurrentTask();
     if (!currentTask) return '';
 
-    const base = currentTask.translatedSpeech || '';
+    const base =
+      t(`screens.phrases.${currentTask.speech}`, {
+        defaultValue: currentTask.speech,
+      }) || ''; // English speech
     if (!selected.length) return base ? base + ' ...' : '...';
 
     const selections = currentTask.multiSelect
-      ? selected.map(s => s.translatedText || s.text).join(', ')
-      : selected[0].translatedText || selected[0].text;
+      ? selected.map(s => s.rawText || s.text).join(', ')
+      : selected[0].rawText || selected[0].text;
 
     return base ? `${base} ${selections}` : selections;
   };
@@ -504,7 +495,6 @@ export const PhrasesProvider = ({ children }) => {
     const currentTask = getCurrentTask();
     if (!currentTask) return;
 
-    // increment usage count
     item.usageCount += 1;
 
     let updatedSelected;
@@ -514,17 +504,18 @@ export const PhrasesProvider = ({ children }) => {
     } else {
       updatedSelected = [item];
     }
-
     setSelected(updatedSelected);
 
-    const currentTaskSpeech = currentTask.speech || '';
-    const itemText = currentTask.multiSelect
+    // SPEAK using raw English text
+    const base =
+      t(`screens.phrases.${currentTask.speech}`, {
+        defaultValue: currentTask.speech,
+      }) || '';
+    const selections = currentTask.multiSelect
       ? updatedSelected.map(s => s.text).join(', ')
-      : item.text;
-    const fullSpeech = currentTaskSpeech
-      ? `${currentTaskSpeech} ${itemText}`
-      : itemText;
-    speak(fullSpeech);
+      : updatedSelected[0].text;
+
+    speak(base ? `${base} ${selections}` : selections);
 
     setProcessesState([...processesState]);
   };
@@ -716,10 +707,7 @@ export const PhrasesProvider = ({ children }) => {
     }
   };
 
-  const getBreadcrumbs = () => [
-    t('screens.phrases.Categories'),
-    ...navigationStack,
-  ];
+  const getBreadcrumbs = () => ['Categories', ...navigationStack];
 
   const deleteGroup = index =>
     setAllSelections(prev => prev.filter((_, i) => i !== index));
