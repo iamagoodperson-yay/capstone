@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Tts } from '../utils/tts';
 import {
   View,
@@ -76,10 +76,7 @@ function Settings({
         </View>
         <View style={styles.flagcontainer}>
           {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
-          {renderFlag(
-            'id',
-            require('../../assets/settings/indonesianflag.png'),
-          )}
+          {renderFlag('id', require('../../assets/settings/indonesianflag.png'))}
         </View>
         <View style={{ height: 20 }} />
         <Text style={styles.subtext}>{t('screens.settings.buttonTitle')}</Text>

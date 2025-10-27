@@ -1,5 +1,4 @@
 import Tts from 'react-native-tts';
-import { Platform } from 'react-native';
 
 let isSpeaking = false;
 let preferredList = [];
@@ -9,7 +8,6 @@ export const initTTS = async () => {
     if (!Tts) return;
 
     try {
-        console.log('[TTS] Platform:', Platform.OS);
         const init = await Tts.getInitStatus();
         console.log('[TTS] init status:', init);
 
@@ -64,13 +62,6 @@ export const speak = text => {
         if (isSpeaking) {
             console.log('[TTS] Already speaking, discarding request:', text);
             return;
-        }
-
-        // On some iOS react-native-tts builds calling stop() with no args
-        // causes a native bridge error (JS undefined -> ObjC BOOL). Avoid
-        // calling stop() on iOS to prevent the error. On Android it's safe.
-        if (Platform.OS !== 'ios' && typeof Tts.stop === 'function') {
-            try { Tts.stop(); } catch (e) { console.warn('[TTS] stop() failed', e); }
         }
 
         Tts.speak(text);
