@@ -85,7 +85,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       selectPhrase(item);
     } else {
       if (item.text === 'Emergency') Linking.openURL(`tel:${caregiverNumber}`);
-      else if (item.type === 'phrase') speak(t(`screens.phrases.${item.text}`));
+      else if (item.type === 'phrase') speak(item.text);
       else {
         navigateToChoice(item);
       }
@@ -325,7 +325,10 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       <Cell
         key={index.toString()}
         content={{
-          text: t(`screens.phrases.${item.text}`),
+          transText: t(`screens.phrases.${item.text}`, {
+            defaultValue: item.text,
+          }),
+          text: item.text,
           subtitle: searchQuery ? item.path : undefined,
           image: item.image,
           type: item.type,
@@ -337,6 +340,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           Alert.alert(
             `${t(`screens.phrases.Edit or Bookmark`)}"${t(
               `screens.phrases.${item.text}`,
+              { defaultValue: item.text },
             )}"?`,
             '',
             [
@@ -392,12 +396,15 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         {/* Top speech cell */}
         <Cell
           content={{
+            transText: t(`screens.phrases.${getSpeechText()}`, {
+              defaultValue: getSpeechText(),
+            }),
             text: getSpeechText(),
             image: require('../../assets/phrases/speaker.png'),
             type: 'speech',
           }}
           buttonlayout={4}
-          onPress={() => speak(t(`screens.phrases.${getSpeechText()}`))}
+          onPress={() => speak(getSpeechText(true))}
           onLongPress={() => {
             Alert.alert(`Edit current task "${current.text}"?`, '', [
               { text: 'Cancel', style: 'cancel' },
@@ -429,7 +436,10 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           <Cell
             key={index.toString()}
             content={{
-              text: t(`screens.phrases.${item.text}`),
+              text: item.text,
+              transText: t(`screens.phrases.${item.text}`, {
+                defaultValue: item.text,
+              }),
               subtitle: searchQuery ? item.path : undefined,
               image: item.image,
               type: item.type,
@@ -473,7 +483,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
         {/* Next button */}
         <Cell
-          content={{ text: 'Next', type: 'next' }}
+          content={{ text: 'Next', transText: 'Next', type: 'next' }}
           buttonlayout={3}
           height={0.1}
           onPress={() => {

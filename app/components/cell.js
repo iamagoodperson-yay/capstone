@@ -33,7 +33,7 @@ const Cell = ({
             )}
             <View style={styles.textContainer}>
               <Text style={[styles.text, { fontSize: 28 }]}>
-                {content.text}
+                {content.transText || content.text}
               </Text>
               {content.subtitle && (
                 <Text style={styles.subtitle}>{content.subtitle}</Text>
@@ -43,14 +43,21 @@ const Cell = ({
         );
       case 3:
         return (
-          <Text style={[styles.text, content.type === 'next' ? styles.next_text : null]}>{content.text}</Text>
+          <Text
+            style={[
+              styles.text,
+              content.type === 'next' ? styles.next_text : null,
+            ]}
+          >
+            {content.transText || content.text}
+          </Text>
         );
       case 4:
         return (
           <View style={styles.horizontalContainer}>
             <View style={styles.textContainer}>
               <Text style={[styles.text, { fontSize: 28 }]}>
-                {content.text}
+                {content.transText || content.text}
               </Text>
             </View>
             {content.image && (
