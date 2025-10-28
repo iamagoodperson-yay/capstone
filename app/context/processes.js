@@ -30,17 +30,17 @@ const processes = [
     choices: [
       {
         text: 'Chicken',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/chicken.png'),
         usageCount: 0,
       },
       {
         text: 'Rice',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/rice.png'),
         usageCount: 0,
       },
       {
         text: 'Egg',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/egg.png'),
         usageCount: 0,
       },
     ],
@@ -55,7 +55,7 @@ const processes = [
     choices: [
       {
         text: 'Prawn',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/prawn.png'),
         usageCount: 0,
       },
       {
@@ -65,7 +65,7 @@ const processes = [
       },
       {
         text: 'Egg',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/egg.png'),
         usageCount: 0,
       },
     ],
@@ -80,12 +80,12 @@ const processes = [
     choices: [
       {
         text: 'Spicy',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/spicy.png'),
         usageCount: 0,
       },
       {
         text: 'Non-Spicy',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/avatar/none.png'),
         usageCount: 0,
       },
     ],
@@ -140,17 +140,17 @@ const processes = [
     choices: [
       {
         text: 'Fried Rice',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/fried_rice.png'),
         usageCount: 0,
       },
       {
         text: 'Ayam Penyet',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/ayam_goreng.png'),
         usageCount: 0,
       },
       {
         text: 'Dosa',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/dosa.png'),
         usageCount: 0,
       },
       {
@@ -170,17 +170,17 @@ const processes = [
     choices: [
       {
         text: 'Tea',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/tea.png'),
         usageCount: 0,
       },
       {
         text: 'Coffee',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/coffee.png'),
         usageCount: 0,
       },
       {
         text: 'Juice',
-        image: require('../../assets/phrases/food.png'),
+        image: require('../../assets/phrases/mango.png'),
         usageCount: 0,
       },
     ],
@@ -194,20 +194,20 @@ const processes = [
     next: 'end',
     choices: [
       {
-        text: 'Eunos MRT (Closest to MINDS)',
+        text: 'Eunos MRT (Me Too Club)',
         image: require('../../assets/phrases/eunos.png'),
         usageCount: 0,
       },
       {
-        text: 'Home MRT (put MRT station closest to client\'s home)',
+        text: 'Home MRT (put in)',
         image: require('../../assets/phrases/others.png'),
         usageCount: 0,
       },
     ],
   },
   {
-    id: 'favourite_locations',
-    text: 'Favourite Locations',
+    id: 'favourite_places',
+    text: 'Favourite Places',
     speech: 'How to go to',
     multiSelect: false,
     diverge: false,
@@ -219,17 +219,32 @@ const processes = [
         usageCount: 0,
       },
       {
-        text: 'MINDS (11 Jalan Ubi Kembangan Chai Chee Community Hub)',
+        text: 'Me Too Club (11 Jalan Ubi Kembangan Chai Chee Community Hub)',
         image: require('../../assets/phrases/minds.png'),
         usageCount: 0,
       },
     ],
   },
   {
-    id: 'ask_for_directions',
-    text: 'Ask for Directions',
+    id: 'public_transport',
+    text: 'Public Transport',
     speech: '',
-  }
+    multiSelect: false,
+    diverge: false,
+    next: 'end',
+    choices: [
+      {
+        text: 'Bus',
+        image: require('../../assets/phrases/others.png'),
+        usageCount: 0,
+      },
+      {
+        text: 'MRT',
+        image: require('../../assets/phrases/others.png'),
+        usageCount: 0,
+      },
+    ],
+  },
 ];
 
 export default processes;

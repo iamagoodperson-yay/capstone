@@ -2,7 +2,7 @@ const categories = {
   text: 'Categories',
   choices: [
     {
-      text: 'Food',
+      text: 'Food & Drinks',
       image: require('../../assets/phrases/food.png'),
       usageCount: 0,
       choices: [
@@ -14,7 +14,7 @@ const categories = {
         },
         {
           text: 'Restaurant',
-          image: require('../../assets/phrases/food.png'),
+          image: require('../../assets/phrases/restaurant.png'),
           id: 'restaurant',
           usageCount: 0,
         },
@@ -32,9 +32,9 @@ const categories = {
             usageCount: 0,
         },
         {
-            text: 'Favourite Locations',
+            text: 'Favourite Places',
             image: require('../../assets/phrases/directions.png'),
-            id: 'favourite_locations',
+            id: 'favourite_places',
             usageCount: 0,
         },
         {

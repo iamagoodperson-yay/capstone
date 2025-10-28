@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   TextInput,
   Switch,
@@ -512,7 +511,9 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           ) : (
             <View style={styles.spacer} />
           )}
-          <Text style={styles.header}>{current.text}</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.header}>{current.text}</Text>
+          </View>
           {daily ? (
             <View style={styles.spacer} />
           ) : (
@@ -841,9 +842,11 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     width: '100%',
+    paddingHorizontal: 10,
+    flexWrap: 'wrap',
   },
   backBtn: {
     backgroundColor: '#d9d9d9',
@@ -852,7 +855,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
+    marginVertical: 10,
   },
   backText: {
     fontSize: 30,
@@ -864,7 +867,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
+    marginVertical: 10,
   },
   addText: {
     color: '#fff',
@@ -872,11 +875,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   spacer: {
-    width: 70,
+    width: 50,
+    height: 50,
+    marginVertical: 10,
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    minWidth: '50%', // Ensures it takes up space to trigger wrapping
   },
   header: {
     fontSize: 40,
     fontWeight: '500',
+    textAlign: 'center',
   },
   breadcrumbs: {
     fontSize: 20,
