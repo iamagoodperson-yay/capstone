@@ -4,7 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHome, faComment, faCalendar, faShoppingCart, faCog } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHome,
+  faComment,
+  faCalendar,
+  faShoppingCart,
+  faCog,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Home from './screens/Home';
 import Phrases from './screens/Phrases';
@@ -33,108 +39,111 @@ const TabScreens = ({
   avatarItems,
   setAvatarItems,
 }) => {
-    const { t } = useTranslation();
-    return (
-        <Tab.Navigator
-            screenOptions={{
-            headerTitleStyle: { fontSize: 24, fontWeight: 'bold' },
-            headerTitleAlign: 'center',
-            tabBarLabelStyle: { fontSize: 14 },
-            }}
-        >
-            <Tab.Screen
-            name={t("tabs.home")}
-            options={{
-                tabBarIcon: ({ color, size }) => (
-                <FontAwesomeIcon icon={faHome} color={color} size={size} />
-                ),
-            }}
-            >
-            {() => (
-                <Home
-                avatarSelection={avatarSelection}
-                avatarItems={avatarItems}
-                />
-            )}
-            </Tab.Screen>
+  const { t } = useTranslation();
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerTitleStyle: { fontSize: 24, fontWeight: 'bold' },
+        headerTitleAlign: 'center',
+        tabBarLabelStyle: { fontSize: 14 },
+      }}
+    >
+      <Tab.Screen
+        name={t('tabs.home')}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon icon={faHome} color={color} size={size} />
+          ),
+        }}
+      >
+        {() => (
+          <Home
+            avatarSelection={avatarSelection}
+            avatarItems={avatarItems}
+            caregiverNumber={caregiverNumber}
+            coins={coins}
+            setCoins={setCoins}
+          />
+        )}
+      </Tab.Screen>
 
-            <Tab.Screen
-            name={t("tabs.phrases")}
-            options={{
-                tabBarIcon: ({ color, size }) => (
-                <FontAwesomeIcon icon={faComment} color={color} size={size} />
-                ),
-            }}
-            >
-            {() => (
-                <Phrases
-                buttonLayout={buttonLayout}
-                caregiverNumber={caregiverNumber}
-                />
-            )}
-            </Tab.Screen>
+      <Tab.Screen
+        name={t('tabs.phrases')}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon icon={faComment} color={color} size={size} />
+          ),
+        }}
+      >
+        {() => (
+          <Phrases
+            buttonLayout={buttonLayout}
+            caregiverNumber={caregiverNumber}
+          />
+        )}
+      </Tab.Screen>
 
-            <Tab.Screen
-            name={t("tabs.challenge")}
-            options={{
-                tabBarIcon: ({ color, size }) => (
-                <FontAwesomeIcon icon={faCalendar} color={color} size={size} />
-                ),
-            }}
-            >
-            {() => (
-                <Daily
-                buttonLayout={buttonLayout}
-                setCoins={setCoins}
-                coins={coins}
-                />
-            )}
-            </Tab.Screen>
+      <Tab.Screen
+        name={t('tabs.challenge')}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon icon={faCalendar} color={color} size={size} />
+          ),
+        }}
+      >
+        {() => (
+          <Daily
+            buttonLayout={buttonLayout}
+            setCoins={setCoins}
+            coins={coins}
+          />
+        )}
+      </Tab.Screen>
 
-            <Tab.Screen
-            name={t('tabs.shop')}
-            options={{
-                tabBarIcon: ({ color, size }) => (
-                <FontAwesomeIcon icon={faShoppingCart} color={color} size={size} />
-                ),
-            }}
-            >
-            {() => (
-                <Shop
-                coins={coins}
-                setCoins={setCoins}
-                avatarSelection={avatarSelection}
-                setAvatarSelection={setAvatarSelection}
-                avatarItems={avatarItems}
-                setAvatarItems={setAvatarItems}
-                />
-            )}
-            </Tab.Screen>
+      <Tab.Screen
+        name={t('tabs.shop')}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon icon={faShoppingCart} color={color} size={size} />
+          ),
+        }}
+      >
+        {() => (
+          <Shop
+            coins={coins}
+            setCoins={setCoins}
+            avatarSelection={avatarSelection}
+            setAvatarSelection={setAvatarSelection}
+            avatarItems={avatarItems}
+            setAvatarItems={setAvatarItems}
+          />
+        )}
+      </Tab.Screen>
 
-            <Tab.Screen
-            name={t('tabs.settings')}
-            options={{
-                tabBarIcon: ({ color, size }) => (
-                <FontAwesomeIcon icon={faCog} color={color} size={size} />
-                ),
-            }}
-            >
-            {() => (
-                <Settings
-                buttonLayout={buttonLayout}
-                setButtonLayout={setButtonLayout}
-                caregiverNumber={caregiverNumber}
-                setCaregiverNumber={setCaregiverNumber}
-                />
-            )}
-            </Tab.Screen>
-        </Tab.Navigator>
-        )
+      <Tab.Screen
+        name={t('tabs.settings')}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon icon={faCog} color={color} size={size} />
+          ),
+        }}
+      >
+        {() => (
+          <Settings
+            buttonLayout={buttonLayout}
+            setButtonLayout={setButtonLayout}
+            caregiverNumber={caregiverNumber}
+            setCaregiverNumber={setCaregiverNumber}
+          />
+        )}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
 };
 
 const App = () => {
   const { t } = useTranslation();
-  
+
   const [buttonLayout, setButtonLayout] = useState(2);
   const [coins, setCoins] = useState(0);
   const [caregiverNumber, setCaregiverNumber] = useState('');
@@ -270,18 +279,21 @@ const App = () => {
       try {
         // Initialize image storage directory
         await initImageStorage();
-        
+
         const storedAvatar = await AsyncStorage.getItem('avatarSelection');
         const storedItems = await AsyncStorage.getItem('avatarItems');
         const storedCoins = await AsyncStorage.getItem('coins');
-        const storedCaregiverNumber = await AsyncStorage.getItem('caregiverNumber');
+        const storedCaregiverNumber = await AsyncStorage.getItem(
+          'caregiverNumber',
+        );
         const storedButtonLayout = await AsyncStorage.getItem('buttonLayout');
 
         if (storedAvatar) setAvatarSelection(JSON.parse(storedAvatar));
         if (storedItems) setAvatarItems(JSON.parse(storedItems));
         if (storedCoins) setCoins(parseInt(storedCoins, 10));
         if (storedCaregiverNumber) setCaregiverNumber(storedCaregiverNumber);
-        if (storedButtonLayout) setButtonLayout(parseInt(storedButtonLayout, 10));
+        if (storedButtonLayout)
+          setButtonLayout(parseInt(storedButtonLayout, 10));
       } catch (e) {
         console.warn('Failed to load data', e);
       }
@@ -289,11 +301,13 @@ const App = () => {
     loadData();
   }, []);
 
-
   useEffect(() => {
     const saveData = async () => {
       try {
-        await AsyncStorage.setItem('avatarSelection', JSON.stringify(avatarSelection));
+        await AsyncStorage.setItem(
+          'avatarSelection',
+          JSON.stringify(avatarSelection),
+        );
         await AsyncStorage.setItem('avatarItems', JSON.stringify(avatarItems));
         await AsyncStorage.setItem('coins', coins.toString());
         await AsyncStorage.setItem('caregiverNumber', caregiverNumber);
@@ -325,7 +339,7 @@ const App = () => {
               />
             )}
           </Stack.Screen>
-          <Stack.Screen name={t("tabs.history")} component={History} />
+          <Stack.Screen name={t('tabs.history')} component={History} />
         </Stack.Navigator>
       </NavigationContainer>
     </PhrasesProvider>

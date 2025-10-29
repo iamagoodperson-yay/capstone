@@ -14,7 +14,8 @@
             "noBookmarks": "No bookmarked items yet.",
             "seeMore": "See More...",
             "recentHistory": "View Recent History",
-            "daily": "Solve Daily Challenge"
+            "daily": "Solve Daily Challenge",
+            "scanQR":"Scan QR Code"
         },
         "phrases":{
             "Categories":"Categories",
