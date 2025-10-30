@@ -235,12 +235,42 @@ const processes = [
     choices: [
       {
         text: 'Bus',
-        image: require('../../assets/phrases/others.png'),
+        image: require('../../assets/phrases/bus.png'),
         usageCount: 0,
       },
       {
         text: 'MRT',
-        image: require('../../assets/phrases/others.png'),
+        image: require('../../assets/phrases/mrt.png'),
+        usageCount: 0,
+      },
+    ],
+  },
+  {
+    id: 'social',
+    text: 'Social',
+    speech: '',
+    multiSelect: true,
+    diverge: false,
+    next: 'end',
+    choices: [
+      {
+        text: 'Hello',
+        image: require('../../assets/phrases/hello.png'),
+        usageCount: 0,
+      },
+      {
+        text: 'How are you',
+        image: require('../../assets/phrases/howareyou.png'),
+        usageCount: 0,
+      },
+      {
+        text: 'Thank you',
+        image: require('../../assets/phrases/thankyou.png'),
+        usageCount: 0,
+      },
+      {
+        text: 'Please',
+        image: require('../../assets/phrases/thankyou.png'),
         usageCount: 0,
       },
     ],

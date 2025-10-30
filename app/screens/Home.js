@@ -40,12 +40,9 @@ const Home = ({
   const bookmarked = getBookmarkedItems();
   const [showScanner, setShowScanner] = useState(false);
 
-  // robust scan handler: support different event shapes (nativeEvent OR string)
   const handleScan = event => {
-    // hide scanner immediately
     setShowScanner(false);
 
-    // extract data defensively
     let data = null;
     if (!event) {
       data = null;
@@ -72,6 +69,8 @@ const Home = ({
     }
   };
 
+  //funciton example: run/give/2/Person
+
   const runFunction = (category, numberOfCoins, giver) => {
     const numberOfCoinsInt = parseInt(numberOfCoins, 10);
     if (category === 'give' && numberOfCoinsInt > 0) {
@@ -85,7 +84,6 @@ const Home = ({
   if (showScanner) {
     return (
       <View style={{ flex: 1 }}>
-        {/* Camera is the actual component exported by camera-kit v16 */}
         <Camera
           style={{ flex: 1 }}
           cameraType={CameraType.Back}

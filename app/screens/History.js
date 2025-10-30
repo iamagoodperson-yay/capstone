@@ -29,41 +29,47 @@ const History = () => {
   };
 
   const handleDeleteGroup = index => {
-    Alert.alert(t('screens.history.delTitle'), t('screens.history.delMessage'), [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => deleteGroup(index),
-      },
-    ]);
+    Alert.alert(
+      t('screens.history.delTitle'),
+      t('screens.history.delMessage'),
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteGroup(index),
+        },
+      ],
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-        {/* Header with back button */}
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Text style={styles.backText}>{'<'} {t('screens.history.backButton')}</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t('screens.history.title')}</Text>
-        </View>
+      {/* Header with back button */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>
+            {'<'} {t('screens.history.backButton')}
+          </Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{t('screens.history.title')}</Text>
+      </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {allSelections.map((group, index) => (
-            <TouchableOpacity
-              key={index.toString()}
-              style={styles.historyButton}
-              onPress={() => handlePressGroup(index)}
-              onLongPress={() => handleDeleteGroup(index)}
-            >
-              <Text style={styles.historyText}>{group}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {allSelections.map((group, index) => (
+          <TouchableOpacity
+            key={index.toString()}
+            style={styles.historyButton}
+            onPress={() => handlePressGroup(index)}
+            onLongPress={() => handleDeleteGroup(index)}
+          >
+            <Text style={styles.historyText}>{group}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -94,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  historyText: { fontSize: 18},
+  historyText: { fontSize: 18 },
 });
 
 export default History;

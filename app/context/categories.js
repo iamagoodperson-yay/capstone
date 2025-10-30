@@ -26,23 +26,23 @@ const categories = {
       usageCount: 0,
       choices: [
         {
-            text: 'Favourite MRT/Bus Stops',
-            image: require('../../assets/phrases/directions.png'),
-            id: 'favourite_mrt_bus_stops',
-            usageCount: 0,
+          text: 'Favourite MRT/Bus Stops',
+          image: require('../../assets/phrases/directions.png'),
+          id: 'favourite_mrt_bus_stops',
+          usageCount: 0,
         },
         {
-            text: 'Favourite Places',
-            image: require('../../assets/phrases/directions.png'),
-            id: 'favourite_places',
-            usageCount: 0,
+          text: 'Favourite Places',
+          image: require('../../assets/phrases/directions.png'),
+          id: 'favourite_places',
+          usageCount: 0,
         },
         {
-            text: 'Public Transport',
-            image: require('../../assets/phrases/directions.png'),
-            id: 'public_transport',
-            usageCount: 0,
-        }
+          text: 'Public Transport',
+          image: require('../../assets/phrases/directions.png'),
+          id: 'public_transport',
+          usageCount: 0,
+        },
       ],
     },
     {
@@ -50,6 +50,12 @@ const categories = {
       image: require('../../assets/phrases/emergency.png'),
       usageCount: 0,
       choices: [],
+    },
+    {
+      text: 'Social',
+      image: require('../../assets/phrases/social.png'),
+      usageCount: 0,
+      id: 'social',
     },
     {
       text: 'Others',
