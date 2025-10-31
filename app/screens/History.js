@@ -15,7 +15,8 @@ import { speak } from '../utils/tts';
 const History = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const { allSelections, moveGroupToTop, deleteGroup } = usePhrasesContext();
+  const { allSelections, moveGroupToTop, deleteGroup, toggleBookmark } =
+    usePhrasesContext();
 
   const handlePressGroup = index => {
     const group = allSelections[index];
@@ -34,6 +35,10 @@ const History = () => {
       t('screens.history.delMessage'),
       [
         { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Bookmark',
+          onPress: () => toggleBookmark(index),
+        },
         {
           text: 'Delete',
           style: 'destructive',

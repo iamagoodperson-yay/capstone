@@ -73,7 +73,7 @@ const Home = ({
 
   const runFunction = (category, numberOfCoins, giver) => {
     const numberOfCoinsInt = parseInt(numberOfCoins, 10);
-    if (category === 'give' && numberOfCoinsInt > 0) {
+    if (category === 'give') {
       Alert.alert(`${giver} awarded you ${numberOfCoinsInt} Coins!`);
       setCoins(prev =>
         typeof prev === 'number' ? prev + numberOfCoinsInt : numberOfCoinsInt,

@@ -33,10 +33,17 @@ export const PhrasesProvider = ({ children }) => {
         : '',
       choices: task.choices?.map(c => ({
         ...c,
-        text: c.text, // raw text
-        transText: i18n.exists(`screens.phrases.${c.text}`)
-          ? i18n.t(`screens.phrases.${c.text}`)
-          : c.text,
+        text: c.text,
+        transText: [
+          i18n.exists(`screens.phrases.${c.text}`)
+            ? i18n.t(`screens.phrases.${c.text}`)
+            : c.text,
+          c.speech && i18n.exists(`screens.phrases.${c.speech}`)
+            ? i18n.t(`screens.phrases.${c.speech}`)
+            : c.speech || '',
+        ]
+          .filter(Boolean)
+          .join(' '),
       })),
     }));
     setProcessesState(translateTasks);
@@ -75,29 +82,29 @@ export const PhrasesProvider = ({ children }) => {
   const bookmarksKey = 'bookmarkedTexts';
 
   // load categories, processes, bookmarks from async storage
-//   useEffect(() => {
-//     const loadData = async () => {
-//       try {
-//         const storedCategories = await AsyncStorage.getItem(categoriesKey);
-//         const storedProcesses = await AsyncStorage.getItem(processesKey);
-//         const storedBookmarks = await AsyncStorage.getItem(bookmarksKey);
+  //   useEffect(() => {
+  //     const loadData = async () => {
+  //       try {
+  //         const storedCategories = await AsyncStorage.getItem(categoriesKey);
+  //         const storedProcesses = await AsyncStorage.getItem(processesKey);
+  //         const storedBookmarks = await AsyncStorage.getItem(bookmarksKey);
 
-//         if (storedCategories) {
-//           setCategoriesState(JSON.parse(storedCategories));
-//         }
-//         if (storedProcesses) {
-//           setProcessesState(JSON.parse(storedProcesses));
-//         }
-//         if (storedBookmarks) {
-//           setBookmarkedTexts(JSON.parse(storedBookmarks));
-//           console.log('Loaded bookmarks:', JSON.parse(storedBookmarks));
-//         }
-//       } catch (e) {
-//         console.warn('Failed to load data from storage', e);
-//       }
-//     };
-//     loadData();
-//   }, []);
+  //         if (storedCategories) {
+  //           setCategoriesState(JSON.parse(storedCategories));
+  //         }
+  //         if (storedProcesses) {
+  //           setProcessesState(JSON.parse(storedProcesses));
+  //         }
+  //         if (storedBookmarks) {
+  //           setBookmarkedTexts(JSON.parse(storedBookmarks));
+  //           console.log('Loaded bookmarks:', JSON.parse(storedBookmarks));
+  //         }
+  //       } catch (e) {
+  //         console.warn('Failed to load data from storage', e);
+  //       }
+  //     };
+  //     loadData();
+  //   }, []);
 
   // save categories, processes, bookmarks to async storage on change
   useEffect(() => {
@@ -310,15 +317,26 @@ export const PhrasesProvider = ({ children }) => {
     const currentTask = getCurrentTask();
     if (!currentTask) return '';
 
+    // Translate the base task speech
     const base =
-      t(`screens.phrases.${currentTask.speech}`, {
-        defaultValue: currentTask.speech,
-      }) || ''; // English speech
+      currentTask.speech && i18n.exists(`screens.phrases.${currentTask.speech}`)
+        ? i18n.t(`screens.phrases.${currentTask.speech}`)
+        : currentTask.speech || '';
+
     if (!selected.length) return base ? base + ' ...' : '...';
 
+    // Translate each selected choice individually
     const selections = currentTask.multiSelect
-      ? selected.map(s => s.rawText || s.text).join(', ')
-      : selected[0].rawText || selected[0].text;
+      ? selected
+          .map(s =>
+            i18n.exists(`screens.phrases.${s.text}`)
+              ? i18n.t(`screens.phrases.${s.text}`)
+              : s.text,
+          )
+          .join(', ')
+      : i18n.exists(`screens.phrases.${selected[0].text}`)
+      ? i18n.t(`screens.phrases.${selected[0].text}`)
+      : selected[0].text;
 
     return base ? `${base} ${selections}` : selections;
   };
@@ -343,7 +361,15 @@ export const PhrasesProvider = ({ children }) => {
         defaultValue: currentTask.speech,
       }) || '';
     const selections = currentTask.multiSelect
-      ? updatedSelected.map(s => s.text).join(', ')
+      ? updatedSelected
+          .map(s =>
+            i18n.exists(`screens.phrases.${s.text}`)
+              ? i18n.t(`screens.phrases.${s.text}`)
+              : s.text,
+          )
+          .join(', ')
+      : i18n.exists(`screens.phrases.${updatedSelected[0].text}`)
+      ? i18n.t(`screens.phrases.${updatedSelected[0].text}`)
       : updatedSelected[0].text;
 
     speak(base ? `${base} ${selections}` : selections);
@@ -369,10 +395,17 @@ export const PhrasesProvider = ({ children }) => {
       }
 
       if (currentTask.next === 'end') {
-        if (currentSelections.length > 0) {
-          const allTaskSelections = [...currentSelections];
+        // include the last task's selections before ending
+        const finalSelections = [...currentSelections];
+        if (selected.length > 0) {
+          finalSelections.push({
+            taskId: currentTask.id,
+            choices: [...selected],
+          });
+        }
 
-          const fullSpeech = allTaskSelections
+        if (finalSelections.length > 0) {
+          const fullSpeech = finalSelections
             .map(ts => {
               const task = processesState.find(p => p.id === ts.taskId);
               if (!task) return '';

@@ -45,6 +45,10 @@ function Settings({
       voiceId = voices.find(v => v.language.startsWith('en'))?.id;
     } else if (lang === 'cn') {
       voiceId = voices.find(v => v.language.startsWith('zh'))?.id;
+    } else if (lang === 'my') {
+      voiceId = voices.find(v => v.language.startsWith('ms'))?.id;
+    } else if (lang === 'id') {
+      voiceId = voices.find(v => v.language.startsWith('ta'))?.id;
     }
 
     if (voiceId) {
@@ -54,10 +58,18 @@ function Settings({
     }
 
     try {
-      await Tts.setDefaultLanguage(lang === 'cn' ? 'zh-CN' : 'en-GB');
+      await Tts.setDefaultLanguage(langMap[lang]);
     } catch (e) {
       console.warn('TTS language not available', e);
     }
+  };
+
+  const langMap = {
+    cn: 'zh-SG',
+    my: 'ms-MY',
+    in: 'en-IN',
+    ta: 'ta-IN',
+    en: 'en-GB',
   };
 
   return (
@@ -76,7 +88,7 @@ function Settings({
         </View>
         <View style={styles.flagcontainer}>
           {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
-          {renderFlag('id', require('../../assets/settings/indonesianflag.png'))}
+          {renderFlag('id', require('../../assets/settings/indianflag.png'))}
         </View>
         <View style={{ height: 20 }} />
         <Text style={styles.subtext}>{t('screens.settings.buttonTitle')}</Text>

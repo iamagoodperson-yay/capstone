@@ -1,0 +1,114 @@
+{
+    "language": "ms",
+    "tabs": {
+        "home": "Laman Utama",
+        "phrases": "Frasa",
+        "challenge": "Cabaran",
+        "shop": "Kedai",
+        "settings": "Tetapan",
+        "history": "Sejarah"
+    },
+    "screens": {
+        "home": {
+            "bookmarked": "Disimpan:",
+            "noBookmarks": "Tiada item disimpan lagi.",
+            "seeMore": "Lihat Lagi...",
+            "recentHistory": "Lihat Sejarah Terkini",
+            "daily": "Selesaikan Cabaran Harian",
+            "scanQR": "Imbas Kod QR"
+        },
+        "phrases": {
+            "Categories": "Kategori",
+            "Food & Drinks": "Makanan dan minuman",
+            "Restaurant":"Restoran",
+            "Hawker Centre": "Pusat Penjaja",
+            "Directions": "Arah",
+            "Emergency": "Kecemasan",
+            "Others": "Lain-lain",
+            "Chicken rice": "Nasi ayam",
+            "Laksa": "Laksa",
+            "Chicken": "Ayam",
+            "Rice": "Nasi",
+            "Egg": "Telur",
+            "Fish Cake": "Kek Ikan",
+            "Prawn": "Udang",
+            "Eat here": "Makan di sini",
+            "Takeaway": "Bungkus",
+            "Spicy": "Pedas",
+            "Non-Spicy": "Tidak Pedas",
+            "Place to eat": "Tempat makan",
+            "Spice Level": "Tahap Kepedasan",
+            "Cash": "Tunai",
+            "Card": "Kad",
+            "I want to order": "Saya ingin pesan",
+            "Add on ...": "Tambah ...",
+            "Pay by": "Bayar dengan",
+            "I want to order Chicken rice": "Saya ingin pesan nasi ayam",
+            "I want to order Laksa": "Saya ingin pesan laksa",
+            "Favourite Places": "Tempat Kegemaran",
+            "Social": "Sosial",
+            "Favourite MRT/Bus Stops": "Perhentian MRT/Bas Kegemaran",
+            "Public Transport": "Pengangkutan Awam",
+            "Hello": "Hai",
+            "How are you": "Apa khabar",
+            "Thank you": "Terima kasih",
+            "Please": "Sila",
+            "Bus": "Bas",
+            "MRT": "MRT",
+            "Pay by Cash": "Bayar dengan Tunai",
+            "Pay by Card": "Bayar dengan Kad",
+            "Edit or Bookmark": "Edit atau Simpan",
+            "Edit": "Edit",
+            "Bookmark": "Simpan",
+            "Remove Bookmark": "Padam Simpanan",
+            "Cancel": "Batal"
+        },
+        "daily": {
+            "challenge": "Cabaran: ",
+            "submit": "Hantar Jawapan",
+            "status": {
+                "loading": "Memuat...",
+                "noChallenge": "Tiada cabaran tersedia",
+                "loadingError": "Ralat semasa memuat cabaran"
+            },
+            "correct": {
+                "title": "Jawapan Betul!",
+                "text1": "Anda mendapat ganjaran harian",
+                "text2": "Jumlah"
+            },
+            "wrong": {
+                "title": "Jawapan Salah",
+                "text": "Cuba lagi!"
+            },
+            "noChall": {
+                "title": "Tiada Cabaran",
+                "text": "Tiada cabaran aktif untuk hari ini."
+            },
+            "error": {
+                "title": "Ralat",
+                "text": "Ralat berlaku semasa menyemak jawapan anda."
+            }
+        },
+        "shop": {
+            "labelHats": "Topi",
+            "labelShirts": "Baju",
+            "labelPants": "Seluar",
+            "labelShoes": "Kasut",
+            "labelAccessories": "Aksesori",
+            "notEnough": "Syiling tidak mencukupi 🪙",
+            "onlyHave": "Anda hanya ada {{coins}} 🪙"
+        },
+        "settings": {
+            "languageTitle": "Bahasa",
+            "buttonTitle": "Susun Atur Butang",
+            "buttonFood": "Makanan",
+            "caregiverNumberTitle": "Nombor Telefon Kecemasan"
+        },
+        "history": {
+            "title": "Sejarah",
+            "backButton": "Kembali",
+            "delTitle": "Padam Kumpulan",
+            "delMessage": "Adakah anda pasti mahu padam kumpulan ini?"
+        }
+    }
+}
