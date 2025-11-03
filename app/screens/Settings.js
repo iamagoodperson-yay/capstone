@@ -257,6 +257,10 @@ function Settings({
                   style={styles.main_image}
               />
           </View> */}
+          <View style={styles.container}>
+            <Text style={styles.subheader}>Credits & Acknowledgements:</Text>
+            <Text>This app was developed as part of the SST-NP IDP DiSpark Capstone project.</Text>
+          </View>
     </ScrollView>
   );
 }

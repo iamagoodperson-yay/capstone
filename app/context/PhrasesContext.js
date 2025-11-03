@@ -82,29 +82,29 @@ export const PhrasesProvider = ({ children }) => {
   const bookmarksKey = 'bookmarkedTexts';
 
   // load categories, processes, bookmarks from async storage
-  //   useEffect(() => {
-  //     const loadData = async () => {
-  //       try {
-  //         const storedCategories = await AsyncStorage.getItem(categoriesKey);
-  //         const storedProcesses = await AsyncStorage.getItem(processesKey);
-  //         const storedBookmarks = await AsyncStorage.getItem(bookmarksKey);
+    // useEffect(() => {
+    //   const loadData = async () => {
+    //     try {
+    //       const storedCategories = await AsyncStorage.getItem(categoriesKey);
+    //       const storedProcesses = await AsyncStorage.getItem(processesKey);
+    //       const storedBookmarks = await AsyncStorage.getItem(bookmarksKey);
 
-  //         if (storedCategories) {
-  //           setCategoriesState(JSON.parse(storedCategories));
-  //         }
-  //         if (storedProcesses) {
-  //           setProcessesState(JSON.parse(storedProcesses));
-  //         }
-  //         if (storedBookmarks) {
-  //           setBookmarkedTexts(JSON.parse(storedBookmarks));
-  //           console.log('Loaded bookmarks:', JSON.parse(storedBookmarks));
-  //         }
-  //       } catch (e) {
-  //         console.warn('Failed to load data from storage', e);
-  //       }
-  //     };
-  //     loadData();
-  //   }, []);
+    //       if (storedCategories) {
+    //         setCategoriesState(JSON.parse(storedCategories));
+    //       }
+    //       if (storedProcesses) {
+    //         setProcessesState(JSON.parse(storedProcesses));
+    //       }
+    //       if (storedBookmarks) {
+    //         setBookmarkedTexts(JSON.parse(storedBookmarks));
+    //         console.log('Loaded bookmarks:', JSON.parse(storedBookmarks));
+    //       }
+    //     } catch (e) {
+    //       console.warn('Failed to load data from storage', e);
+    //     }
+    //   };
+    //   loadData();
+    // }, []);
 
   // save categories, processes, bookmarks to async storage on change
   useEffect(() => {

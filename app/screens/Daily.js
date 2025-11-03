@@ -104,8 +104,10 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
         <View style={styles.container}>
             <View />
             <Text style={styles.challengeText}>{t('screens.daily.challenge')} {chall && chall.text ? chall.text : String(chall)}</Text>
-            <Phrases buttonLayout={buttonLayout} daily={true} />
-            <Button title={t('screens.daily.submit')} onPress={submit} />
+            <Phrases buttonLayout={buttonLayout} daily={true} style={styles.phrasesComponent} />
+            <View style={styles.buttonContainer}>
+                <Button title={t('screens.daily.submit')} onPress={submit} />
+            </View>
             <View />
         </View>
     );
@@ -116,12 +118,21 @@ const styles = StyleSheet.create({
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
+        paddingHorizontal: 0,
         gap: 20,
     },
     challengeText: {
         fontSize: 24,
+        textAlign: 'center',
+    },
+    phrasesComponent: {
+        flex: 1,
+        width: '100%',
+    },
+    buttonContainer: {
+        alignItems: 'center',
     },
 });
 

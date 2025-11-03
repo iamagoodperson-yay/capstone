@@ -12,12 +12,11 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { Camera, CameraType } from 'react-native-camera-kit';
 import { usePhrasesContext } from '../context/PhrasesContext';
 import Avatar from '../components/avatar';
 import Button from '../components/button';
 import { speak } from '../utils/tts';
-// <<-- use the Camera export that exists in v16.x
-import { Camera, CameraType } from 'react-native-camera-kit';
 
 const Home = ({
   avatarSelection,
@@ -69,15 +68,13 @@ const Home = ({
     }
   };
 
-  //funciton example: run/give/2/Person
+  //function example: run/give/2/Person
 
   const runFunction = (category, numberOfCoins, giver) => {
     const numberOfCoinsInt = parseInt(numberOfCoins, 10);
     if (category === 'give') {
       Alert.alert(`${giver} awarded you ${numberOfCoinsInt} Coins!`);
-      setCoins(prev =>
-        typeof prev === 'number' ? prev + numberOfCoinsInt : numberOfCoinsInt,
-      );
+      setCoins(coins + numberOfCoinsInt);
     }
   };
 
@@ -93,7 +90,11 @@ const Home = ({
           onReadCode={handleScan}
         />
         <View style={styles.scannerCancel}>
-          <Button title="Cancel" onPress={() => setShowScanner(false)} />
+          <Button 
+            title="Cancel"
+            onPress={() => setShowScanner(false)}
+            color="#DC3545"
+          />
         </View>
       </View>
     );

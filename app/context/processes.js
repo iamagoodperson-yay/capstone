@@ -260,17 +260,17 @@ const processes = [
       },
       {
         text: 'How are you',
-        image: require('../../assets/phrases/howareyou.png'),
+        image: require('../../assets/phrases/how_are_you.png'),
         usageCount: 0,
       },
       {
         text: 'Thank you',
-        image: require('../../assets/phrases/thankyou.png'),
+        image: require('../../assets/phrases/thank_you.png'),
         usageCount: 0,
       },
       {
         text: 'Please',
-        image: require('../../assets/phrases/thankyou.png'),
+        image: require('../../assets/phrases/please.png'),
         usageCount: 0,
       },
     ],
