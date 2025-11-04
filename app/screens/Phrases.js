@@ -484,7 +484,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
         {/* Next button */}
         <Cell
-          content={{ text: 'Next', transText: 'Next', type: 'next' }}
+          content={{ text: 'Next', transText: t('screens.phrases.next'), type: 'next' }}
           buttonlayout={3}
           height={0.1}
           onPress={() => {
@@ -554,7 +554,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       <Modal
         visible={addModal}
         animationType="slide"
-        presentationStyle="fullScreen"
+        presentationStyle="pageSheet"
         onRequestClose={() => setAddModal(false)}
       >
         <SafeAreaView
@@ -571,15 +571,15 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             <Text style={styles.modalTitle}>
               {(inProcess
                 ? current.diverge
-                  ? 'Add Choice with New Task'
-                  : 'Add Choice to Current Task'
-                : 'Add')}
+                  ? t('screens.phrases.add.addNewTaskTitle')
+                  : t('screens.phrases.add.addCurrentTaskTitle')
+                : t('screens.phrases.add.addTitle'))}
             </Text>
             <View style={styles.inputSection}>
               <Text style={styles.inputLabel}>
                 {inProcess
-                  ? 'Choice text'
-                  : (isAddProcess ? 'Process' : 'Category') + ' text'}
+                  ? t('screens.phrases.add.choiceText')
+                  : (isAddProcess ? t('screens.phrases.add.processText') : t('screens.phrases.add.catText'))}
               </Text>
               <TextInput
                 style={styles.textInput}
@@ -594,14 +594,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             />
             {!inProcess && (
               <View style={styles.inputSection}>
-                <Text style={styles.inputLabel}>Add process or category</Text>
+                <Text style={styles.inputLabel}>{t('screens.phrases.add.processOrCat')}</Text>
                 <View style={styles.switchRow}>
                   <Switch
                     value={isAddProcess}
                     onValueChange={setIsAddProcess}
                   />
                   <Text style={styles.switchText}>
-                    {isAddProcess ? 'Process' : 'Category'}
+                    {isAddProcess ? t('screens.phrases.add.process') : t('screens.phrases.add.category')}
                   </Text>
                 </View>
               </View>
@@ -609,7 +609,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             {(!inProcess && isAddProcess) || (inProcess && current.diverge) ? (
               <>
                 <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>Target task</Text>
+                  <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask')}</Text>
                   <Dropdown
                     values={taskChoices}
                     base={targetTask}
@@ -619,7 +619,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 {targetTask === 'New Task' ? (
                   <>
                     <View style={styles.inputSection}>
-                      <Text style={styles.inputLabel}>Task Title</Text>
+                      <Text style={styles.inputLabel}>{t('screens.phrases.add.taskTitle')}</Text>
                       <TextInput
                         style={styles.textInput}
                         value={taskTitle}
@@ -628,7 +628,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     </View>
 
                     <View style={styles.inputSection}>
-                      <Text style={styles.inputLabel}>Speech Text</Text>
+                      <Text style={styles.inputLabel}>{t('screens.phrases.add.speechText')}</Text>
                       <TextInput
                         style={styles.textInput}
                         value={processSpeech}
@@ -637,14 +637,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     </View>
 
                     <View style={styles.inputSection}>
-                      <Text style={styles.inputLabel}>Process Settings</Text>
+                      <Text style={styles.inputLabel}>{t('screens.phrases.add.processSettings')}</Text>
                       <View style={styles.switchRow}>
                         <Switch
                           value={processMultiSelect}
                           onValueChange={setProcessMultiSelect}
                         />
                         <Text style={styles.switchText}>
-                          Allow Multiple Selections
+                          {t('screens.phrases.add.multiChoice')}
                         </Text>
                       </View>
                       <View style={{ height: 5 }} />
@@ -655,7 +655,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                           onValueChange={setProcessDiverge}
                         />
                         <Text style={styles.switchText}>
-                          Different Next Steps
+                          {t('screens.phrases.add.diverge')}
                         </Text>
                       </View>
                     </View>
@@ -667,13 +667,13 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             ) : null}
             <View style={styles.buttonRow}>
               <Button
-                title="Close"
+                title={t('screens.phrases.add.close')}
                 width="0.4"
                 color="#DC3545"
                 onPress={resetAdd}
               />
               <Button
-                title={isAdding ? 'Adding...' : 'Add'}
+                title={isAdding ? t('screens.phrases.add.adding') : t('screens.phrases.add.add')}
                 width="0.4"
                 onPress={handleAdd}
                 disabled={isAdding}
@@ -687,7 +687,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       <Modal
         visible={editModal}
         animationType="slide"
-        presentationStyle="fullScreen"
+        presentationStyle="pageSheet"
         onRequestClose={() => {
           setEditModal(false);
           setEditImage(null);
@@ -696,26 +696,27 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         <SafeAreaView
           style={[styles.modalSafeArea, { paddingTop: insets.top }]}
         >
-          <View
-            style={styles.modalContainer}
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.modalContainer}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             automaticallyAdjustKeyboardInsets={true}
             keyboardDismissMode="interactive"
           >
-            <Text style={styles.modalTitle}>Edit</Text>
+            <Text style={styles.modalTitle}>{t('screens.phrases.edit.editTitle')}</Text>
             <Button
-              title="Delete"
+              title={t('screens.phrases.edit.delete')}
               width="0.8"
               color="#DC3545"
               onPress={() => {
                 Alert.alert(
-                  'Confirm Delete',
-                  `Are you sure you want to delete "${editingItem.text}"?`,
+                  t('screens.phrases.edit.confirmDeleteTitle'),
+                  t('screens.phrases.edit.confirmDeleteMsg', { item: editingItem.text }),
                   [
-                    { text: 'Cancel', style: 'cancel' },
+                    { text: t('screens.phrases.edit.cancel'), style: 'cancel' },
                     {
-                      text: 'Delete',
+                      text: t('screens.phrases.edit.delete'),
                       style: 'destructive',
                       onPress: () => {
                         if (editingItem.id) {
@@ -736,7 +737,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             {!inProcess || (inProcess && editingItem?.id !== current?.id) ? (
               <>
                 <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>Edit text</Text>
+                  <Text style={styles.inputLabel}>{t('screens.phrases.edit.editText')}</Text>
                   <TextInput
                     style={styles.textInput}
                     value={editText}
@@ -748,7 +749,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     ? editingItem?.id !== current?.id
                     : editingItem?.id === current?.id) && (
                     <View style={styles.inputSection}>
-                      <Text style={styles.inputLabel}>Edit target task</Text>
+                      <Text style={styles.inputLabel}>{t('screens.phrases.edit.editTargetTask')}</Text>
                       <Dropdown
                         values={taskChoices}
                         base={targetTask}
@@ -768,7 +769,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             ) : (
               <>
                 <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>Task Title</Text>
+                  <Text style={styles.inputLabel}>{t('screens.phrases.add.taskTitle')}</Text>
                   <TextInput
                     style={styles.textInput}
                     value={editText}
@@ -777,7 +778,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 </View>
 
                 <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>Speech Text</Text>
+                  <Text style={styles.inputLabel}>{t('screens.phrases.add.speechText')}</Text>
                   <TextInput
                     style={styles.textInput}
                     value={processSpeech}
@@ -786,14 +787,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 </View>
 
                 <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>Process Settings</Text>
+                  <Text style={styles.inputLabel}>{t('screens.phrases.add.processSettings')}</Text>
                   <View style={styles.switchRow}>
                     <Switch
                       value={processMultiSelect}
                       onValueChange={setProcessMultiSelect}
                     />
                     <Text style={styles.switchText}>
-                      Allow Multiple Selections
+                        {t('screens.phrases.add.multiChoice')}
                     </Text>
                   </View>
                   <View style={{ height: 5 }} />
@@ -803,13 +804,13 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                       value={processDiverge}
                       onValueChange={setProcessDiverge}
                     />
-                    <Text style={styles.switchText}>Different Next Steps</Text>
+                    <Text style={styles.switchText}>{t('screens.phrases.add.diverge')}</Text>
                   </View>
                 </View>
 
                 {!processDiverge && (
                   <View style={styles.inputSection}>
-                    <Text style={styles.inputLabel}>Edit target task</Text>
+                    <Text style={styles.inputLabel}>{t('screens.phrases.edit.targetTask')}</Text>
                     <Dropdown
                       values={taskChoices}
                       base={targetTask}
@@ -822,14 +823,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             )}
             <View style={styles.buttonRow}>
               <Button
-                title="Cancel"
+                title={t('screens.phrases.edit.cancel')}
                 width="0.4"
                 color="#DC3545"
                 onPress={resetEdit}
               />
-              <Button title="Save" width="0.4" onPress={handleEdit} />
+              <Button title={t('screens.phrases.edit.save')} width="0.4" onPress={handleEdit} />
             </View>
-          </View>
+          </ScrollView>
         </SafeAreaView>
       </Modal>
     </>

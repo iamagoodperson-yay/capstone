@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { View, Image, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { saveImageToPersistentStorage, deleteImageFromStorage, isPersistentImage } from '../utils/imageStorage';
+import { useTranslation } from 'react-i18next';
 import Button from './button';
 
 const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
+    const { t } = useTranslation();
+
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSelectImage = async () => {
@@ -21,7 +24,7 @@ const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
                 }
 
                 if (response.errorCode) {
-                    Alert.alert('Error', response.errorMessage || 'Failed to select image');
+                    Alert.alert(t('imagePicker.errorTitle'), response.errorMessage || t('imagePicker.chooseImageError'));
                     return;
                 }
 
@@ -35,7 +38,7 @@ const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
                         const persistentUri = await saveImageToPersistentStorage(sourceUri, null, mimeType);
                         onImageSelected({ uri: persistentUri });
                     } catch (error) {
-                        Alert.alert('Error', 'Failed to save image: ' + error.message);
+                        Alert.alert(t('imagePicker.errorTitle'), t('imagePicker.saveImgError') + ' ' + error.message);
                         console.error('Image save error:', error);
                     } finally {
                         setIsSaving(false);
@@ -60,7 +63,7 @@ const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
                 }
 
                 if (response.errorCode) {
-                    Alert.alert('Error', response.errorMessage || 'Failed to take photo');
+                    Alert.alert(t('imagePicker.errorTitle'), response.errorMessage || t('imagePicker.takePhotoError'));
                     return;
                 }
 
@@ -74,7 +77,7 @@ const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
                         const persistentUri = await saveImageToPersistentStorage(sourceUri, null, mimeType);
                         onImageSelected({ uri: persistentUri });
                     } catch (error) {
-                        Alert.alert('Error', 'Failed to save image: ' + error.message);
+                        Alert.alert(t('imagePicker.errorTitle'), t('imagePicker.saveImgError') + ' ' + error.message);
                         console.error('Image save error:', error);
                     } finally {
                         setIsSaving(false);
@@ -104,7 +107,7 @@ const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
         <View style={styles.imagePreviewContainer}>
             <Image source={selectedImage} style={styles.imagePreview} />
             <Button
-                title="Remove Image"
+                title={t('imagePicker.removeImage')}
                 width="0.4"
                 color="#DC3545"
                 onPress={handleRemoveImage}
@@ -114,13 +117,13 @@ const ImagePicker = ({ selectedImage, onImageSelected, onImageRemoved }) => {
     else return (
         <View style={styles.buttonRow}>
             <Button
-                title="Select Image"
+                title={t('imagePicker.selectImage')}
                 width="0.4"
                 color="#2196F3"
                 onPress={handleSelectImage}
             />
             <Button
-                title="Take Photo"
+                title={t('imagePicker.takePhoto')}
                 width="0.4"
                 color="#2196F3"
                 onPress={handleTakePhoto}

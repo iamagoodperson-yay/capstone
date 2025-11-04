@@ -23,11 +23,45 @@
         },
         "phrases": {
             "searchPhrases": "Cari frasa...",
+            "next": "Seterusnya",
             "Edit or Bookmark": "Edit atau Simpan",
             "Edit": "Edit",
             "Bookmark": "Simpan",
             "Remove Bookmark": "Padam Simpanan",
-            "Cancel": "Batal"
+            "Cancel": "Batal",
+            "selectImage": "Pilih Gambar",
+            "takePhoto": "Ambil Foto",
+            "removeImage": "Buang Gambar",
+            "add": {
+                "addTitle": "Tambah",
+                "addNewTaskTitle": "Tambah Pilihan dengan Tugas Baru",
+                "addCurrentTaskTitle": "Tambah Pilihan ke Tugas Semasa",
+                "catText": "Teks kategori",
+                "choiceText": "Teks pilihan",
+                "processText": "Teks proses",
+                "processOrCat": "Proses atau Kategori",
+                "process": "Proses",
+                "category": "Kategori",
+                "targetTask": "Tugas Sasaran",
+                "taskTitle": "Tajuk Tugas",
+                "speechText": "Teks Pertuturan",
+                "processSettings": "Tetapan Proses",
+                "multiChoice": "Benarkan Pilihan Pelbagai",
+                "diverge": "Langkah Seterusnya yang Berbeza",
+                "close": "Tutup",
+                "add": "Tambah",
+                "adding": "Menambah..."
+            },
+            "edit": {
+                "editTitle": "Edit",
+                "delete": "Padam",
+                "confirmDeleteTitle": "Sahkan Padam",
+                "confirmDeleteMsg": "Adakah anda pasti mahu padam {{item}}?",
+                "editText": "Edit Teks",
+                "editTargetTask": "Edit tugas sasaran",
+                "cancel": "Batal",
+                "save": "Simpan"
+            }
         },
         "daily": {
             "challenge": "Cabaran: ",
@@ -76,6 +110,15 @@
             "delTitle": "Padam Kumpulan",
             "delMessage": "Adakah anda pasti mahu padam kumpulan ini?"
         }
+    },
+    "imagePicker": {
+        "selectImage": "Pilih Gambar",
+        "takePhoto": "Ambil Foto",
+        "removeImage": "Buang Gambar",
+        "errorTitle": "Ralat",
+        "chooseImageError": "Gagal memilih gambar",
+        "takePhotoError": "Gagal mengambil foto",
+        "saveImgError": "Gagal menyimpan gambar:"
     },
     "phrases": {
         "Categories": "Kategori",

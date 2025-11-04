@@ -138,7 +138,7 @@ function Settings({
               changeVoice(0);
             }}
           >
-            <Text style={styles.voicetext}>Voice 1</Text>
+            <Text style={styles.voicetext}>{t('screens.settings.Voice1')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -149,7 +149,7 @@ function Settings({
               changeVoice(1);
             }}
           >
-            <Text style={styles.voicetext}>Voice 2</Text>
+            <Text style={styles.voicetext}>{t('screens.settings.Voice2')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -160,7 +160,7 @@ function Settings({
               changeVoice(2);
             }}
           >
-            <Text style={styles.voicetext}>Voice 3</Text>
+            <Text style={styles.voicetext}>{t('screens.settings.Voice3')}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -23,11 +23,45 @@
         },
         "phrases":{
             "searchPhrases": "வாக்கியங்கள் தேடு...",
+            "next": "அடுத்தது",
             "Edit or Bookmark": "தொகு அல்லது புக்க்மார்க் செய்",
             "Edit": "தொகு",
             "Bookmark": "புக்க்மார்க் செய்",
             "Remove Bookmark": "புக்க்மார்க் நீக்கு",
-            "Cancel": "ரத்து செய்"   
+            "Cancel": "ரத்து செய்",
+            "selectImage": "படம் தேர்வு செய்",
+            "takePhoto": "புகைப்படம் எடு",
+            "removeImage": "படம் நீக்கு",
+            "add": {
+                "addTitle": "சேர்க்க",
+                "addNewTaskTitle": "புதிய பணியுடன் தேர்வு சேர்க்கவும்",
+                "addCurrentTaskTitle": "தற்போதைய பணிக்கு தேர்வு சேர்க்கவும்",
+                "catText": "வகை உரை",
+                "choiceText": "தேர்வு உரை",
+                "processText": "செயல்முறை உரை",
+                "processOrCat": "செயல்முறை அல்லது வகை",
+                "process": "செயல்முறை",
+                "category": "வகை",
+                "targetTask": "இலக்கு பணி",
+                "taskTitle": "பணி தலைப்பு",
+                "speechText": "பேச்சு உரை",
+                "processSettings": "செயல்முறை அமைப்புகள்",
+                "multiChoice": "பல தேர்வுகளை அனுமதி",
+                "diverge": "வெவ்வேறு அடுத்த படிகள்",
+                "close": "மூடு",
+                "add": "சேர்க்க",
+                "adding": "சேர்க்கிறது..."
+            },
+            "edit": {
+                "editTitle": "தொகு",
+                "delete": "நீக்கு",
+                "confirmDeleteTitle": "நீக்குதலை உறுதிசெய்",
+                "confirmDeleteMsg": "{{item}} ஐ நீக்க விரும்புகிறீர்களா?",
+                "editText": "உரையை தொகு",
+                "editTargetTask": "இலக்கு பணியை தொகு",
+                "cancel": "ரத்து செய்",
+                "save": "சேமிக்க"
+            }
         },
         "daily": {
             "challenge": "சவால்: ",
@@ -76,6 +110,15 @@
             "delTitle": "குழுவை நீக்கு",
             "delMessage": "இந்தக் குழுவை நீக்க விரும்புகிறீர்களா?"
         }
+    },
+    "imagePicker": {
+        "selectImage": "படம் தேர்வு செய்",
+        "takePhoto": "புகைப்படம் எடு",
+        "removeImage": "படம் நீக்கு",
+        "errorTitle": "பிழை",
+        "chooseImageError": "படம் தேர்வு செய்ய முடியவில்லை",
+        "takePhotoError": "புகைப்படம் எடுக்க முடியவில்லை",
+        "saveImgError": "படம் சேமிக்க முடியவில்லை:"
     },
     "phrases": {
         "Categories":"பிரிவுகள்",

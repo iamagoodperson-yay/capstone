@@ -21,13 +21,50 @@
             "Cancel": "Cancel",
             "Delete": "Delete"
         },
+        "history": {
+            "title": "History",
+            "backButton": "Back",
+            "delTitle": "Delete Group",
+            "delMessage": "Are you sure you want to delete this group?"
+        },
         "phrases":{
             "searchPhrases": "Search phrases...",
+            "next": "Next",
             "Edit or Bookmark": "Edit or Bookmark",
             "Edit":"Edit",
             "Bookmark": "Bookmark",
             "Remove Bookmark": "Remove Bookmark",
-            "Cancel": "Cancel"   
+            "Cancel": "Cancel",
+            "add": {
+                "addTitle": "Add",
+                "addNewTaskTitle": "Add Choice with New Task",
+                "addCurrentTaskTitle": "Add Choice to Current Task",
+                "catText": "Category text",
+                "choiceText": "Choice text",
+                "processText": "Process text",
+                "processOrCat": "Process or Category",
+                "process": "Process",
+                "category": "Category",
+                "targetTask": "Target Task",
+                "taskTitle": "Task Title",
+                "speechText": "Speech Text",
+                "processSettings": "Process Settings",
+                "multiChoice": "Allow Multiple Choices",
+                "diverge": "Different Next Steps",
+                "close": "Close",
+                "add": "Add",
+                "adding": "Adding..."
+            },
+            "edit": {
+                "editTitle": "Edit",
+                "delete": "Delete",
+                "confirmDeleteTitle": "Confirm Delete",
+                "confirmDeleteMsg": "Are you sure you want to delete {{item}}?",
+                "editText": "Edit Text",
+                "editTargetTask": "Edit target task",
+                "cancel": "Cancel",
+                "save": "Save"
+            }
         },
         "daily": {
             "challenge": "Challenge: ",
@@ -68,14 +105,20 @@
             "languageTitle": "Languages",
             "buttonTitle": "Button Layout",
             "buttonFood": "Food",
-            "caregiverNumberTitle": "Emergency Phone Number"
-        },
-        "history": {
-            "title": "History",
-            "backButton": "Back",
-            "delTitle": "Delete Group",
-            "delMessage": "Are you sure you want to delete this group?"
+            "caregiverNumberTitle": "Emergency Phone Number",
+            "Voice1": "Voice 1",
+            "Voice2": "Voice 2",
+            "Voice3": "Voice 3"
         }
+    },
+    "imagePicker": {
+        "selectImage": "Select Image",
+        "takePhoto": "Take Photo",
+        "removeImage": "Remove Image",
+        "errorTitle": "Error",
+        "chooseImageError": "Failed to choose image",
+        "takePhotoError": "Failed to take photo",
+        "saveImgError": "Failed to save image:"
     },
     "phrases": {
         "Categories":"Categories",
