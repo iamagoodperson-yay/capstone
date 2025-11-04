@@ -48,7 +48,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
                 }
 
                 if (!candidates.length) {
-                    const fallback = { text: t('screens.daily.noChallenge'), kind: null, payload: null };
+                    const fallback = { text: t('screens.daily.status.noChallenge'), kind: null, payload: null };
                     setChall(fallback);
                     return;
                 }
@@ -58,7 +58,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
                 setChall(pick);
             } catch (e) {
                 console.warn('Failed to setup daily challenge', e);
-                setChall({ text: t('screens.daily.loadingError'), kind: null, payload: null });
+                setChall({ text: t('screens.daily.status.loadingError'), kind: null, payload: null });
             }
         };
         setup();
@@ -103,7 +103,12 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
     return (
         <View style={styles.container}>
             <View />
-            <Text style={styles.challengeText}>{t('screens.daily.challenge')} {chall && chall.text ? chall.text : String(chall)}</Text>
+            <Text style={styles.challengeText}>
+                {t('screens.daily.challenge')} 
+                {chall && t(`phrases.${chall.text}`, {
+                    defaultValue: chall.text,
+                })}
+            </Text>
             <Phrases buttonLayout={buttonLayout} daily={true} style={styles.phrasesComponent} />
             <View style={styles.buttonContainer}>
                 <Button title={t('screens.daily.submit')} onPress={submit} />

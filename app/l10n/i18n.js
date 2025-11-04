@@ -6,7 +6,7 @@ import * as RNLocalize from 'react-native-localize';
 import en from './en.json';
 import cn from './cn.json';
 import my from './my.json';
-import id from './id.json';
+import ta from './ta.json';
 
 const STORE_LANGUAGE_KEY = 'settings.lang';
 
@@ -15,7 +15,7 @@ const resources = {
   cn: { translation: cn },
   zh: { translation: cn }, // alias for zh
   my: { translation: my },
-  id: { translation: id },
+  ta: { translation: ta },
 };
 
 // Helper function to get the best available language
@@ -27,7 +27,7 @@ const getDeviceLanguage = () => {
     const tag = bestLanguage.languageTag;
     if (tag.startsWith('zh')) return 'cn';
     if (tag.startsWith('ms')) return 'my';
-    if (tag.startsWith('id')) return 'id';
+    if (tag.startsWith('ta')) return 'ta';
     if (tag.startsWith('en')) return 'en';
   }
 
@@ -36,7 +36,7 @@ const getDeviceLanguage = () => {
     const code = primary.languageCode;
     if (code.startsWith('zh')) return 'cn';
     if (code === 'ms' || code === 'my') return 'my';
-    if (code === 'id') return 'id';
+    if (code === 'ta') return 'ta';
     if (code.startsWith('en')) return 'en';
   }
 

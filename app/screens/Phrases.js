@@ -24,7 +24,9 @@ import Dropdown from '../components/dropdown';
 import ImagePicker from '../components/imagePicker';
 
 const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+
   const {
     inProcess,
     getCurrent,
@@ -45,9 +47,9 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   } = usePhrasesContext();
 
   const current = getCurrent();
-  const breadcrumbs = getBreadcrumbs().join(' > ');
-
-  const { t } = useTranslation();
+  const breadcrumbs = getBreadcrumbs()
+    .map(crumb => t(`phrases.${crumb}`) || crumb)
+    .join(' > ');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [addModal, setAddModal] = useState(false);
@@ -324,21 +326,21 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       <Cell
         key={index.toString()}
         content={{
-          transText: t(`screens.phrases.${item.text}`, {
+          transText: t(`phrases.${item.text}`, {
             defaultValue: item.text,
           }),
           text: item.text,
           subtitle: searchQuery ? item.path : undefined,
           image: item.image,
           type: item.type,
-          bookmarked: bookmarkedTexts.includes(item.text), // Tint light blue if bookmarked
+          bookmarked: bookmarkedTexts.includes(item.text),
         }}
         buttonlayout={buttonLayout}
         onPress={() => handlePress(item)}
         onLongPress={() => {
           Alert.alert(
             `${t(`screens.phrases.Edit or Bookmark`)}"${t(
-              `screens.phrases.${item.text}`,
+              `phrases.${item.text}`,
               { defaultValue: item.text },
             )}"?`,
             '',
@@ -395,7 +397,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         {/* Top speech cell */}
         <Cell
           content={{
-            transText: t(`screens.phrases.${getSpeechText()}`, {
+            transText: t(`phrases.${getSpeechText()}`, {
               defaultValue: getSpeechText(),
             }),
             text: getSpeechText(),
@@ -436,7 +438,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             key={index.toString()}
             content={{
               text: item.text,
-              transText: t(`screens.phrases.${item.text}`, {
+              transText: t(`phrases.${item.text}`, {
                 defaultValue: item.text,
               }),
               subtitle: searchQuery ? item.path : undefined,
@@ -512,7 +514,9 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             <View style={styles.spacer} />
           )}
           <View style={styles.titleContainer}>
-            <Text style={styles.header}>{current.text}</Text>
+            <Text style={styles.header}>
+                {t(`phrases.${current.text}`, { defaultValue: current.text })}
+            </Text>
           </View>
           {daily ? (
             <View style={styles.spacer} />
@@ -536,7 +540,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search phrases..."
+            placeholder={t('screens.phrases.searchPhrases')}
             placeholderTextColor="gray"
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -565,12 +569,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             keyboardDismissMode="interactive"
           >
             <Text style={styles.modalTitle}>
-              {'Add' +
-                (inProcess
-                  ? current.diverge
-                    ? ' Choice with New Task'
-                    : ' Choice to Current Task'
-                  : '')}
+              {(inProcess
+                ? current.diverge
+                  ? 'Add Choice with New Task'
+                  : 'Add Choice to Current Task'
+                : 'Add')}
             </Text>
             <View style={styles.inputSection}>
               <Text style={styles.inputLabel}>

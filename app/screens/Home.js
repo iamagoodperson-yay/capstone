@@ -125,20 +125,20 @@ const Home = ({
                       else if (b.kind === 'process')
                         navigateToProcessChoice(b.processId, b.item.text);
                       else navigateToPath(b.path);
-                      navigation.navigate('Phrases');
+                        navigation.navigate('Phrases');
                     }}
                     onLongPress={() =>
                       Alert.alert(
-                        t('screens.phrases.AlertTitle') || 'Manage Bookmark',
-                        t('screens.phrases.AlertMessage') ||
+                        t('screens.home.AlertTitle') || 'Manage Bookmark',
+                        t('screens.home.AlertMessage') ||
                           'Do you want to delete this bookmark?',
                         [
                           {
-                            text: t('screens.phrases.Cancel'),
+                            text: t('screens.home.Cancel'),
                             style: 'cancel',
                           },
                           {
-                            text: t('screens.phrases.Delete') || 'Delete',
+                            text: t('screens.home.Delete') || 'Delete',
                             onPress: () => toggleBookmark(b.item.text),
                           },
                         ],
@@ -149,7 +149,7 @@ const Home = ({
                       source={b.item.image}
                       style={{ width: 60, height: 60 }}
                     />
-                    <Text style={styles.bookmarkText}>{b.item.text}</Text>
+                    <Text style={styles.bookmarkText}>{t(`phrases.${b.item.text}`) || b.item.text}</Text>
                   </TouchableOpacity>
                 ))}
               </View>

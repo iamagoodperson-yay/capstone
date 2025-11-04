@@ -27,20 +27,20 @@ export const PhrasesProvider = ({ children }) => {
     const translateTasks = processesState.map(task => ({
       ...task,
       translatedSpeech: task.speech
-        ? i18n.exists(`screens.phrases.${task.speech}`)
-          ? i18n.t(`screens.phrases.${task.speech}`)
+        ? i18n.exists(`phrases.${task.speech}`)
+          ? i18n.t(`phrases.${task.speech}`)
           : task.speech
         : '',
       choices: task.choices?.map(c => ({
         ...c,
         text: c.text,
         transText: [
-          i18n.exists(`screens.phrases.${c.text}`)
-            ? i18n.t(`screens.phrases.${c.text}`)
+          i18n.exists(`phrases.${c.text}`)
+            ? i18n.t(`phrases.${c.text}`)
             : c.text,
-          c.speech && i18n.exists(`screens.phrases.${c.speech}`)
-            ? i18n.t(`screens.phrases.${c.speech}`)
-            : c.speech || '',
+          c.speech && i18n.exists(`phrases.${c.speech}`)
+            ? i18n.t(`phrases.${c.speech}`)
+            : c.speech,
         ]
           .filter(Boolean)
           .join(' '),
@@ -48,11 +48,6 @@ export const PhrasesProvider = ({ children }) => {
     }));
     setProcessesState(translateTasks);
   }, [i18n.language]);
-  const getTranslatedText = text => {
-    if (!text) return '';
-    const key = `screens.phrases.${text}`;
-    return i18n.exists(key) ? i18n.t(key) : text;
-  };
 
   const translateProcess = process => ({
     ...process,
@@ -319,8 +314,8 @@ export const PhrasesProvider = ({ children }) => {
 
     // Translate the base task speech
     const base =
-      currentTask.speech && i18n.exists(`screens.phrases.${currentTask.speech}`)
-        ? i18n.t(`screens.phrases.${currentTask.speech}`)
+      currentTask.speech && i18n.exists(`phrases.${currentTask.speech}`)
+        ? i18n.t(`phrases.${currentTask.speech}`)
         : currentTask.speech || '';
 
     if (!selected.length) return base ? base + ' ...' : '...';
@@ -329,13 +324,13 @@ export const PhrasesProvider = ({ children }) => {
     const selections = currentTask.multiSelect
       ? selected
           .map(s =>
-            i18n.exists(`screens.phrases.${s.text}`)
-              ? i18n.t(`screens.phrases.${s.text}`)
+            i18n.exists(`phrases.${s.text}`)
+              ? i18n.t(`phrases.${s.text}`)
               : s.text,
           )
           .join(', ')
-      : i18n.exists(`screens.phrases.${selected[0].text}`)
-      ? i18n.t(`screens.phrases.${selected[0].text}`)
+      : i18n.exists(`phrases.${selected[0].text}`)
+      ? i18n.t(`phrases.${selected[0].text}`)
       : selected[0].text;
 
     return base ? `${base} ${selections}` : selections;
@@ -357,19 +352,19 @@ export const PhrasesProvider = ({ children }) => {
 
     // SPEAK using raw English text
     const base =
-      t(`screens.phrases.${currentTask.speech}`, {
+      t(`phrases.${currentTask.speech}`, {
         defaultValue: currentTask.speech,
       }) || '';
     const selections = currentTask.multiSelect
       ? updatedSelected
           .map(s =>
-            i18n.exists(`screens.phrases.${s.text}`)
-              ? i18n.t(`screens.phrases.${s.text}`)
+            i18n.exists(`phrases.${s.text}`)
+              ? i18n.t(`phrases.${s.text}`)
               : s.text,
           )
           .join(', ')
-      : i18n.exists(`screens.phrases.${updatedSelected[0].text}`)
-      ? i18n.t(`screens.phrases.${updatedSelected[0].text}`)
+      : i18n.exists(`phrases.${updatedSelected[0].text}`)
+      ? i18n.t(`phrases.${updatedSelected[0].text}`)
       : updatedSelected[0].text;
 
     speak(base ? `${base} ${selections}` : selections);
