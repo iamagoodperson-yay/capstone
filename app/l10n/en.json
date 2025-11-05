@@ -108,7 +108,18 @@
             "caregiverNumberTitle": "Emergency Phone Number",
             "Voice1": "Voice 1",
             "Voice2": "Voice 2",
-            "Voice3": "Voice 3"
+            "Voice3": "Voice 3",
+            "credits": {
+                "title": "Credits & Acknowledgements",
+                "description": "This app was developed as part of the SST-NP IDP DiSpark Capstone project 2025.",
+                "students": "Students: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia Yen",
+                "hwnStaff": "HWN Staff: Mr Tan Ter Soon, Miss Kang Yun Jie",
+                "mindsStaff": "MINDS Staff: Ms Julia",
+                "mentors": "Technical Mentors: Mr Spencer Chiang, Mr Joshua Woon, Mr Liong Yuen Ming",
+                "supervisors": "SST Teacher Supervisors: Ms Jaslyn Ting, Ms Afiah",
+                "collaboration": "In collaboration with Heartware Network & MINDs",
+                "icons": "This app includes icons from Font Awesome, Freepik and Flaticon."
+            }
         },
         "guide": {
             "title": "User's guide",

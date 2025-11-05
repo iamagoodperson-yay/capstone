@@ -171,19 +171,20 @@ function Settings({
         </View>
 
         <Button
-          title="User's Guide"
+          title={t('screens.guide.title')}
           onPress={() => setGuideVisible(true)}
         />
 
-        <Text style={styles.subtext}>Credits & Acknowledgements:</Text>
-        <Text style={styles.text}>This app was developed as part of the SST-NP IDP DiSpark Capstone project 2025.</Text>
-        <Text style={styles.text}>Students: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia Yen</Text>
-        <Text style={styles.text}>HWN Staff: Mr Tan Ter Soon, Miss Kang Yun Jie</Text>
-        <Text style={styles.text}>MINDS Staff: Ms Julia</Text>
-        <Text style={styles.text}>Technical Mentors: Mr Spencer Chiang, Mr Joshua Woon, Mr Liong Yuen Ming</Text>
-        <Text style={styles.text}>SST Teacher Supervisors: Ms Jaslyn Ting, Ms Afiah</Text>
-        <Text style={styles.text}>In collaboration with Heartware Network & MINDs</Text>
-
+        <Text style={styles.subtext}>{t('screens.settings.credits.title')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.description')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.students')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.hwnStaff')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.mindsStaff')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.mentors')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.supervisors')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.collaboration')}</Text>
+        
+        <Text style={styles.subtext}>{t('screens.settings.credits.icons')}</Text>
       </View>
     </ScrollView>
         <UserGuideModal visible={guideVisible} onClose={() => setGuideVisible(false)} t={t} />
