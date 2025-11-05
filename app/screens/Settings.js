@@ -8,9 +8,12 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Modal,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Cell from '../components/cell';
+import Button from '../components/button';
 import { changeVoice } from '../utils/tts';
 
 function Settings({
@@ -21,6 +24,7 @@ function Settings({
 }) {
   const { t, i18n } = useTranslation();
   const [voice, setVoice] = useState(0);
+  const [guideVisible, setGuideVisible] = useState(false);
 
   const renderFlag = (lang, imgSrc) => (
     <TouchableOpacity onPress={() => langSwitch(lang)}>
@@ -73,13 +77,14 @@ function Settings({
   };
 
   return (
-    <ScrollView
-      style={styles.scrollView}
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets={true}
-    >
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        style={styles.scrollView}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets={true}
+      >
       <View style={styles.container}>
-        <Text style={styles.subtext}>
+        <Text style={styles.subheader}>
           {t('screens.settings.languageTitle')}
         </Text>
         <View style={styles.flagcontainer}>
@@ -88,10 +93,12 @@ function Settings({
         </View>
         <View style={styles.flagcontainer}>
           {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
-          {renderFlag('id', require('../../assets/settings/indianflag.png'))}
+          {renderFlag('ta', require('../../assets/settings/indianflag.png'))}
         </View>
+
         <View style={{ height: 20 }} />
-        <Text style={styles.subtext}>{t('screens.settings.buttonTitle')}</Text>
+
+        <Text style={styles.subheader}>{t('screens.settings.buttonTitle')}</Text>
         <Cell
           content={{
             type: buttonLayout == 1 ? 'selected' : 'normal_button',
@@ -117,9 +124,8 @@ function Settings({
           buttonlayout={3}
           onPress={() => setButtonLayout(3)}
         />
-      </View>
-      <View style={styles.container}>
-        <Text style={styles.subheader}>
+
+        <Text style={styles.subtext}>
           {t('screens.settings.caregiverNumberTitle')}
         </Text>
         <TextInput
@@ -163,166 +169,147 @@ function Settings({
             <Text style={styles.voicetext}>{t('screens.settings.Voice3')}</Text>
           </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.container}>
-        <Text style={styles.subtext}> User's Manual</Text>
-        <Text style={styles.subheader}>Phrases</Text>
-        <Text style={styles.small_text}>
-          The buttons in the Phrases Tab allow you to choose between different
-          scenarios, such as ordering food or asking for directions.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial1.png')}
-          style={styles.main_image}
+
+        <Button
+          title="User's Guide"
+          onPress={() => setGuideVisible(true)}
         />
-        <Text style={styles.small_text}>
-          Buttons with a loudspeaker icon will read out the phrase when pressed.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial2.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Daily Challenge + Shop</Text>
-        <Text style={styles.small_text}>
-          The Daily Challenge resets daily, and requires the user to accomplish
-          a certain task using the Phrases, such as ordering food.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial3.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.small_text}>
-          Successfully completing the Daily Challenge awards you coins, allowing
-          you to purchase cosmetics for your avatar in the Shop Tab.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial4.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial5.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Adding Custom Phrases</Text>
-        <Text style={styles.small_text}>
-          To add your own phrases, navigate to the Phrases tab and select the
-          "Add Phrase" button at the bottom of the screen. You can then input
-          your desired phrase, and even add an image to it.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial6.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial7.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial8.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Editing / Deleting Phrases</Text>
-        <Text style={styles.small_text}>
-          To edit a specific phrase, simply long-press on the phrase button in
-          the Phrases tab, and confirm the edit when prompted. From there, you
-          can delete the specific phrase.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial9.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial10a.png')}
-          style={styles.main_image}
-        />
-        <Image
-          source={require('../../assets/settings/tutorial10b.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Home Page</Text>
-        <Text style={styles.small_text}>
-          For easy access, you can long-press phrases to bookmark them. The
-          bookmarked phrases can be accessed through the home page.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial11.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.subheader}>Settings Customisation</Text>
-        <Text style={styles.small_text}>
-          If you wish to change the language and how each phrase icon looks, you
-          can pick your desired language and button layout by clicking on the
-          icons above in the Settings Tab. The currently selected option is
-          highlighted in green.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial12.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.small_text}>
-          Additionally, you can customise the app's voice and your caregiver's
-          number.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial13.png')}
-          style={styles.main_image}
-        />
-        <Text style={styles.small_text}>
-          When pressing the emergency button, you can call the preset number for
-          easy access.
-        </Text>
-        <Image
-          source={require('../../assets/settings/tutorial14.png')}
-          style={styles.main_image}
-        />
-        <View style={styles.container}>
-          <Text style={styles.subheader}>Credits & Acknowledgements:</Text>
-          <Text style={styles.small_text}>
-            This app was developed as part of the SST-NP IDP DiSpark Capstone
-            project 2025.
-          </Text>
-          <Text style={styles.small_text}>
-            Students: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia
-            Yen
-          </Text>
-          <Text style={styles.small_text}>
-            HWN Staff: Mr Tan Ter Soon, Miss Kang Yun Jie{' '}
-          </Text>
-          <Text style={styles.small_text}>MINDS Staff: Ms Julia </Text>
-          <Text style={styles.small_text}>
-            Technical Mentors: Mr Spencer Chiang, Mr Joshua Woon, Mr Liong Yuen
-            Ming{' '}
-          </Text>
-          <Text style={styles.small_text}>
-            SST Teacher Supervisors: Ms Jaslyn Ting, Ms Afiah{' '}
-          </Text>
-          <Text style={styles.small_text}>
-            In collaboration with Heartware Network & MINDs
-          </Text>
-        </View>
+
+        <Text style={styles.subtext}>Credits & Acknowledgements:</Text>
+        <Text style={styles.text}>This app was developed as part of the SST-NP IDP DiSpark Capstone project 2025.</Text>
+        <Text style={styles.text}>Students: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia Yen</Text>
+        <Text style={styles.text}>HWN Staff: Mr Tan Ter Soon, Miss Kang Yun Jie</Text>
+        <Text style={styles.text}>MINDS Staff: Ms Julia</Text>
+        <Text style={styles.text}>Technical Mentors: Mr Spencer Chiang, Mr Joshua Woon, Mr Liong Yuen Ming</Text>
+        <Text style={styles.text}>SST Teacher Supervisors: Ms Jaslyn Ting, Ms Afiah</Text>
+        <Text style={styles.text}>In collaboration with Heartware Network & MINDs</Text>
+
       </View>
     </ScrollView>
+        <UserGuideModal visible={guideVisible} onClose={() => setGuideVisible(false)} t={t} />
+    </View>
+  );
+}
+
+const UserGuideModal = ({ visible, onClose, t }) => {
+  const insets = useSafeAreaInsets();
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={onClose}
+    >
+      <View style={[styles.modalContainer, { paddingTop: insets.top }]}>
+        <View style={styles.modalHeader}>
+          <TouchableOpacity onPress={onClose}>
+            <Text style={styles.closeButton}>✕</Text>
+          </TouchableOpacity>
+          <Text style={styles.modalTitle}>{t('screens.guide.title')}</Text>
+          <View style={{ width: 30 }} />
+        </View>
+        <ScrollView contentContainerStyle={styles.modalContent}>
+          <Text style={styles.subtext}>{t('screens.guide.gettingStarted')}</Text>
+          <Text style={styles.text}>{t('screens.guide.gettingStartedDesc1')}</Text>
+          <Image source={require('../../assets/manual/gettingStarted.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.gettingStartedDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.homeScreen')}</Text>
+          <Text style={styles.text}>{t('screens.guide.homeScreenDesc1')}</Text>
+          <Image source={require('../../assets/manual/homeScreen.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.homeScreenDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.phrasesNavigation')}</Text>
+          <Image source={require('../../assets/manual/phrasesNavigation.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.phrasesNavigationDesc1')}</Text>
+          <Text style={styles.text}>{t('screens.guide.phrasesNavigationDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.addingPhrases')}</Text>
+          <Image source={require('../../assets/manual/addButton.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.addingPhrasesDesc1')}</Text>
+          <Image source={require('../../assets/manual/addScreen.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.addingPhrasesDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.editingPhrases')}</Text>
+          <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc1')}</Text>
+          <Image source={require('../../assets/manual/longPressMenu.png')} style={styles.main_image} />
+          <Image source={require('../../assets/manual/editScreen.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.bookmarkSystem')}</Text>
+          <Image source={require('../../assets/manual/longPressMenu.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.bookmarkSystemDesc1')}</Text>
+          <Image source={require('../../assets/manual/bookmarkHome.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.bookmarkSystemDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.processingMode')}</Text>
+          <Text style={styles.text}>{t('screens.guide.processingModeDesc1')}</Text>
+          <Image source={require('../../assets/manual/processingMode.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.processingModeDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.dailyChallenge')}</Text>
+          <Image source={require('../../assets/manual/challengeScreen.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.dailyChallengeDesc1')}</Text>
+          <Image source={require('../../assets/manual/challengeCompleted.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.dailyChallengeDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.shopAvatar')}</Text>
+          <Image source={require('../../assets/manual/shopScreen.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.shopAvatarDesc1')}</Text>
+          <Text style={styles.text}>{t('screens.guide.shopAvatarDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.historyTracking')}</Text>
+          <Image source={require('../../assets/manual/historyScreen.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.historyTrackingDesc1')}</Text>
+          <Text style={styles.text}>{t('screens.guide.historyTrackingDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.languageSettings')}</Text>
+          <Image source={require('../../assets/manual/settingsScreenLang.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.languageSettingsDesc1')}</Text>
+          <Text style={styles.text}>{t('screens.guide.languageSettingsDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.emergencyFeatures')}</Text>
+          <Image source={require('../../assets/manual/settingsEmergency.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.emergencyFeaturesDesc1')}</Text>
+          <Image source={require('../../assets/manual/settingsEmergency.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.emergencyFeaturesDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.qrCodeScanning')}</Text>
+          <Text style={styles.text}>{t('screens.guide.qrCodeScanningDesc1')}</Text>
+          <Image source={require('../../assets/manual/qrCodeScanning.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.qrCodeScanningDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.searchFunction')}</Text>
+          <Text style={styles.text}>{t('screens.guide.searchFunctionDesc1')}</Text>
+          <Image source={require('../../assets/manual/searchFunction.png')} style={styles.main_image} />
+          <Text style={styles.text}>{t('screens.guide.searchFunctionDesc2')}</Text>
+
+          <Text style={styles.subtext}>{t('screens.guide.accessibilityFeatures')}</Text>
+          <Text style={styles.text}>{t('screens.guide.accessibilityFeaturesDesc1')}</Text>
+          <Text style={styles.text}>{t('screens.guide.accessibilityFeaturesDesc2')}</Text>
+        </ScrollView>
+      </View>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
-    margin: 20,
-  },
-  subtext: {
-    fontSize: 35,
-    color: '#000000',
-    marginBottom: 20,
+    marginHorizontal: 20,
+    marginVertical: 10,
+    gap: 5,
   },
   subheader: {
+    fontSize: 35,
+    marginBottom: 10,
+  },
+  subtext: {
     fontSize: 28,
-    color: '#000000',
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   flagcontainer: {
     flexDirection: 'row',
@@ -346,18 +333,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: {
-    fontSize: 32,
-  },
-  small_text: {
+    alignSelf: 'flex-start',
     fontSize: 20,
-    textAlign: 'center',
   },
   main_image: {
-    height: 200,
-    width: 300,
+    maxHeight: 500,
+    width: "90%",
     resizeMode: 'contain',
-    marginBottom: 20,
-    marginTop: 20,
+    marginVertical: 20,
     borderWidth: 2,
     borderColor: 'black',
   },
@@ -370,7 +353,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   voicebutton: {
-    width: '25%',
+    width: '29%',
     padding: 20,
     backgroundColor: '#d9d9d9',
     marginVertical: 40,
@@ -379,7 +362,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   selectedvoicebutton: {
-    width: '25%',
+    width: '29%',
     padding: 20,
     backgroundColor: '#d9d9d9',
     marginVertical: 40,
@@ -388,7 +371,33 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   voicetext: {
+    fontSize: 18,
     textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  modalContent: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
 });
 

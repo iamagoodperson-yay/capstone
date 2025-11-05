@@ -109,6 +109,69 @@
             "Voice1": "Voice 1",
             "Voice2": "Voice 2",
             "Voice3": "Voice 3"
+        },
+        "guide": {
+            "title": "User's guide",
+            
+            "gettingStarted": "Getting Started",
+            "gettingStartedDesc1": "Welcome to your communication app! This app helps you express yourself through phrases, images, and interactive features.",
+            "gettingStartedDesc2": "Navigate through different screens using the bottom tabs: Home, Phrases, Challenge, Shop, Settings, and History.",
+
+            "homeScreen": "Home Screen",
+            "homeScreenDesc1": "Your personalized dashboard displaying your avatar, bookmarked phrases, and quick access buttons.",
+            "homeScreenDesc2": "Tap bookmarked phrases to use them instantly, or long-press to manage bookmarks. Access recent history, daily challenges, and QR code scanning from here.",
+
+            "phrasesNavigation": "Phrases Navigation", 
+            "phrasesNavigationDesc1": "Browse through categories like Food & Drinks, Directions, Emergency, and Others to find the phrases you need.",
+            "phrasesNavigationDesc2": "Use the search bar to quickly find specific phrases. Tap phrases to speak them aloud or navigate deeper into subcategories.",
+
+            "addingPhrases": "Adding Custom Phrases",
+            "addingPhrasesDesc1": "Tap the '+' button in the Phrases screen to add your own custom phrases with optional images.",
+            "addingPhrasesDesc2": "Choose between simple categories or advanced processes with multiple choices, speech settings, and workflow branching.",
+
+            "editingPhrases": "Editing and Deleting Phrases",
+            "editingPhrasesDesc1": "Long-press any phrase to access edit options. You can modify text, change images, or adjust process settings.",
+            "editingPhrasesDesc2": "Delete phrases by selecting the delete option in the edit menu. Confirm the deletion to permanently remove the phrase.",
+
+            "bookmarkSystem": "Bookmarking System", 
+            "bookmarkSystemDesc1": "Long-press phrases to bookmark them for quick access on your Home screen.",
+            "bookmarkSystemDesc2": "Bookmarked phrases are highlighted yellow and are sorted by usage frequency. Remove bookmarks by long-pressing and selecting the option.",
+
+            "processingMode": "Processing Mode",
+            "processingModeDesc1": "Some phrases activate processing mode, where you build complete sentences by selecting multiple choices in sequence.",
+            "processingModeDesc2": "Follow the speech prompts at the top, make your selections, and tap 'Next' to complete your message. Use multi-select for complex requests.",
+
+            "dailyChallenge": "Daily Challenge",
+            "dailyChallengeDesc1": "Complete daily tasks to earn coins! Each day presents a new challenge requiring you to navigate to specific phrases or complete processes.",
+            "dailyChallengeDesc2": "Submit your answer after completing the challenge. Successful completion rewards you with coins to spend in the shop.",
+
+            "shopAvatar": "Shop and Avatar Customization",
+            "shopAvatarDesc1": "Spend earned coins to unlock new avatar items including hats, shirts, pants, shoes, and accessories.",
+            "shopAvatarDesc2": "Select different categories in the shop to browse items. Tap locked items to purchase with coins, or tap unlocked items to equip them.",
+
+            "historyTracking": "History Tracking",
+            "historyTrackingDesc1": "View your conversation history to see previously used phrase combinations and selections.",
+            "historyTrackingDesc2": "Tap history items to replay them with speech. Long-press to bookmark frequently used combinations or delete unwanted entries.",
+
+            "languageSettings": "Language and Voice Settings", 
+            "languageSettingsDesc1": "Switch between English, Chinese, Malaysian, and Tamil languages by tapping the flag icons in Settings.",
+            "languageSettingsDesc2": "Choose your preferred button layout style and select from different voice options for text-to-speech functionality.",
+
+            "emergencyFeatures": "Emergency Features",
+            "emergencyFeaturesDesc1": "Set up a caregiver phone number in Settings for quick emergency access through the Emergency phrase category.",
+            "emergencyFeaturesDesc2": "The Emergency button provides instant access to call your designated caregiver when you need immediate help.",
+
+            "qrCodeScanning": "QR Code Scanning",
+            "qrCodeScanningDesc1": "Use the QR code scanner from the Home screen to receive rewards or access special content shared by others.",
+            "qrCodeScanningDesc2": "Point your camera at supported QR codes to automatically process commands like receiving coins from caregivers or friends.",
+
+            "searchFunction": "Search Functionality", 
+            "searchFunctionDesc1": "Use the search bar in Phrases to quickly find specific words or phrases across all categories and subcategories.",
+            "searchFunctionDesc2": "Search results show the full path to each phrase, making it easy to locate items in complex category structures.",
+
+            "accessibilityFeatures": "Accessibility Features",
+            "accessibilityFeaturesDesc1": "All phrases support text-to-speech with natural voices in multiple languages for clear communication.",
+            "accessibilityFeaturesDesc2": "Large buttons, clear images, and simple navigation make the app accessible for users with different abilities and needs."
         }
     },
     "imagePicker": {

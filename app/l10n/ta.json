@@ -102,7 +102,13 @@
             "languageTitle": "மொழிகள்",
             "buttonTitle": "பட்டன் அமைப்பு",
             "buttonFood": "உணவு",
-            "caregiverNumberTitle": "அவசர தொலைபேசி எண்"
+            "caregiverNumberTitle": "அவசர தொலைபேசி எண்",
+            "Voice1": "குரல் 1",
+            "Voice2": "குரல் 2",
+            "Voice3": "குரல் 3",
+            "manual": {
+                "title": "பயனர் கையேடு"
+            }
         },
         "history": {
             "title": "வரலாறு",

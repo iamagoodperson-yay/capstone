@@ -102,7 +102,13 @@
             "languageTitle": "Bahasa",
             "buttonTitle": "Susun Atur Butang",
             "buttonFood": "Makanan",
-            "caregiverNumberTitle": "Nombor Telefon Kecemasan"
+            "caregiverNumberTitle": "Nombor Telefon Kecemasan",
+            "Voice1": "Suara 1",
+            "Voice2": "Suara 2",
+            "Voice3": "Suara 3",
+            "manual": {
+                "title": "Manual Pengguna"
+            }
         },
         "history": {
             "title": "Sejarah",

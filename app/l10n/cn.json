@@ -102,7 +102,13 @@
             "languageTitle": "语言",
             "buttonTitle": "按钮布局",
             "buttonFood": "食物",
-            "caregiverNumberTitle": "紧急联系电话"
+            "caregiverNumberTitle": "紧急联系电话",
+            "Voice1": "语音 1",
+            "Voice2": "语音 2",
+            "Voice3": "语音 3",
+            "manual": {
+                "title": "用户手册"
+            }
         },
         "history": {
             "title": "历史记录",
