@@ -110,10 +110,10 @@
                 "title": "致谢与认可",
                 "description": "本应用是SST-NP IDP DiSpark顶点项目2025的成果。",
                 "students": "学生: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia Yen",
-                "hwnStaff": "HWN员工: 陈先生 Tan Ter Soon, 康女士 Kang Yun Jie",
-                "mindsStaff": "MINDS员工: 朱莉亚女士",
-                "mentors": "技术导师: 蒋先生 Spencer Chiang, 云先生 Joshua Woon, 梁先生 Liong Yuen Ming",
-                "supervisors": "SST教师主管: 廷女士 Jaslyn Ting, 亚菲亚女士 Afiah",
+                "hwnStaff": "HWN员工: Tan Ter Soon 先生, Kang Yun Jie 女士",
+                "mindsStaff": "MINDS员工: Julia 女士",
+                "mentors": "技术导师: Spencer Chiang 先生, Joshua Woon 先生, Liong Yuen Ming 先生",
+                "supervisors": "SST教师主管: Jaslyn Ting 女士, Afiah 女士",
                 "collaboration": "与Heartware Network及MINDS合作",
                 "icons": "本应用包含来自Font Awesome、Freepik和Flaticon的图标。"
             }
@@ -164,12 +164,7 @@
             "searchFunctionDesc2": "搜索结果显示每个短语的完整路径，方便在复杂的类别结构中定位项目。",
             "accessibilityFeatures": "无障碍功能",
             "accessibilityFeaturesDesc1": "所有短语支持多种语言的自然语音文本到语音，实现清晰的交流。",
-            "accessibilityFeaturesDesc2": "大按钮、清晰的图像和简单的导航使应用对具有不同能力和需求的用户都是可访问的。",
-            "credits": {
-                "title": "致谢与认可",
-                "description": "本应用是SST-NP IDP DiSpark顶点项目2025的成果。",
-                "icons": "本应用包含来自Font Awesome、Freepik和Flaticon的图标。"
-            }
+            "accessibilityFeaturesDesc2": "大按钮、清晰的图像和简单的导航使应用对具有不同能力和需求的用户都是可访问的。"
         },
         "history": {
             "title": "历史记录",

@@ -170,12 +170,7 @@
             "searchFunctionDesc2": "Hasil carian menunjukkan laluan penuh ke setiap frasa, menjadikannya mudah untuk mencari item dalam struktur kategori kompleks.",
             "accessibilityFeatures": "Ciri-ciri Kebolehaksesan",
             "accessibilityFeaturesDesc1": "Semua frasa menyokong teks-ke-pertuturan dengan suara semula jadi dalam berbagai bahasa untuk komunikasi yang jelas.",
-            "accessibilityFeaturesDesc2": "Butang besar, gambar yang jelas, dan navigasi mudah menjadikan apl mudah diakses oleh pengguna dengan kebolehan dan keperluan yang berbeza.",
-            "credits": {
-                "title": "Penghargaan dan Pengakuan",
-                "description": "Apl ini dibangunkan sebagai bahagian daripada projek Capstone SST-NP IDP DiSpark 2025.",
-                "icons": "Apl ini mengandungi ikon daripada Font Awesome, Freepik dan Flaticon."
-            }
+            "accessibilityFeaturesDesc2": "Butang besar, gambar yang jelas, dan navigasi mudah menjadikan apl mudah diakses oleh pengguna dengan kebolehan dan keperluan yang berbeza."
         }
     },
     "imagePicker": {
