@@ -21,6 +21,12 @@
             "Cancel": "Batal",
             "Delete": "Padam"
         },
+        "history": {
+            "title": "Sejarah",
+            "backButton": "Kembali",
+            "delTitle": "Padam Kumpulan",
+            "delMessage": "Adakah anda pasti mahu padam kumpulan ini?"
+        },
         "phrases": {
             "searchPhrases": "Cari frasa...",
             "next": "Seterusnya",
@@ -170,12 +176,6 @@
                 "description": "Apl ini dibangunkan sebagai bahagian daripada projek Capstone SST-NP IDP DiSpark 2025.",
                 "icons": "Apl ini mengandungi ikon daripada Font Awesome, Freepik dan Flaticon."
             }
-        },
-        "history": {
-            "title": "Sejarah",
-            "backButton": "Kembali",
-            "delTitle": "Padam Kumpulan",
-            "delMessage": "Adakah anda pasti mahu padam kumpulan ini?"
         }
     },
     "imagePicker": {
