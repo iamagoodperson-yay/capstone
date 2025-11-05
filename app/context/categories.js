@@ -27,19 +27,19 @@ const categories = {
       choices: [
         {
           text: 'Favourite MRT/Bus Stops',
-          image: require('../../assets/phrases/directions.png'),
+          image: require('../../assets/phrases/mrt_logo.png'),
           id: 'favourite_mrt_bus_stops',
           usageCount: 0,
         },
         {
           text: 'Favourite Places',
-          image: require('../../assets/phrases/directions.png'),
+          image: require('../../assets/phrases/map_pin.png'),
           id: 'favourite_places',
           usageCount: 0,
         },
         {
           text: 'Public Transport',
-          image: require('../../assets/phrases/directions.png'),
+          image: require('../../assets/phrases/public_transport.png'),
           id: 'public_transport',
           usageCount: 0,
         },
