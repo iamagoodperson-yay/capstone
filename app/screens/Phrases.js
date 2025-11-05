@@ -48,7 +48,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
   const current = getCurrent();
   const breadcrumbs = getBreadcrumbs()
-    .map(crumb => t(`phrases.${crumb}`) || crumb)
+    .map(crumb => t(`phrases.${crumb}`, { defaultValue: crumb }))
     .join(' > ');
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -175,6 +175,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           next: 'end',
         };
         addTask(newTask);
+      } else {
+        const newCategory = {
+            text: newItemText.trim(),
+            image: selectedImage || null,
+            id: targetTask,
+            usageCount: 0,
+        };
+        addCategory(current, newCategory);
       }
     } else {
       const newCategory = {
@@ -258,6 +266,12 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           editingItem.next = targetTask;
         }
       }
+    }
+    if ( !inProcess &&
+        editingItem.id !== null &&
+        editingItem.id !== targetTask
+    ) {
+        editingItem.id = targetTask;
     }
 
     editPhrase(editParent, editingItem);
@@ -359,6 +373,10 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                   setEditingItem(item);
                   setEditParent(current);
                   setEditImage(item.image || null);
+                  if (item.id) {
+                    setTargetTask(item.id);
+                    setTaskChoices(getAllTaskIds());
+                  }
                   setEditModal(true);
                 },
               },
@@ -744,10 +762,9 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                     onChangeText={setEditText}
                   />
                 </View>
-                {inProcess &&
-                  (current.diverge
+                {(inProcess ? (current.diverge
                     ? editingItem?.id !== current?.id
-                    : editingItem?.id === current?.id) && (
+                    : editingItem?.id === current?.id) : editingItem?.id) && (
                     <View style={styles.inputSection}>
                       <Text style={styles.inputLabel}>{t('screens.phrases.edit.editTargetTask')}</Text>
                       <Dropdown
@@ -757,7 +774,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                         width="0.85"
                       />
                     </View>
-                  )}
+                )}
                 {(!inProcess || editingItem?.id !== current?.id) && (
                   <ImagePicker
                     selectedImage={editImage}
@@ -810,7 +827,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
                 {!processDiverge && (
                   <View style={styles.inputSection}>
-                    <Text style={styles.inputLabel}>{t('screens.phrases.edit.targetTask')}</Text>
+                    <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask')}</Text>
                     <Dropdown
                       values={taskChoices}
                       base={targetTask}
