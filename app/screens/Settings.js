@@ -184,7 +184,7 @@ function Settings({
         <Text style={styles.text}>{t('screens.settings.credits.supervisors')}</Text>
         <Text style={styles.text}>{t('screens.settings.credits.collaboration')}</Text>
         
-        <Text style={styles.subtext}>{t('screens.settings.credits.icons')}</Text>
+        <Text style={styles.text}>{t('screens.settings.credits.icons')}</Text>
       </View>
     </ScrollView>
         <UserGuideModal visible={guideVisible} onClose={() => setGuideVisible(false)} t={t} />
