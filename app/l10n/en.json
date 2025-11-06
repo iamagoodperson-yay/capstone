@@ -97,7 +97,6 @@
             "labelShirts": "Shirts",
             "labelPants": "Pants",
             "labelShoes": "Shoes",
-            "labelAccessories": "Accessories",
             "notEnough": "Not enough 🪙",
             "onlyHave": "You only have {{coins}} 🪙"
         },
@@ -157,7 +156,7 @@
             "dailyChallengeDesc2": "Submit your answer after completing the challenge. Successful completion rewards you with coins to spend in the shop.",
 
             "shopAvatar": "Shop and Avatar Customization",
-            "shopAvatarDesc1": "Spend earned coins to unlock new avatar items including hats, shirts, pants, shoes, and accessories.",
+            "shopAvatarDesc1": "Spend earned coins to unlock new avatar items including hats, shirts, pants, and shoes.",
             "shopAvatarDesc2": "Select different categories in the shop to browse items. Tap locked items to purchase with coins, or tap unlocked items to equip them.",
 
             "historyTracking": "History Tracking",

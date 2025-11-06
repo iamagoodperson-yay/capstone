@@ -94,7 +94,6 @@
             "labelShirts": "上衣",
             "labelPants": "裤子",
             "labelShoes": "鞋子",
-            "labelAccessories": "配饰",
             "notEnough": "🪙 不足",
             "onlyHave": "你只有 {{coins}} 🪙"
         },

@@ -159,7 +159,6 @@ const App = () => {
     shirts: 0,
     pants: 0,
     shoes: 0,
-    accessories: 0,
   });
   const [avatarItems, setAvatarItems] = useState({
     hats: [
@@ -312,14 +311,6 @@ const App = () => {
         name: require('../assets/avatar/shoes/shoe5.png'),
         price: 5,
         unlocked: false,
-      },
-    ],
-    accessories: [
-      {
-        id: 0,
-        name: require('../assets/avatar/none.png'),
-        price: 0,
-        unlocked: true,
       },
     ],
   });

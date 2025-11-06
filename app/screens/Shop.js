@@ -78,7 +78,6 @@ function Shop({
           { label: t('screens.shop.labelShirts'), value: 'Shirts' },
           { label: t('screens.shop.labelPants'), value: 'Pants' },
           { label: t('screens.shop.labelShoes'), value: 'Shoes' },
-          { label: t('screens.shop.labelAccessories'), value: 'Accessories' },
         ]}
         base={category}
         changebase={setCategory}

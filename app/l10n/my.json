@@ -100,7 +100,6 @@
             "labelShirts": "Baju",
             "labelPants": "Seluar",
             "labelShoes": "Kasut",
-            "labelAccessories": "Aksesori",
             "notEnough": "Syiling tidak mencukupi 🪙",
             "onlyHave": "Anda hanya ada {{coins}} 🪙"
         },
@@ -151,7 +150,7 @@
             "dailyChallengeDesc1": "Lengkapkan tugas harian untuk memperoleh syiling! Setiap hari mempersembahkan cabaran baharu yang memerlukan anda menavigasi ke frasa tertentu atau melengkapkan proses.",
             "dailyChallengeDesc2": "Hantar jawapan anda selepas melengkapkan cabaran. Penyelesaian berjaya memberikan anda syiling untuk dibelanjakan di kedai.",
             "shopAvatar": "Kedai dan Penyesuaian Avatar",
-            "shopAvatarDesc1": "Belanjakan syiling yang diperoleh untuk membuka item avatar baharu termasuk topi, baju, seluar, kasut, dan aksesori.",
+            "shopAvatarDesc1": "Belanjakan syiling yang diperoleh untuk membuka item avatar baharu termasuk topi, baju, seluar, dan kasut.",
             "shopAvatarDesc2": "Pilih kategori yang berbeza di kedai untuk melihat item. Ketik item terkunci untuk membeli dengan syiling, atau ketik item yang sudah dibuka untuk memperlengkapinya.",
             "historyTracking": "Penjejakan Sejarah",
             "historyTrackingDesc1": "Lihat sejarah perbualan anda untuk melihat kombinasi frasa dan pilihan yang telah digunakan sebelumnya.",
