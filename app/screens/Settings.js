@@ -26,15 +26,15 @@ function Settings({
   const [voice, setVoice] = useState(0);
   const [guideVisible, setGuideVisible] = useState(false);
 
-  const renderFlag = (lang, imgSrc) => (
-    <TouchableOpacity onPress={() => langSwitch(lang)}>
-      <Image
-        source={imgSrc}
-        style={[
-          styles.flag,
-          i18n.language === lang ? styles.selectedFlag : null,
-        ]}
-      />
+  const renderFlag = (lang, langLabel) => (
+    <TouchableOpacity
+      style={[
+        styles.languageButton,
+        i18n.language === lang ? styles.selectedLanguage : null,
+      ]}
+      onPress={() => langSwitch(lang)}
+    >
+      <Text style={styles.languageText}>{langLabel}</Text>
     </TouchableOpacity>
   );
 
@@ -87,13 +87,11 @@ function Settings({
         <Text style={styles.subheader}>
           {t('screens.settings.languageTitle')}
         </Text>
-        <View style={styles.flagcontainer}>
-          {renderFlag('en', require('../../assets/settings/englishflag.png'))}
-          {renderFlag('cn', require('../../assets/settings/chineseflag.png'))}
-        </View>
-        <View style={styles.flagcontainer}>
-          {renderFlag('my', require('../../assets/settings/malaysianflag.png'))}
-          {renderFlag('ta', require('../../assets/settings/indianflag.png'))}
+        <View style={styles.languageGrid}>
+          {renderFlag('en', 'English')}
+          {renderFlag('cn', '华文')}
+          {renderFlag('my', 'Malay')}
+          {renderFlag('ta', 'Tamil')}
         </View>
 
         <View style={{ height: 20 }} />
@@ -125,7 +123,7 @@ function Settings({
           onPress={() => setButtonLayout(3)}
         />
 
-        <Text style={styles.subtext}>
+        <Text style={styles.subheader2}>
           {t('screens.settings.caregiverNumberTitle')}
         </Text>
         <TextInput
@@ -175,7 +173,7 @@ function Settings({
           onPress={() => setGuideVisible(true)}
         />
 
-        <Text style={styles.subtext}>{t('screens.settings.credits.title')}</Text>
+        <Text style={styles.subheader2}>{t('screens.settings.credits.title')}</Text>
         <Text style={styles.text}>{t('screens.settings.credits.description')}</Text>
         <Text style={styles.text}>{t('screens.settings.credits.students')}</Text>
         <Text style={styles.text}>{t('screens.settings.credits.hwnStaff')}</Text>
@@ -193,105 +191,143 @@ function Settings({
 }
 
 const UserGuideModal = ({ visible, onClose, t }) => {
-  const insets = useSafeAreaInsets();
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="fullScreen"
-      onRequestClose={onClose}
-    >
-      <View style={[styles.modalContainer, { paddingTop: insets.top }]}>
-        <View style={styles.modalHeader}>
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.closeButton}>✕</Text>
-          </TouchableOpacity>
-          <Text style={styles.modalTitle}>{t('screens.guide.title')}</Text>
-          <View style={{ width: 30 }} />
-        </View>
-        <ScrollView contentContainerStyle={styles.modalContent}>
-          <Text style={styles.subtext}>{t('screens.guide.gettingStarted')}</Text>
-          <Text style={styles.text}>{t('screens.guide.gettingStartedDesc1')}</Text>
-          <Image source={require('../../assets/manual/gettingStarted.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.gettingStartedDesc2')}</Text>
+    const insets = useSafeAreaInsets();
+    return (
+        <Modal
+            visible={visible}
+            animationType="slide"
+            presentationStyle="fullScreen"
+            onRequestClose={onClose}
+        >
+            <View style={[styles.modalContainer, { paddingTop: insets.top }]}>
+                <View style={styles.modalHeader}>
+                    <TouchableOpacity onPress={onClose}>
+                        <Text style={styles.closeButton}>✕</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.modalTitle}>{t('screens.guide.title')}</Text>
+                    <View style={{ width: 30 }} />
+                </View>
+                <ScrollView contentContainerStyle={styles.modalContent}>
+                    <Text style={styles.subheader2}>{t('screens.guide.gettingStarted')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.gettingStartedDesc1')}</Text>
+                    <Image source={require('../../assets/manual/gettingStarted.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.gettingStartedDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.homeScreen')}</Text>
-          <Text style={styles.text}>{t('screens.guide.homeScreenDesc1')}</Text>
-          <Image source={require('../../assets/manual/homeScreen.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.homeScreenDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.homeScreen')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.homeScreenDesc1')}</Text>
+                    <Image source={require('../../assets/manual/homeScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.homeScreenDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.phrasesNavigation')}</Text>
-          <Image source={require('../../assets/manual/phrasesNavigation.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.phrasesNavigationDesc1')}</Text>
-          <Text style={styles.text}>{t('screens.guide.phrasesNavigationDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.phrasesOverview')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.phrasesOverviewDesc1')}</Text>
+                    <Image source={require('../../assets/manual/phrasesNavigation.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.phrasesOverviewDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.addingPhrases')}</Text>
-          <Image source={require('../../assets/manual/addButton.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.addingPhrasesDesc1')}</Text>
-          <Image source={require('../../assets/manual/addScreen.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.addingPhrasesDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.categoriesStructure')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.categoriesStructureDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.categoriesStructureDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.editingPhrases')}</Text>
-          <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc1')}</Text>
-          <Image source={require('../../assets/manual/longPressMenu.png')} style={styles.main_image} />
-          <Image source={require('../../assets/manual/editScreen.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.processesAndTasks')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.processesAndTasksDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.processesAndTasksDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.bookmarkSystem')}</Text>
-          <Image source={require('../../assets/manual/longPressMenu.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.bookmarkSystemDesc1')}</Text>
-          <Image source={require('../../assets/manual/bookmarkHome.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.bookmarkSystemDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.taskNavigation')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.taskNavigationDesc1')}</Text>
+                    <Image source={require('../../assets/manual/taskScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.taskNavigationDesc2')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.taskNavigationDesc3')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.processingMode')}</Text>
-          <Text style={styles.text}>{t('screens.guide.processingModeDesc1')}</Text>
-          <Image source={require('../../assets/manual/processingMode.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.processingModeDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.taskExamples')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.taskExamplesDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.taskExamplesDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.dailyChallenge')}</Text>
-          <Image source={require('../../assets/manual/challengeScreen.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.dailyChallengeDesc1')}</Text>
-          <Image source={require('../../assets/manual/challengeCompleted.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.dailyChallengeDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.addingPhrases')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.addingPhrasesDesc1')}</Text>
+                    <Image source={require('../../assets/manual/addButton.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.addingPhrasesDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.shopAvatar')}</Text>
-          <Image source={require('../../assets/manual/shopScreen.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.shopAvatarDesc1')}</Text>
-          <Text style={styles.text}>{t('screens.guide.shopAvatarDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.addingCategories')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.addingCategoriesDesc1')}</Text>
+                    <Image source={require('../../assets/manual/catAddScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.addingCategoriesDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.historyTracking')}</Text>
-          <Image source={require('../../assets/manual/historyScreen.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.historyTrackingDesc1')}</Text>
-          <Text style={styles.text}>{t('screens.guide.historyTrackingDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.addingTasks')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.addingTasksDesc1')}</Text>
+                    <Image source={require('../../assets/manual/taskAddScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.addingTasksDesc2')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.addingTasksDesc3')}</Text>
+                    <Text style={styles.subheader3}>{t('screens.guide.addingTasksSubHeader4')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.addingTasksDesc4')}</Text>
+                    <Text style={styles.subheader3}>{t('screens.guide.addingTasksSubHeader5')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.addingTasksDesc5')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.languageSettings')}</Text>
-          <Image source={require('../../assets/manual/settingsScreenLang.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.languageSettingsDesc1')}</Text>
-          <Text style={styles.text}>{t('screens.guide.languageSettingsDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.editingPhrases')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc1')}</Text>
+                    <Image source={require('../../assets/manual/longPressMenu.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc2')}</Text>
+                    <Image source={require('../../assets/manual/editScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc3')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.editingPhrasesDesc4')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.emergencyFeatures')}</Text>
-          <Image source={require('../../assets/manual/settingsEmergency.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.emergencyFeaturesDesc1')}</Text>
-          <Image source={require('../../assets/manual/settingsEmergency.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.emergencyFeaturesDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.bookmarkSystem')}</Text>
+                    <Image source={require('../../assets/manual/longPressMenu.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.bookmarkSystemDesc1')}</Text>
+                    <Image source={require('../../assets/manual/bookmarkHome.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.bookmarkSystemDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.qrCodeScanning')}</Text>
-          <Text style={styles.text}>{t('screens.guide.qrCodeScanningDesc1')}</Text>
-          <Image source={require('../../assets/manual/qrCodeScanning.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.qrCodeScanningDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.bookmarkManagement')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.bookmarkManagementDesc1')}</Text>
+                    <Image source={require('../../assets/manual/deleteBookmark.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.bookmarkManagementDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.searchFunction')}</Text>
-          <Text style={styles.text}>{t('screens.guide.searchFunctionDesc1')}</Text>
-          <Image source={require('../../assets/manual/searchFunction.png')} style={styles.main_image} />
-          <Text style={styles.text}>{t('screens.guide.searchFunctionDesc2')}</Text>
+                    <Text style={styles.subheader2}>{t('screens.guide.dailyChallenge')}</Text>
+                    <Image source={require('../../assets/manual/challengeScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.dailyChallengeDesc1')}</Text>
+                    <Image source={require('../../assets/manual/challengeCompleted.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.dailyChallengeDesc2')}</Text>
 
-          <Text style={styles.subtext}>{t('screens.guide.accessibilityFeatures')}</Text>
-          <Text style={styles.text}>{t('screens.guide.accessibilityFeaturesDesc1')}</Text>
-          <Text style={styles.text}>{t('screens.guide.accessibilityFeaturesDesc2')}</Text>
-        </ScrollView>
-      </View>
-    </Modal>
-  );
+                    <Text style={styles.subheader2}>{t('screens.guide.shopAvatar')}</Text>
+                    <Image source={require('../../assets/manual/shopScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.shopAvatarDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.shopAvatarDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.historyTracking')}</Text>
+                    <Image source={require('../../assets/manual/historyScreen.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.historyTrackingDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.historyTrackingDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.languageSettings')}</Text>
+                    <Image source={require('../../assets/manual/settingsScreenLang.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.languageSettingsDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.languageSettingsDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.emergencyFeatures')}</Text>
+                    <Image source={require('../../assets/manual/settingsEmergency.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.emergencyFeaturesDesc1')}</Text>
+                    <Image source={require('../../assets/manual/settingsEmergency.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.emergencyFeaturesDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.qrCodeScanning')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.qrCodeScanningDesc1')}</Text>
+                    <Image source={require('../../assets/manual/qrCodeScanning.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.qrCodeScanningDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.searchFunction')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.searchFunctionDesc1')}</Text>
+                    <Image source={require('../../assets/manual/searchFunction.png')} style={styles.main_image} />
+                    <Text style={styles.text}>{t('screens.guide.searchFunctionDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.searchTips')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.searchTipsDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.searchTipsDesc2')}</Text>
+
+                    <Text style={styles.subheader2}>{t('screens.guide.accessibilityFeatures')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.accessibilityFeaturesDesc1')}</Text>
+                    <Text style={styles.text}>{t('screens.guide.accessibilityFeaturesDesc2')}</Text>
+                </ScrollView>
+            </View>
+        </Modal>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -302,32 +338,36 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     gap: 5,
   },
-  subheader: {
-    fontSize: 35,
-    marginBottom: 10,
-  },
-  subtext: {
-    fontSize: 28,
-    marginTop: 10,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
   flagcontainer: {
     flexDirection: 'row',
+    justifyContent: 'center',
     gap: 10,
     marginBottom: 10,
   },
-  flag: {
-    height: 75,
-    width: 125,
-    opacity: 0.75,
-    borderColor: 'black',
-    borderWidth: 2,
+  languageGrid: {
+    width: '90%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 15,
   },
-  selectedFlag: {
+  languageButton: {
+    width: '48%',
+    paddingVertical: 20,
+    justifyContent: 'center',
+    backgroundColor: '#d9d9d9',
+    borderColor: '#d9d9d9',
+    borderWidth: 3,
+    borderRadius: 15,
+  },
+  selectedLanguage: {
     borderColor: '#4CAF50',
-    borderWidth: 5,
-    opacity: 1,
+  },
+  languageText: {
+    fontSize: 18,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   scrollView: {
     flex: 1,
@@ -373,6 +413,7 @@ const styles = StyleSheet.create({
   },
   voicetext: {
     fontSize: 18,
+    fontWeight: '500',
     textAlign: 'center',
   },
   modalContainer: {
@@ -398,7 +439,22 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    alignItems: 'center',
+    gap: 10,
+  },
+  subheader: {
+    fontSize: 35,
+    marginBottom: 10,
+  },
+  subheader2: {
+    fontSize: 28,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  subheader3: {
+    fontSize: 20,
+    textAlign: 'flex-start',
+    fontWeight: '600',
   },
 });
 

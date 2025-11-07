@@ -520,7 +520,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   return (
     <>
       <ScrollView
-        style={styles.scrollView}
+        style={[styles.scrollView, inProcess ? styles.process_container : null]}
         contentContainerStyle={styles.container}
       >
         <View style={styles.topBar}>
@@ -597,7 +597,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
               <Text style={styles.inputLabel}>
                 {inProcess
                   ? t('screens.phrases.add.choiceText')
-                  : (isAddProcess ? t('screens.phrases.add.processText') : t('screens.phrases.add.catText'))}
+                  : (t('screens.phrases.add.catText'))}
               </Text>
               <TextInput
                 style={styles.textInput}
@@ -857,6 +857,9 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
+  },
+  process_container: {
+    backgroundColor: '#cee7ffff',
   },
   container: {
     alignItems: 'center',
