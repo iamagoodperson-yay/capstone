@@ -67,11 +67,28 @@
                 "editTargetTask": "Edit tugas sasaran",
                 "cancel": "Batal",
                 "save": "Simpan"
+            },
+            "errors": {
+                "errorTitle": "Ralat",
+                "enterText": "Sila masukkan teks.",
+                "enterProcessTitle": "Sila masukkan tajuk untuk proses.",
+                "enterSpeechText": "Sila masukkan teks pertuturan untuk proses.",
+                "enterTextInField": "Sila masukkan teks dalam medan teks.",
+                "editCurrentTask": "Edit tugas semasa \"{{taskName}}\"?",
+                "editOrBookmark": "Edit atau Simpan \"{{itemName}}\"?",
+                "removeBookmark": "Buang Simpanan",
+                "bookmark": "Simpan",
+                "edit": "Edit",
+                "cancel": "Batal",
+                "endNoNextTask": "Tamat (tiada tugas seterusnya)",
+                "newTask": "Tugas Baru"
             }
         },
         "daily": {
             "challenge": "Cabaran: ",
             "submit": "Hantar Jawapan",
+            "completedMessage": "Cabaran selesai! Datang lagi esok untuk cabaran baru.",
+            "completedButton": "Siap Hari Ini",
             "status": {
                 "loading": "Memuat...",
                 "noChallenge": "Tiada cabaran tersedia",
@@ -79,8 +96,7 @@
             },
             "correct": {
                 "title": "Jawapan Betul!",
-                "text1": "Anda mendapat ganjaran harian",
-                "text2": "Jumlah"
+                "text": "Anda dapat {{coinsEarned}} 🪙 untuk menyelesaikan cabaran harian!\nJumlah: {{total}} 🪙\nBerturut-turut: {{streak}} 🔥"
             },
             "wrong": {
                 "title": "Jawapan Salah",
@@ -93,6 +109,10 @@
             "error": {
                 "title": "Ralat",
                 "text": "Ralat berlaku semasa menyemak jawapan anda."
+            },
+            "alreadyCompleted": {
+                "title": "Sudah Siap",
+                "text": "Anda sudah selesaikan cabaran hari ini! Datang lagi esok untuk cabaran baru."
             }
         },
         "shop": {

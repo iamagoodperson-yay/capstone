@@ -58,16 +58,33 @@
                 "editTitle": "Edit",
                 "delete": "Delete",
                 "confirmDeleteTitle": "Confirm Delete",
-                "confirmDeleteMsg": "Are you sure you want to delete {{item}}?",
+                "confirmDeleteMsg": "Are you sure you want to delete \"{{item}}\"?",
                 "editText": "Edit Text",
                 "editTargetTask": "Edit next Task",
                 "cancel": "Cancel",
                 "save": "Save"
+            },
+            "errors": {
+                "errorTitle": "Error",
+                "enterText": "Please enter some text.",
+                "enterProcessTitle": "Please enter a title for the process.",
+                "enterSpeechText": "Please enter speech text for the process.",
+                "enterTextInField": "Please put in some text in the text field.",
+                "editCurrentTask": "Edit current task \"{{taskName}}\"?",
+                "editOrBookmark": "Edit or Bookmark \"{{itemName}}\"?",
+                "removeBookmark": "Remove Bookmark",
+                "bookmark": "Bookmark",
+                "edit": "Edit",
+                "cancel": "Cancel",
+                "endNoNextTask": "End (no next task)",
+                "newTask": "New Task"
             }
         },
         "daily": {
             "challenge": "Challenge: ",
             "submit": "Submit Answer",
+            "completedMessage": "Challenge completed! Come back tomorrow for a new one.",
+            "completedButton": "Completed Today",
             "status": {
                 "loading": "Loading...",
                 "noChallenge": "No challenge available",
@@ -75,8 +92,7 @@
             },
             "correct": {
                 "title": "Correct Answer!",
-                "text1": "You get your daily",
-                "text2": "Total"
+                "text": "You get {{coinsEarned}} 🪙 for completing the daily challenge!\nTotal: {{total}} 🪙\nStreak: {{streak}} 🔥"
             },
             "wrong": {
                 "title": "Wrong Answer",
@@ -89,6 +105,10 @@
             "error": {
                 "title": "Error",
                 "text": "An error occurred while checking your answer."
+            },
+            "alreadyCompleted": {
+                "title": "Already Completed",
+                "text": "You have already completed today's challenge! Come back tomorrow for a new one."
             }
         },
         "shop": {

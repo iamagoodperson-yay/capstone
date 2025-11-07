@@ -95,7 +95,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
   const handleAdd = () => {
     if (!newItemText.trim()) {
-      Alert.alert('Error', 'Please enter some text.');
+      Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterText'));
       return;
     }
     setIsAdding(true);
@@ -103,11 +103,11 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
     if (inProcess) {
       if (current.diverge) {
         if (!taskTitle.trim()) {
-          Alert.alert('Error', 'Please enter a title for the process.');
+          Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterProcessTitle'));
           setIsAdding(false);
           return;
         } else if (!processSpeech.trim()) {
-          Alert.alert('Error', 'Please enter speech text for the process.');
+          Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterSpeechText'));
           setIsAdding(false);
           return;
         }
@@ -144,13 +144,13 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         addChoiceToTask(current.id, newChoice);
       }
     } else if (isAddProcess) {
-      if (targetTask === 'New Task') {
+      if (targetTask === t('screens.phrases.errors.newTask')) {
         if (!taskTitle.trim()) {
-          Alert.alert('Error', 'Please enter a title for the process.');
+          Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterProcessTitle'));
           setIsAdding(false);
           return;
         } else if (!processSpeech.trim()) {
-          Alert.alert('Error', 'Please enter speech text for the process.');
+          Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterSpeechText'));
           setIsAdding(false);
           return;
         }
@@ -229,7 +229,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
   const handleEdit = () => {
     if (!editText.trim()) {
-      Alert.alert('Error', 'Please put in some text in the text field.');
+      Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterTextInField'));
       setIsAdding(false);
       return;
     }
@@ -260,7 +260,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       inProcess && current.id === editingItem.id ? !editingItem.diverge : true
     ) {
       if (editingItem.next !== targetTask) {
-        if (targetTask === 'End (no next task)') {
+        if (targetTask === t('screens.phrases.errors.endNoNextTask')) {
           editingItem.next = 'end';
         } else {
           editingItem.next = targetTask;
@@ -353,21 +353,20 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         onPress={() => handlePress(item)}
         onLongPress={() => {
           Alert.alert(
-            `${t(`screens.phrases.Edit or Bookmark`)}"${t(
-              `phrases.${item.text}`,
-              { defaultValue: item.text },
-            )}"?`,
+            t('screens.phrases.errors.editOrBookmark', { 
+              itemName: t(`phrases.${item.text}`, { defaultValue: item.text })
+            }),
             '',
             [
-              { text: t('screens.phrases.Cancel'), style: 'cancel' },
+              { text: t('screens.phrases.errors.cancel'), style: 'cancel' },
               {
                 text: bookmarkedTexts.includes(item.text)
-                  ? t('screens.phrases.Remove Bookmark')
-                  : t('screens.phrases.Bookmark'),
+                  ? t('screens.phrases.errors.removeBookmark')
+                  : t('screens.phrases.errors.bookmark'),
                 onPress: () => toggleBookmark(item.text),
               },
               {
-                text: t('screens.phrases.Edit'),
+                text: t('screens.phrases.errors.edit'),
                 onPress: () => {
                   setEditText(item.text);
                   setEditingItem(item);
@@ -425,10 +424,10 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           buttonlayout={4}
           onPress={() => speak(getSpeechText(true))}
           onLongPress={() => {
-            Alert.alert(`Edit current task "${current.text}"?`, '', [
-              { text: 'Cancel', style: 'cancel' },
+            Alert.alert(t('screens.phrases.errors.editCurrentTask', { taskName: current.text }), '', [
+              { text: t('screens.phrases.errors.cancel'), style: 'cancel' },
               {
-                text: 'Edit',
+                text: t('screens.phrases.errors.edit'),
                 onPress: () => {
                   setEditText(current.text);
                   setEditingItem(current);
@@ -442,7 +441,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                   setTargetTask(
                     choices.find(c => c === current.next) || current.next,
                   );
-                  setTaskChoices(['End (no next task)', ...choices]);
+                  setTaskChoices([t('screens.phrases.errors.endNoNextTask'), ...choices]);
                 },
               },
             ]);
@@ -467,16 +466,16 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             buttonlayout={buttonLayout}
             onPress={() => handlePress(item)}
             onLongPress={() => {
-              Alert.alert(`Edit or Bookmark "${item.text}"?`, '', [
-                { text: 'Cancel', style: 'cancel' },
+              Alert.alert(t('screens.phrases.errors.editOrBookmark', { itemName: item.text }), '', [
+                { text: t('screens.phrases.errors.cancel'), style: 'cancel' },
                 {
                   text: bookmarkedTexts.includes(item.text)
-                    ? 'Remove Bookmark'
-                    : 'Bookmark',
+                    ? t('screens.phrases.errors.removeBookmark')
+                    : t('screens.phrases.errors.bookmark'),
                   onPress: () => toggleBookmark(item.text),
                 },
                 {
-                  text: 'Edit',
+                  text: t('screens.phrases.errors.edit'),
                   onPress: () => {
                     setEditText(item.text);
                     setEditingItem(item);
@@ -490,7 +489,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                       setTargetTask(
                         choices.find(c => c === item.next) || item.next,
                       );
-                      setTaskChoices(['End (no next task)', ...choices]);
+                      setTaskChoices([t('screens.phrases.errors.endNoNextTask'), ...choices]);
                     }
                     setEditModal(true);
                   },
@@ -509,7 +508,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             try {
               navigateToChoice(null);
             } catch (err) {
-              Alert.alert('Error', err.message);
+              Alert.alert(t('screens.phrases.errors.errorTitle'), err.message);
             }
           }}
         />
@@ -543,8 +542,8 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
               style={styles.addBtn}
               onPress={() => {
                 setAddModal(true);
-                setTargetTask('New Task');
-                setTaskChoices(['New Task', ...getAllTaskIds()]);
+                setTargetTask(t('screens.phrases.errors.newTask'));
+                setTaskChoices([t('screens.phrases.errors.newTask'), ...getAllTaskIds()]);
               }}
             >
               <Text style={styles.addText}>+</Text>
@@ -627,14 +626,14 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             {(!inProcess && isAddProcess) || (inProcess && current.diverge) ? (
               <>
                 <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask')}</Text>
+                  <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask', {item: inProcess ? 'choice' : 'Category'})}</Text>
                   <Dropdown
                     values={taskChoices}
                     base={targetTask}
                     changebase={setTargetTask}
                   />
                 </View>
-                {targetTask === 'New Task' ? (
+                {targetTask === t('screens.phrases.errors.newTask') ? (
                   <>
                     <View style={styles.inputSection}>
                       <Text style={styles.inputLabel}>{t('screens.phrases.add.taskTitle')}</Text>
@@ -827,7 +826,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 
                 {!processDiverge && (
                   <View style={styles.inputSection}>
-                    <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask')}</Text>
+                    <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask', {item: 'Task'})}</Text>
                     <Dropdown
                       values={taskChoices}
                       base={targetTask}

@@ -7,16 +7,29 @@ import Phrases from './Phrases';
 import Button from '../components/button';
 
 const DAILY_KEY = 'daily_challenge';
+const DAILY_COMPLETION_KEY = 'daily_completion';
+const DAILY_STREAK_KEY = 'daily_streak';
 
 const Daily = ({ coins, setCoins, buttonLayout }) => {
     const { t } = useTranslation();
     const { processesState, categoriesState, selected, inProcess, navigationStack } = usePhrasesContext();
     const [chall, setChall] = useState({ text: t('screens.daily.status.loading'), kind: null, payload: null });
+    const [isCompleted, setIsCompleted] = useState(false);
+    const [currentStreak, setCurrentStreak] = useState(0);
 
     useEffect(() => {
         const setup = async () => {
             try {
                 const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+                const completionKey = `${DAILY_COMPLETION_KEY}:${today}`;
+                
+                // Check if already completed today
+                const completed = await AsyncStorage.getItem(completionKey);
+                setIsCompleted(completed === 'true');
+                
+                // Load current streak
+                await loadStreak();
+                
                 const key = `${DAILY_KEY}:${today}`;
                 const stored = await AsyncStorage.getItem(key);
                 if (stored) {
@@ -64,8 +77,62 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
         setup();
     }, [categoriesState, processesState]);
 
-    const submit = () => {
+    const loadStreak = async () => {
         try {
+            const today = new Date().toISOString().slice(0, 10);
+            const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+            
+            const streakData = await AsyncStorage.getItem(DAILY_STREAK_KEY);
+            if (streakData) {
+                const { lastDate, streak } = JSON.parse(streakData);
+                
+                if (lastDate === today) {
+                    // Already completed today
+                    setCurrentStreak(streak);
+                } else if (lastDate === yesterday) {
+                    // Continuing streak from yesterday
+                    setCurrentStreak(streak);
+                } else {
+                    // Streak broken, reset to 0
+                    setCurrentStreak(0);
+                    await AsyncStorage.setItem(DAILY_STREAK_KEY, JSON.stringify({ lastDate: '', streak: 0 }));
+                }
+            } else {
+                // No streak data, start fresh
+                setCurrentStreak(0);
+                await AsyncStorage.setItem(DAILY_STREAK_KEY, JSON.stringify({ lastDate: '', streak: 0 }));
+            }
+        } catch (e) {
+            console.warn('Failed to load streak', e);
+            setCurrentStreak(0);
+        }
+    };
+
+    const updateStreak = async () => {
+        try {
+            const today = new Date().toISOString().slice(0, 10);
+            const newStreak = currentStreak + 1;
+            
+            await AsyncStorage.setItem(DAILY_STREAK_KEY, JSON.stringify({ 
+                lastDate: today, 
+                streak: newStreak 
+            }));
+            
+            setCurrentStreak(newStreak);
+            return newStreak;
+        } catch (e) {
+            console.warn('Failed to update streak', e);
+            return currentStreak;
+        }
+    };
+
+    const submit = async () => {
+        try {
+            if (isCompleted) {
+                Alert.alert(t('screens.daily.alreadyCompleted.title'), t('screens.daily.alreadyCompleted.text'));
+                return;
+            }
+
             if (!chall || !chall.kind) {
                 Alert.alert(t('screens.daily.noChall.title'), t('screens.daily.noChall.text'));
                 return;
@@ -89,8 +156,21 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
             }
 
             if (correct) {
-                Alert.alert(`✅ ${t('screens.daily.correct.title')}`, `${t('screens.daily.correct.text1')} 🪙 !\n${t('screens.daily.correct.text2')}: ${coins + 1} 🪙`);
-                setCoins(coins + 1);
+                // Mark as completed for today
+                const today = new Date().toISOString().slice(0, 10);
+                const completionKey = `${DAILY_COMPLETION_KEY}:${today}`;
+                await AsyncStorage.setItem(completionKey, 'true');
+                setIsCompleted(true);
+
+                // Update streak and calculate reward
+                const newStreak = await updateStreak();
+                const coinsEarned = newStreak; // nth day gives n coins
+                
+                Alert.alert(
+                    `✅ ${t('screens.daily.correct.title')}`, 
+                    t('screens.daily.correct.text', { coinsEarned: coinsEarned, total: coins + coinsEarned, streak: newStreak }),
+                );
+                setCoins(coins + coinsEarned);
             } else {
                 Alert.alert(t('screens.daily.wrong.title'), t('screens.daily.wrong.text'));
             }
@@ -102,16 +182,39 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
 
     return (
         <View style={styles.container}>
-            <View />
-            <Text style={styles.challengeText}>
-                {t('screens.daily.challenge')} 
-                {chall && t(`phrases.${chall.text}`, {
-                    defaultValue: chall.text,
-                })}
-            </Text>
-            <Phrases buttonLayout={buttonLayout} daily={true} style={styles.phrasesComponent} />
+            {/* Challenge and streak on same line */}
+            <View style={styles.headerBar}>
+                <View style={{ width: 48 }}/>
+                <Text style={styles.challengeText}>
+                    {t('screens.daily.challenge')} 
+                    {chall && t(`phrases.${chall.text}`, {
+                        defaultValue: chall.text,
+                    })}
+                </Text>
+                <Text style={styles.streakText}>{currentStreak} 🔥</Text>
+            </View>
+            
+            <View style={styles.phrasesContainer}>
+                <Phrases buttonLayout={buttonLayout} daily={true} style={styles.phrasesComponent} />
+                
+                {isCompleted && (
+                    <View style={styles.overlayContainer}>
+                        <View style={styles.overlay} />
+                        <View style={styles.completedMessageContainer}>
+                            <Text style={styles.completedText}>
+                                ✅ {t('screens.daily.completedMessage')}
+                            </Text>
+                        </View>
+                    </View>
+                )}
+            </View>
+            
             <View style={styles.buttonContainer}>
-                <Button title={t('screens.daily.submit')} onPress={submit} />
+                <Button 
+                    title={isCompleted ? t('screens.daily.completedButton') : t('screens.daily.submit')} 
+                    onPress={submit} 
+                    color={isCompleted ? "gray" : "#4CAF50"}
+                />
             </View>
             <View />
         </View>
@@ -128,13 +231,69 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         gap: 20,
     },
+    headerBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 10,
+    },
     challengeText: {
         fontSize: 24,
+        flex: 1,
         textAlign: 'center',
+    },
+    streakText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#FF6B35',
+        width: 48,
+    },
+    phrasesContainer: {
+        flex: 1,
+        width: '100%',
+        position: 'relative',
     },
     phrasesComponent: {
         flex: 1,
         width: '100%',
+    },
+    overlayContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(128, 128, 128, 0.7)',
+    },
+    completedMessageContainer: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        borderRadius: 15,
+        marginHorizontal: 20,
+        elevation: 5, // Android shadow
+        shadowColor: '#000', // iOS shadow
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    completedText: {
+        fontSize: 18,
+        textAlign: 'center',
+        color: '#4CAF50',
+        fontWeight: 'bold',
     },
     buttonContainer: {
         alignItems: 'center',
