@@ -564,7 +564,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   return (
     <>
       <ScrollView
-        style={[styles.scrollView, inProcess ? style.process_container: null]}
+        style={[styles.scrollView, inProcess ? styles.process_container: null]}
         contentContainerStyle={styles.container}
       >
         <View style={styles.topBar}>
