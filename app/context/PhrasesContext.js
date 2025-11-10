@@ -21,7 +21,6 @@ export const PhrasesProvider = ({ children }) => {
   const [navigationStack, setNavigationStack] = useState([]);
 
   const { t } = useTranslation();
-  const currentLanguage = i18n.language;
 
   useEffect(() => {
     const translateTasks = processesState.map(task => ({

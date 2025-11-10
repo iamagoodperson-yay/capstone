@@ -465,7 +465,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             text: getSpeechText(),
             image: require('../../assets/phrases/speaker.png'),
             type: 'speech',
-            markProcess: true,
           }}
           buttonlayout={4}
           onPress={() => speak(getSpeechText(true))}
@@ -565,7 +564,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   return (
     <>
       <ScrollView
-        style={styles.scrollView}
+        style={[styles.scrollView, inProcess ? style.process_container: null]}
         contentContainerStyle={styles.container}
       >
         <View style={styles.topBar}>
@@ -921,6 +920,9 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
+  },
+  process_container: {
+    backgroundColor: '#cee7ffff',
   },
   topBar: {
     flexDirection: 'row',

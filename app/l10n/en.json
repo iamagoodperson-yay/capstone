@@ -133,7 +133,7 @@
             "credits": {
                 "title": "Credits & Acknowledgements",
                 "description": "This app was developed as part of the SST-NP IDP DiSpark Capstone project 2025.",
-                "students": "Students: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia Yen",
+                "students": "Project Team: Kenzie Vimalaputta Irawan, Darius Yong, Janelle Lee Jia Yen",
                 "hwnStaff": "HWN Staff: Mr Tan Ter Soon, Miss Kang Yun Jie",
                 "mindsStaff": "MINDS Staff: Ms Julia",
                 "mentors": "Technical Mentors: Mr Spencer Chiang, Mr Joshua Woon, Mr Liong Yuen Ming",
@@ -166,7 +166,7 @@
             "processesAndTasksDesc2": "Tasks are screens with buttons you can tap. When you tap a choice, the speech text and choice(s) will speak out loud.",
             
             "taskNavigation": "How Tasks Work",
-            "taskNavigationDesc1": "When you are inside a process, the speaker button is light blue. This takes you through different Tasks to help you say exactly what you want.",
+            "taskNavigationDesc1": "When you are inside a process, the screen turns light blue. This takes you through different Tasks to help you say exactly what you want.",
             "taskNavigationDesc2": "Each Task may show you different choices based on what you picked before. Some Tasks let you pick multiple things (with square checkboxes), others let you pick just one thing (with round circles).",
             "taskNavigationDesc3": "The app remembers what you picked and builds your message. You can go back to change your answers, or finish when you reach the last Task.",
 

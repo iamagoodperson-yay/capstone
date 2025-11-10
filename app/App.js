@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { StatusBar, Appearance } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
@@ -153,6 +154,7 @@ const App = () => {
   const [buttonLayout, setButtonLayout] = useState(2);
   const [coins, setCoins] = useState(0);
   const [caregiverNumber, setCaregiverNumber] = useState('');
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [avatarSelection, setAvatarSelection] = useState({
     hats: 0,
@@ -319,6 +321,15 @@ const App = () => {
     initTTS();
   }, []);
 
+  // Force light mode throughout the app
+  useEffect(() => {
+    // Force light mode for the entire app
+    Appearance.setColorScheme('light');
+    
+    // Set status bar to light mode
+    StatusBar.setBarStyle('dark-content', true);
+  }, []);
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -342,12 +353,16 @@ const App = () => {
       } catch (e) {
         console.warn('Failed to load data', e);
       }
+      setIsDataLoaded(true);
     };
     loadData();
   }, []);
 
   useEffect(() => {
     const saveData = async () => {
+      // Don't save until initial data is loaded to prevent overwriting stored data
+      if (!isDataLoaded) return;
+      
       try {
         await AsyncStorage.setItem(
           'avatarSelection',
@@ -362,11 +377,11 @@ const App = () => {
       }
     };
     saveData();
-  }, [avatarSelection, avatarItems, coins, caregiverNumber, buttonLayout]);
+  }, [avatarSelection, avatarItems, coins, caregiverNumber, buttonLayout, isDataLoaded]);
 
   return (
     <PhrasesProvider>
-      <NavigationContainer>
+      <NavigationContainer theme={DefaultTheme}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Tabs">
             {() => (
