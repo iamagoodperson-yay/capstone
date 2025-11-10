@@ -78,10 +78,15 @@ const Cell = ({
         { height: screenHeight * height, width: screenWidth * widthFactor },
         content.type === 'selected'
           ? styles.selected_button
-          : content.type === 'next'
+          : null,
+        content.type === 'next'
           ? styles.next_button
           : null,
-        content.bookmarked ? styles.bookmarked_button : null,
+        content.bookmarked ?
+          styles.bookmarked_button 
+          : content.markProcess ?
+          { backgroundColor: '#cee7ffff'}
+          : null,
       ]}
       onPress={onPress}
       onLongPress={onLongPress}

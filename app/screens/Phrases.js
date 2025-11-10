@@ -136,12 +136,56 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
         );
         addTask(newTask);
       } else {
-        const newChoice = {
-          text: newItemText.trim(),
-          image: selectedImage || null,
-          usageCount: 0,
-        };
-        addChoiceToTask(current.id, newChoice);
+        if (isAddProcess) {
+          // Adding a choice that leads to a new task
+          if (!taskTitle.trim()) {
+            Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterProcessTitle'));
+            setIsAdding(false);
+            return;
+          } else if (!processSpeech.trim()) {
+            Alert.alert(t('screens.phrases.errors.errorTitle'), t('screens.phrases.errors.enterSpeechText'));
+            setIsAdding(false);
+            return;
+          }
+
+          const id =
+            taskTitle.trim().toLowerCase().replace(/\s+/g, '_') +
+            '_' +
+            newItemText.trim().toLowerCase().replace(/\s+/g, '_') +
+            '_' +
+            Date.now().toString();
+          
+          // Add the choice first
+          const newChoice = {
+            text: newItemText.trim(),
+            image: selectedImage || null,
+            usageCount: 0,
+          };
+          addChoiceToTask(current.id, newChoice);
+
+          // Create the new task
+          const newTask = createTask(
+            id,
+            taskTitle.trim(),
+            processSpeech.trim(),
+            processMultiSelect,
+            processDiverge,
+            'end',
+          );
+          addTask(newTask);
+
+          // Update the current task's next property to point to the new task
+          current.next = id;
+          editPhrase(null, current);
+        } else {
+          // Adding a simple choice
+          const newChoice = {
+            text: newItemText.trim(),
+            image: selectedImage || null,
+            usageCount: 0,
+          };
+          addChoiceToTask(current.id, newChoice);
+        }
       }
     } else if (isAddProcess) {
       if (targetTask === t('screens.phrases.errors.newTask')) {
@@ -348,6 +392,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
           image: item.image,
           type: item.type,
           bookmarked: bookmarkedTexts.includes(item.text),
+          markProcess: item.id !== undefined,
         }}
         buttonlayout={buttonLayout}
         onPress={() => handlePress(item)}
@@ -420,6 +465,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             text: getSpeechText(),
             image: require('../../assets/phrases/speaker.png'),
             type: 'speech',
+            markProcess: true,
           }}
           buttonlayout={4}
           onPress={() => speak(getSpeechText(true))}
@@ -519,7 +565,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
   return (
     <>
       <ScrollView
-        style={[styles.scrollView, inProcess ? styles.process_container : null]}
+        style={styles.scrollView}
         contentContainerStyle={styles.container}
       >
         <View style={styles.topBar}>
@@ -609,6 +655,20 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
               onImageSelected={setSelectedImage}
               onImageRemoved={() => setSelectedImage(null)}
             />
+            {inProcess && !current.diverge && (
+              <View style={styles.inputSection}>
+                <Text style={styles.inputLabel}>{t('screens.phrases.add.choiceOrNewTask')}</Text>
+                <View style={styles.switchRow}>
+                  <Switch
+                    value={isAddProcess}
+                    onValueChange={setIsAddProcess}
+                  />
+                  <Text style={styles.switchText}>
+                    {isAddProcess ? t('screens.phrases.add.newTaskChoice') : t('screens.phrases.add.choice')}
+                  </Text>
+                </View>
+              </View>
+            )}
             {!inProcess && (
               <View style={styles.inputSection}>
                 <Text style={styles.inputLabel}>{t('screens.phrases.add.processOrCat')}</Text>
@@ -623,17 +683,19 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
                 </View>
               </View>
             )}
-            {(!inProcess && isAddProcess) || (inProcess && current.diverge) ? (
+            {(!inProcess && isAddProcess) || (inProcess && (current.diverge || isAddProcess)) ? (
               <>
-                <View style={styles.inputSection}>
-                  <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask', {item: inProcess ? 'choice' : 'Category'})}</Text>
-                  <Dropdown
-                    values={taskChoices}
-                    base={targetTask}
-                    changebase={setTargetTask}
-                  />
-                </View>
-                {targetTask === t('screens.phrases.errors.newTask') ? (
+                {(!inProcess && isAddProcess) || (inProcess && current.diverge) ? (
+                  <View style={styles.inputSection}>
+                    <Text style={styles.inputLabel}>{t('screens.phrases.add.targetTask', {item: inProcess ? 'choice' : 'Category'})}</Text>
+                    <Dropdown
+                      values={taskChoices}
+                      base={targetTask}
+                      changebase={setTargetTask}
+                    />
+                  </View>
+                ) : null}
+                {(targetTask === t('screens.phrases.errors.newTask')) || (inProcess && isAddProcess) ? (
                   <>
                     <View style={styles.inputSection}>
                       <Text style={styles.inputLabel}>{t('screens.phrases.add.taskTitle')}</Text>
@@ -856,9 +918,6 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-  },
-  process_container: {
-    backgroundColor: '#cee7ffff',
   },
   container: {
     alignItems: 'center',

@@ -184,7 +184,7 @@ const Daily = ({ coins, setCoins, buttonLayout }) => {
         <View style={styles.container}>
             {/* Challenge and streak on same line */}
             <View style={styles.headerBar}>
-                <View style={{ width: 48 }}/>
+                <View style={{ width: 60 }}/>
                 <Text style={styles.challengeText}>
                     {t('screens.daily.challenge')} 
                     {chall && t(`phrases.${chall.text}`, {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: '#FF6B35',
-        width: 48,
+        width: 60,
     },
     phrasesContainer: {
         flex: 1,

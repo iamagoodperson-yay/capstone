@@ -90,8 +90,8 @@ function Settings({
         <View style={styles.languageGrid}>
           {renderFlag('en', 'English')}
           {renderFlag('cn', '华文')}
-          {renderFlag('my', 'Malay')}
-          {renderFlag('ta', 'Tamil')}
+          {renderFlag('my', 'Bahasa Melayu')}
+          {renderFlag('ta', 'தமிழ்')}
         </View>
 
         <View style={{ height: 20 }} />

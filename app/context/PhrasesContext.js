@@ -69,6 +69,7 @@ export const PhrasesProvider = ({ children }) => {
 
   const [bookmarkedTexts, setBookmarkedTexts] = useState([]);
   const [fromBookmark, setFromBookmark] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [translatedStack, setTranslatedStack] = useState([]);
 
@@ -91,12 +92,13 @@ export const PhrasesProvider = ({ children }) => {
             setProcessesState(JSON.parse(storedProcesses));
           }
           if (storedBookmarks) {
-            setBookmarkedTexts(JSON.parse(storedBookmarks));
-            console.log('Loaded bookmarks:', JSON.parse(storedBookmarks));
+            const parsedBookmarks = JSON.parse(storedBookmarks);
+            setBookmarkedTexts(parsedBookmarks);
           }
         } catch (e) {
           console.warn('Failed to load data from storage', e);
         }
+        setIsDataLoaded(true);
       };
       loadData();
     }, []);
@@ -136,23 +138,23 @@ export const PhrasesProvider = ({ children }) => {
 
   useEffect(() => {
     const saveBookmarks = async () => {
+      // Don't save until initial data is loaded to prevent overwriting stored data
+      if (!isDataLoaded) return;
+      
       try {
         const stored = await AsyncStorage.getItem(bookmarksKey);
         const current = JSON.stringify(bookmarkedTexts);
+        
         // Only save when necessary to avoid writing on initial boot.
-        // Keep the existing behavior of not saving empty arrays unless storage differs.
         if (stored === null || stored !== current) {
-          // If bookmarkedTexts is empty and there's no stored value, writing an empty array is harmless.
-          // If bookmarkedTexts is empty but stored had values, this will persist the cleared state.
           await AsyncStorage.setItem(bookmarksKey, current);
-          console.log('Saved bookmarks:', bookmarkedTexts);
         }
       } catch (e) {
         console.warn('Failed to save bookmarks to storage', e);
       }
     };
     saveBookmarks();
-  }, [bookmarkedTexts]);
+  }, [bookmarkedTexts, isDataLoaded]);
 
   const getCurrentCategory = () => {
     if (navigationStack.length === 0) return categoriesState;
@@ -478,9 +480,10 @@ export const PhrasesProvider = ({ children }) => {
   // Toggle a bookmark for a phrase text
   const toggleBookmark = text => {
     if (!text) return;
-    setBookmarkedTexts(prev =>
-      prev.includes(text) ? prev.filter(t => t !== text) : [...prev, text],
-    );
+    setBookmarkedTexts(prev => {
+      const newBookmarks = prev.includes(text) ? prev.filter(t => t !== text) : [...prev, text];
+      return newBookmarks;
+    });
   };
 
   // Recursively collect choices from categoriesState whose text is bookmarked

@@ -38,12 +38,15 @@
             "add": {
                 "addTitle": "Add Category or Task",
                 "addNewTaskTitle": "Add Choice which goes to New Task",
-                "addCurrentTaskTitle": "Add Choice to Current Task",
+                "addCurrentTaskTitle": "Add Choice or Task",
                 "catText": "Category text",
                 "choiceText": "Choice text",
                 "processOrCat": "Task or Category",
+                "choiceOrNewTask": "Choice or New Task",
                 "process": "Task",
                 "category": "Category",
+                "choice": "Choice",
+                "newTaskChoice": "New Task",
                 "targetTask": "Next Task which this {{item}} goes to",
                 "taskTitle": "Title of the New Task",
                 "speechText": "Speech bubble text (shows in button with speaker icon)",
@@ -155,15 +158,15 @@
             "phrasesOverviewDesc2": "You can add pictures to everything and save your favorites. Only Tasks can speak out loud. You can add, change, or remove anything to make the app work better for you.",
 
             "categoriesStructure": "How Categories Work",
-            "categoriesStructureDesc1": "Categories kind of work like folders. The app puts phrases in main Categories like Food & Drinks, Directions, Emergency, and Others. Inside these folders, you can have smaller folders like 'Hawker Centre' inside Food & Drinks.",
-            "categoriesStructureDesc2": "Each Category can either start a process or have smaller folders inside it. Tap Categories to see what's inside, or go to the Task that the Category links to.",
+            "categoriesStructureDesc1": "Categories kind of work like folders. The app puts phrases in main Categories like Food & Drinks, Directions, Emergency, and Others. Inside these folders, you can have smaller folders like 'Hawker Centre' inside 'Food & Drinks.'",
+            "categoriesStructureDesc2": "Each Category can either start a process or have smaller folders inside it. Tap normal grey Categories to see what's inside. If the category is blue, it starts a process and goes to a Task.",
 
             "processesAndTasks": "What are Processes and Tasks?",
             "processesAndTasksDesc1": "Processes are actions that help you say what you want. Each process has one or more Tasks that give you choices to pick from.",
             "processesAndTasksDesc2": "Tasks are screens with buttons you can tap. When you tap a choice, the speech text and choice(s) will speak out loud.",
             
             "taskNavigation": "How Tasks Work",
-            "taskNavigationDesc1": "When you are inside a process, the screen turns light blue. This takes you through different Tasks to help you say exactly what you want.",
+            "taskNavigationDesc1": "When you are inside a process, the speaker button is light blue. This takes you through different Tasks to help you say exactly what you want.",
             "taskNavigationDesc2": "Each Task may show you different choices based on what you picked before. Some Tasks let you pick multiple things (with square checkboxes), others let you pick just one thing (with round circles).",
             "taskNavigationDesc3": "The app remembers what you picked and builds your message. You can go back to change your answers, or finish when you reach the last Task.",
 
