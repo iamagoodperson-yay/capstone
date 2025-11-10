@@ -48,8 +48,8 @@
                 "taskTitle": "新任务的标题",
                 "speechText": "语音气泡文本（显示在带喇叭图标的按钮中）",
                 "processSettings": "任务设置",
-                "multiChoice": "在新任务中\n允许多个选择",
-                "diverge": "不同的选择\n导向不同的下一个任务",
+                "multiChoice": "在新任务中允许多个\n选择",
+                "diverge": "不同的选择导向不同\n的下一个任务",
                 "close": "关闭",
                 "add": "添加",
                 "adding": "添加中..."

@@ -52,7 +52,7 @@
                 "speechText": "Speech bubble text (shows in button with speaker icon)",
                 "processSettings": "Task settings",
                 "multiChoice": "Allow multiple choices in the\nnew Task",
-                "diverge": "Different selected choices lead\nto different next Tasks",
+                "diverge": "Different selected choices\nlead to different next Tasks",
                 "close": "Close",
                 "add": "Add",
                 "adding": "Adding..."

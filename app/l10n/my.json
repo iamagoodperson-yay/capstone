@@ -54,8 +54,8 @@
                 "taskTitle": "Tajuk Tugas Baru",
                 "speechText": "Teks gelembung pertuturan (ditunjukkan dalam butang dengan ikon pembesar suara)",
                 "processSettings": "Tetapan tugas",
-                "multiChoice": "Benarkan pelbagai pilihan dalam\nTugas baru",
-                "diverge": "Pilihan berbeza yang dipilih membawa\nkepada Tugas seterusnya yang berbeza",
+                "multiChoice": "Benarkan pelbagai pilihan\ndalam Tugas baru",
+                "diverge": "Pilihan berbeza yang dipilih\nmembawa kepada Tugas\nseterusnya yang berbeza",
                 "close": "Tutup",
                 "add": "Tambah",
                 "adding": "Menambah..."
