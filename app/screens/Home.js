@@ -115,16 +115,18 @@ const Home = ({
           <>
             {bookmarked.length > 0 && (
               <View style={styles.gridContainer}>
-                {bookmarked.map((b, i) => (
+                {bookmarked.map((mark, i) => (
                   <TouchableOpacity
                     key={i.toString()}
                     style={styles.bookmarkCell}
                     onPress={() => {
-                      if (b.item.text === 'Emergency')
+                      if (mark.item.text === 'Emergency')
                         Linking.openURL(`tel:${caregiverNumber}`);
-                      else if (b.kind === 'process')
-                        navigateToProcessChoice(b.processId, b.item.text);
-                      else navigateToPath(b.path);
+                      else if (mark.kind === 'process')
+                        navigateToProcessChoice(mark.processId, mark.item.text);
+                      else if (mark.item.id !== undefined)
+                        navigateToProcessChoice(mark.item.id, mark.item.text);
+                      else navigateToPath(mark.path);
                         navigation.navigate('Phrases');
                     }}
                     onLongPress={() =>
@@ -139,17 +141,17 @@ const Home = ({
                           },
                           {
                             text: t('screens.home.Delete') || 'Delete',
-                            onPress: () => toggleBookmark(b.item.text),
+                            onPress: () => toggleBookmark(mark.item.text),
                           },
                         ],
                       )
                     }
                   >
                     <Image
-                      source={b.item.image}
+                      source={mark.item.image}
                       style={{ width: 60, height: 60 }}
                     />
-                    <Text style={styles.bookmarkText}>{t(`phrases.${b.item.text}`, {defaultValue: b.item.text}) || b.item.text}</Text>
+                    <Text style={styles.bookmarkText}>{t(`phrases.${mark.item.text}`, {defaultValue: mark.item.text}) || mark.item.text}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
