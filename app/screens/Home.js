@@ -149,7 +149,7 @@ const Home = ({
                       source={b.item.image}
                       style={{ width: 60, height: 60 }}
                     />
-                    <Text style={styles.bookmarkText}>{t(`phrases.${b.item.text}`) || b.item.text}</Text>
+                    <Text style={styles.bookmarkText}>{t(`phrases.${b.item.text}`, {defaultValue: b.item.text}) || b.item.text}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
