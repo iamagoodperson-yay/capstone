@@ -120,7 +120,7 @@ const Home = ({
                     key={i.toString()}
                     style={styles.bookmarkCell}
                     onPress={() => {
-                      if (mark.item.text === 'Emergency')
+                      if (mark.item.emergency)
                         Linking.openURL(`tel:${caregiverNumber}`);
                       else if (mark.kind === 'process')
                         navigateToProcessChoice(mark.processId, mark.item.text);

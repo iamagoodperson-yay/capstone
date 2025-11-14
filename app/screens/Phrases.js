@@ -312,7 +312,7 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
       }
     }
     if ( !inProcess &&
-        editingItem.id !== null &&
+        editingItem.id !== undefined &&
         editingItem.id !== targetTask
     ) {
         editingItem.id = targetTask;
@@ -783,35 +783,37 @@ const Phrases = ({ buttonLayout, daily, caregiverNumber }) => {
             keyboardDismissMode="interactive"
           >
             <Text style={styles.modalTitle}>{t('screens.phrases.edit.editTitle')}</Text>
-            <Button
-              title={t('screens.phrases.edit.delete')}
-              width="0.8"
-              color="#DC3545"
-              onPress={() => {
-                Alert.alert(
-                  t('screens.phrases.edit.confirmDeleteTitle'),
-                  t('screens.phrases.edit.confirmDeleteMsg', { item: editingItem.text }),
-                  [
-                    { text: t('screens.phrases.edit.cancel'), style: 'cancel' },
-                    {
-                      text: t('screens.phrases.edit.delete'),
-                      style: 'destructive',
-                      onPress: () => {
-                        if (editingItem.id) {
-                          deletePhrase(editParent, editingItem.id);
-                        } else {
-                          deletePhrase(editParent || current, editingItem.text);
-                        }
-                        resetEdit();
-                        if (inProcess && editingItem.id === current.id) {
-                          goBack();
-                        }
+            {!editingItem?.emergency && (
+              <Button
+                title={t('screens.phrases.edit.delete')}
+                width="0.8"
+                color="#DC3545"
+                onPress={() => {
+                  Alert.alert(
+                    t('screens.phrases.edit.confirmDeleteTitle'),
+                    t('screens.phrases.edit.confirmDeleteMsg', { item: editingItem.text }),
+                    [
+                      { text: t('screens.phrases.edit.cancel'), style: 'cancel' },
+                      {
+                        text: t('screens.phrases.edit.delete'),
+                        style: 'destructive',
+                        onPress: () => {
+                          if (editingItem.id) {
+                            deletePhrase(editParent, editingItem.id);
+                          } else {
+                            deletePhrase(editParent || current, editingItem.text);
+                          }
+                          resetEdit();
+                          if (inProcess && editingItem.id === current.id) {
+                            goBack();
+                          }
+                        },
                       },
-                    },
-                  ],
-                );
-              }}
-            />
+                    ],
+                  );
+                }}
+              />
+            )}
             {!inProcess || (inProcess && editingItem?.id !== current?.id) ? (
               <>
                 <View style={styles.inputSection}>

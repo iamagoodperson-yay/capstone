@@ -48,6 +48,7 @@ const categories = {
     {
       text: 'Emergency',
       image: require('../../assets/phrases/emergency.png'),
+      emergency: true,
       usageCount: 0,
       choices: [],
     },
